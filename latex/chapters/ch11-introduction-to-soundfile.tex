@@ -1,0 +1,241 @@
+% Re-authored after migration because the original notebook content was too thin for self-study.
+
+\chapter{PySoundFile 入門}
+
+
+\section{この章の目的}
+
+音響信号処理では，波形データを NumPy 配列として読み書きできることが出発点になります．
+PySoundFile はそのための軽量なライブラリであり，
+\begin{itemize}
+\item WAV や FLAC などの音声ファイルを読む
+\item NumPy 配列として波形を扱う
+\item 加工結果を音声ファイルとして保存する
+\end{itemize}
+という基本作業をシンプルに行えます．
+
+本章の到達目標は次の通りです．
+\begin{itemize}
+\item \texttt{soundfile.read} と \texttt{soundfile.write} の基本的な使い方を説明できる
+\item モノラルとステレオで返る配列形状の違いを理解できる
+\item サンプルレートと波形長の関係を説明できる
+\item 一部分だけ読み込む，dtype を指定するなどの実用的な操作を使える
+\item 保存した波形を Python で検証する最小手順を持てる
+\end{itemize}
+
+
+\section{PySoundFile とは何か}
+
+PySoundFile は libsndfile を土台にした Python 用の音響ファイル入出力ライブラリです．
+WAV，FLAC，OGG など複数の形式に対応し，音声データを NumPy 配列として返します．
+
+詳細は \href{https://pysoundfile.readthedocs.io/en/latest/}{公式ドキュメント} を参照してください．
+
+信号処理や機械学習の前処理では，音声を
+\begin{itemize}
+\item 何 Hz でサンプリングされたか
+\item 何チャネルあるか
+\item 何サンプル続くか
+\end{itemize}
+というメタデータと一緒に扱う必要があります．
+PySoundFile は，波形そのものとサンプルレートをセットで返すので，この最初の入口として使いやすいです．
+
+
+\section{インストール}
+
+通常は \texttt{pip} でインストールできます．
+
+\begin{lstlisting}[style=codecell]
+pip install soundfile
+\end{lstlisting}
+
+WSL や Linux 環境で libsndfile が不足している場合は，先にシステム側のライブラリを入れます．
+
+\begin{lstlisting}[style=codecell]
+sudo apt update
+sudo apt install libsndfile1
+\end{lstlisting}
+
+読み込み時は慣例的に \texttt{sf} という別名を使います．
+
+\begin{lstlisting}[style=codecell,language=Python]
+import soundfile as sf
+\end{lstlisting}
+
+
+\section{音声を読む}
+
+もっとも基本的な読み込みは次の通りです．
+
+\begin{lstlisting}[style=codecell,language=Python]
+data, samplerate = sf.read("path/to/audio.wav")
+\end{lstlisting}
+
+ここで
+\begin{itemize}
+\item \texttt{data} は NumPy 配列
+\item \texttt{samplerate} は整数のサンプリング周波数
+\end{itemize}
+です．
+
+例えば \texttt{samplerate = 16000} なら，1 秒間に 16000 個のサンプルが並んでいます．
+この情報がないと，波形の横軸を秒として解釈できません．
+
+
+\section{モノラルとステレオの配列形状}
+
+PySoundFile が返す配列形状はチャネル数で変わります．
+
+\begin{itemize}
+\item モノラル: \texttt{(num\_samples,)}
+\item ステレオ: \texttt{(num\_samples, 2)}
+\item 一般の多チャネル: \texttt{(num\_samples, num\_channels)}
+\end{itemize}
+
+つまり，\textbf{時間方向が先頭軸}です．
+画像処理でよく見る \texttt{(height, width, channel)} と同様に，最後の軸がチャネルです．
+
+モノラルとステレオを同じコードで扱うときは，次のように shape をまず確認する癖を付けると安全です．
+
+\begin{lstlisting}[style=codecell,language=Python]
+print(data.shape)
+print(data.dtype)
+print(samplerate)
+\end{lstlisting}
+
+ステレオ音声の左チャネルだけを使いたい場合は
+\begin{lstlisting}[style=codecell,language=Python]
+left = data[:, 0]
+\end{lstlisting}
+のように取り出します．
+
+
+\section{dtype と振幅範囲}
+
+\texttt{sf.read} は既定では浮動小数点配列を返すことが多く，典型的には \texttt{float64} です．
+このとき振幅はしばしば $[-1, 1]$ 付近に正規化されています．
+
+ただし，ファイル形式や指定によっては整数型で読むこともできます．
+例えば 16 bit PCM をそのまま整数で読みたい場合は，
+
+\begin{lstlisting}[style=codecell,language=Python]
+data_int16, samplerate = sf.read("path/to/audio.wav", dtype="int16")
+\end{lstlisting}
+
+のように \texttt{dtype} を指定します．
+
+機械学習や可視化では float の方が扱いやすく，波形保存や既存ツールとの互換性確認では PCM 整数の意味が重要になることがあります．
+どの表現を使っているかを曖昧にしないことが重要です．
+
+
+\section{一部分だけ読む}
+
+長い音声ファイルを丸ごと読む必要がない場面もあります．
+例えば最初の 3 秒だけ確認したいなら，サンプル数に直して \texttt{frames} を指定します．
+
+\begin{lstlisting}[style=codecell,language=Python]
+seconds = 3
+frames = 16000 * seconds
+segment, sr = sf.read("path/to/audio.wav", frames=frames)
+\end{lstlisting}
+
+また，途中から読むには \texttt{start} を使えます．
+
+\begin{lstlisting}[style=codecell,language=Python]
+start = 16000 * 5  # 5 秒地点
+frames = 16000 * 2 # そこから 2 秒分
+segment, sr = sf.read("path/to/audio.wav", start=start, frames=frames)
+\end{lstlisting}
+
+これは長時間録音の確認や，学習データセットから必要区間だけ切り出す前処理で便利です．
+
+
+\section{音声を書き出す}
+
+加工した NumPy 配列は \texttt{sf.write} で保存できます．
+
+\begin{lstlisting}[style=codecell,language=Python]
+sf.write("path/to/output.wav", data, samplerate)
+\end{lstlisting}
+
+保存時に重要なのは，\textbf{配列の shape と samplerate が妥当か}です．
+例えばモノラルとして保存したいのに shape が \texttt{(num\_samples, 1)} や \texttt{(1, num\_samples)} になっていると，
+想定と違う結果になることがあります．
+
+また，別名で保存するときは拡張子からフォーマットが決まることが多いです．
+
+\begin{lstlisting}[style=codecell,language=Python]
+sf.write("denoised.flac", denoised, samplerate)
+\end{lstlisting}
+
+
+\section{Python で最小の読み書きと検証を行う}
+
+以下は，音声を読み込み，先頭 1 秒を切り出して保存し，同時に波形を図として確認する最小例です．
+
+\begin{lstlisting}[style=codecell,language=Python]
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import soundfile as sf
+
+input_path = "path/to/audio.wav"
+output_dir = Path("outputs/ch11")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+data, sr = sf.read(input_path, dtype="float32")
+
+if data.ndim == 2:
+    mono = data.mean(axis=1)
+else:
+    mono = data
+
+segment = mono[:sr]  # 先頭 1 秒
+sf.write(output_dir / "segment.wav", segment, sr)
+
+t = np.arange(len(segment)) / sr
+plt.figure(figsize=(8, 3))
+plt.plot(t, segment, linewidth=1)
+plt.xlabel("time [s]")
+plt.ylabel("amplitude")
+plt.tight_layout()
+plt.savefig(output_dir / "segment_waveform.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+この例で確認すべき点は次の通りです．
+\begin{itemize}
+\item \texttt{data.ndim} を見ればモノラルか多チャネルか判定できる
+\item \texttt{len(segment) / sr} で長さを秒に変換できる
+\item 保存した \texttt{.wav} と保存した波形図の両方を残すと検証しやすい
+\end{itemize}
+
+
+\section{情報だけ見たいときは SoundFile オブジェクトを使う}
+
+ファイル全体をすぐ読み込まずに，メタデータだけ確認したいこともあります．
+その場合は \texttt{SoundFile} オブジェクトを使います．
+
+\begin{lstlisting}[style=codecell,language=Python]
+with sf.SoundFile("path/to/audio.wav") as f:
+    print(f.samplerate)
+    print(f.channels)
+    print(len(f))
+\end{lstlisting}
+
+大量ファイルの前処理前に，サンプリング周波数やチャネル数が混在していないかを点検する用途に向いています．
+
+
+\section{この章で押さえるべき点}
+
+\begin{itemize}
+\item PySoundFile は音声ファイルを NumPy 配列として読み書きするための基本ライブラリである
+\item \texttt{sf.read} は波形配列とサンプリング周波数を返す
+\item モノラルは 1 次元，ステレオは \texttt{(num\_samples, 2)} のような 2 次元配列になる
+\item \texttt{start} や \texttt{frames} を使うと必要な区間だけ読める
+\item 保存時は dtype，shape，samplerate を意識して検証する
+\end{itemize}
+
+次に STFT やスペクトログラムを扱うときも，入力は結局この波形配列です．
+そのため，「どういう shape と意味を持つ配列を読んでいるか」をここで曖昧にしないことが重要です．

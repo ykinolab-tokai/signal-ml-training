@@ -1,0 +1,57 @@
+\usepackage[a4paper,margin=25mm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
+\lstdefinestyle{codecell}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  xleftmargin=2em
+}
+
+\lstdefinestyle{outputcell}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  xleftmargin=2em,
+  backgroundcolor=\color[gray]{0.96}
+}
+
+\newcommand{\NotebookFigure}[3]{
+  \begin{figure}[tb]
+    \centering
+    \IfFileExists{#1}{
+      \includegraphics[width=0.85\linewidth]{#1}
+    }{
+      \fbox{
+        \parbox{0.8\linewidth}{
+          Figure asset missing: \texttt{#1}\\
+          Regenerate later from \texttt{#3}.
+        }
+      }
+    }
+    \caption{#2}
+  \end{figure}
+}
+
+\newcommand{\StaticFigure}[2]{
+  \begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.85\linewidth]{#1}
+    \caption{#2}
+  \end{figure}
+}
+
+\newcommand{\degree}{^\circ}

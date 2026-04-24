@@ -1,0 +1,35 @@
+[project]
+name = "signal-ml-training"
+version = "0.1.0"
+description = "Execution environment for the signal processing and deep-learning training repository."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "matplotlib>=3.9,<4",
+    "numpy>=2.1,<3",
+    "pandas>=3.0,<4",
+    "pillow>=12,<13",
+    "scikit-learn>=1.6,<2",
+    "soundfile>=0.13,<0.14",
+    "torch==2.7.1",
+    "torchaudio==2.7.1",
+    "torchvision==0.22.1",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29,<7",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchaudio = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
