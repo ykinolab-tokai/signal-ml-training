@@ -7,15 +7,16 @@
 ## 配布資料とテンプレート
 
 - 学生に直接配布する配布資料は、すべて Markdown ファイルとして [`materials/spring`](materials/spring) と [`materials/autumn`](materials/autumn) に配置します。
-- 前期配布資料は `materials/spring/01-...md` から `14-...md`、後期配布資料は `materials/autumn/15-...md` から `28-...md` とし、回番号と一致させます。
+- 前期の固定配布資料は `materials/spring/01-...md` から `10-...md` と `14-...md`、後期配布資料は `materials/autumn/15-...md` から `28-...md` とし、回番号と一致させます。
+- 前期 11〜13 回の発展枠は、年度ごとに画像・音響・共通基盤のうち 1 テーマだけを選び、3 回に分けて扱います。候補 handout は回番号を付けず、テーマ別の記録として `materials/spring/advanced-...md` に置きます。
 - 雛形は [`templates/spring-session-template.md`](templates/spring-session-template.md) と [`templates/autumn-session-template.md`](templates/autumn-session-template.md) に置きます。
 - README から各ディレクトリへの案内は相対リンクで統一します。GitHub 上でも clone 後でも追いやすい構成を保つためです。
 
 ## 1. 年間構成の基本方針
 
 - 後期 14 回は毎年固定します。
-- 前期 14 回は、1〜10 回を毎年ほぼ固定、11〜13 回を研究室の主力テーマに応じて差し替えます。
-- 基盤の継続性は固定回で担保し、扱う範囲の広がりはローテーション回で確保します。
+- 前期 14 回は、B4・M が共通基盤の上で発展的な実装力を積む枠とします。
+- 前期の具体的な題材は、その年度に使う配布資料で確定します。
 
 ## 1.5. 提出と Git 運用の基本方針
 
@@ -23,7 +24,7 @@
 - B3 の通常提出は、この共通 repo ではなく、学生ごとの private な submission repo に残す方針とします。
 - B3 は学期の最初に共通 repo と自分の submission repo をそれぞれ 1 回 clone し、その後の通常提出では `edit -> commit -> push` を反復します。
 - B3 の毎週の提出で `fork` や `pull request` は必須にしません。まずは CUI で `clone`、`pull`、`commit`、`push` を確実に使えることを優先します。
-- `pull request` は Git / GitHub 学習の題材として扱いますが、B3・B4・M のいずれにも継続的な共通 repo への PR 提出は課しません。
+- `pull request` は第 28 回の code walkthrough と repo 整理の題材として扱いますが、B3・B4・M のいずれにも継続的な共通 repo への PR 提出は課しません。
 - 教員・TA は、B3 の採点時には学生の submission repo の default branch を確認します。
 
 ## 2. 各学年の責務
@@ -152,43 +153,43 @@ M2 がいない年度は、この役割を最上級の M1 が代替します。
 
 ### 前期 14 回：B4・M 向け発展枠
 
-| 回 | 種別 | 内容 | 到達目標・成果物 |
-| -- | -- | -- | -- |
-| 1 | 固定 | 年間方針、役割分担、共通 repo、生成 AI 運用、コーディング規約 | 年間の担当表、repo 構成、AI 申告ルールを理解する |
-| 2 | 固定 | research code engineering I：project 構造、config、logging、CLI | 最小の実験 script と設定ファイルを作る |
-| 3 | 固定 | research code engineering II：Git flow、PR、code review、簡単な test | pull request を 1 回通す |
-| 4 | 固定 | 数値線形代数の実装：最小二乗、SVD、PCA | NumPy / PyTorch で PCA または低次元化 `.py` script を作り、結果を保存する |
-| 5 | 固定 | autodiff と最適化：backprop、optimizer、scheduler、勾配確認 | 勾配の流れを確認する `.py` script を作り、結果を保存する |
-| 6 | 固定 | data pipeline engineering：Dataset、DataLoader、前処理、augmentation | 画像または音響の DataLoader を自作する |
-| 7 | 準固定 | 画像モデル基礎：CNN、ResNet、U-Net、receptive field、normalization | 既存モデルの block を差し替えて動かす |
-| 8 | 準固定 | 音響表現とモデル：STFT、mel、1D CNN、CRNN、Conformer の入口 | 特徴抽出とモデル入力の流れを実装する |
-| 9 | 準固定 | transfer learning と fine-tuning：freeze、linear probe、adapter 的発想 | 学習対象の切り替えをコードで実装する |
-| 10 | 準固定 | representation learning：contrastive、masked prediction、embedding | toy 版の表現学習を動かす |
-| 11 | ローテーション | 画像深掘り回：segmentation / detection / restoration から 1 つ選択 | 研究室の主力テーマに沿った最小実装を行う |
-| 12 | ローテーション | 音響深掘り回：enhancement / separation / tagging から 1 つ選択 | 研究室の主力テーマに沿った最小実装を行う |
-| 13 | ローテーション | 効率化回：mixed precision、profiling、軽量化、export | 学習または推論の高速化を測る |
-| 14 | 固定 | 技術デモ・code walkthrough・共通資産反映 | 各自または各班がコードと変更点を説明し、repo に反映する |
+| 回 | 内容 | 配布資料 |
+| -- | -- | -- |
+| 1 | 年間方針、役割分担、共通 repo、生成 AI 運用、コーディング規約 | [01 年間方針と役割](materials/spring/01-annual-policy-and-roles.md) |
+| 2 | research code engineering I：project 構造、config、logging、CLI | [02 research code engineering I](materials/spring/02-research-code-engineering-1.md) |
+| 3 | research code engineering II：Git flow、PR、code review、簡単な test | [03 research code engineering II](materials/spring/03-research-code-engineering-2.md) |
+| 4 | 数値線形代数の実装：最小二乗、SVD、PCA | [04 数値線形代数](materials/spring/04-numerical-linear-algebra.md) |
+| 5 | autodiff と最適化：backprop、optimizer、scheduler、勾配確認 | [05 autodiff と最適化](materials/spring/05-autodiff-and-optimization.md) |
+| 6 | data pipeline engineering：Dataset、DataLoader、前処理、augmentation | [06 data pipeline engineering](materials/spring/06-data-pipeline-engineering.md) |
+| 7 | 画像モデル基礎：CNN、ResNet、U-Net、receptive field、normalization | [07 画像モデル基礎](materials/spring/07-image-model-basics.md) |
+| 8 | 音響表現とモデル：STFT、mel、1D CNN、CRNN、Conformer の入口 | [08 音響表現とモデル](materials/spring/08-audio-representations-and-models.md) |
+| 9 | transfer learning と fine-tuning：freeze、linear probe、adapter 的発想 | [09 transfer learning と fine-tuning](materials/spring/09-transfer-learning-and-fine-tuning.md) |
+| 10 | representation learning：contrastive、masked prediction、embedding | [10 representation learning](materials/spring/10-representation-learning.md) |
+| 11 | 年度別発展テーマ 第 1 回：選択テーマの問題設定、最小実装、評価観点 | [発展テーマ handout 一覧](materials/spring/advanced-themes.md) |
+| 12 | 年度別発展テーマ 第 2 回：選択テーマの比較実験、失敗分析、改善 | [発展テーマ handout 一覧](materials/spring/advanced-themes.md) |
+| 13 | 年度別発展テーマ 第 3 回：選択テーマの整理、再利用可能な実装資産化、共有 | [発展テーマ handout 一覧](materials/spring/advanced-themes.md) |
+| 14 | 技術デモ・code walkthrough・共通資産反映 | [14 技術デモと walkthrough](materials/spring/14-technical-demo-and-walkthrough.md) |
 
-前期 11〜13 回は毎年入れ替えてよい枠です。画像寄りの年なら 11 回を厚くし、音響寄りの年なら 12 回を厚くする運用とします。
+前期 11〜13 回は、その年度に選んだ 1 つの発展テーマを 3 回に分けて扱う枠です。画像、音響、共通基盤を同じ年度にすべて扱う枠ではありません。候補 handout は記録として残しますが、回番号は付けません。
 
 ### 後期 14 回：B3 向け固定ブートキャンプ
 
-| 回 | 内容 | 到達目標・成果物 |
+| 回 | 内容 | 配布資料 |
 | -- | -- | -- |
-| 15 | 研究室オンボーディング：Linux、SSH、ディレクトリ、仮想環境、生成 AI 運用 | 研究室サーバにログインし、作業環境を整える |
-| 16 | Python・NumPy・matplotlib の基礎 | 配列計算と可視化の基礎 `.py` script と保存図を提出する |
-| 17 | Git / GitHub の基礎、clone、branch、commit、PR | `clone`、`commit`、`push` の基本を確認し、pull request を 1 回体験する |
-| 18 | 線形代数の基礎：ベクトル、内積、行列積、ノルム | 行列計算 `.py` script を提出する |
-| 19 | 確率統計の基礎：平均、分散、分布、サンプリング、基本指標 | 基本統計を計算・可視化できる |
-| 20 | 離散信号、畳み込み、フィルタの基礎 | 1D / 2D 畳み込みを実装または確認する |
-| 21 | Fourier 変換と STFT の基礎 | スペクトルと時間周波数表現を作れる |
-| 22 | 画像データの基礎：画像を配列として扱う、正規化、リサイズ、簡単なフィルタ | 画像前処理 pipeline を書ける |
-| 23 | 音響データの基礎：波形、spectrogram、mel、簡単な augmentation | 音響前処理 pipeline を書ける |
-| 24 | PyTorch の基礎：Tensor、Module、Dataset、DataLoader | 最小の model class と training 準備を実装する |
-| 25 | training loop の基礎：loss、optimizer、epoch、validation、overfitting | 学習 loop を自力で読める・一部書ける |
-| 26 | 画像ミニ実装：小規模 classification baseline | 画像 baseline を最後まで実行する |
-| 27 | 音響ミニ実装：小規模 classification baseline | 音響 baseline を最後まで実行する |
-| 28 | 口頭技術確認・code walkthrough・repo 整理 | 前処理からモデル出力までを口頭で説明する |
+| 15 | 研究室オンボーディング：Linux、SSH、ディレクトリ、仮想環境、repo clone、提出用 Git 最小運用 | [15 研究室オンボーディング](materials/autumn/15-onboarding.md) |
+| 16 | Python script の基礎：変数、list、dict、関数、例外、Path、ファイル保存 | [16 Python script の基礎](materials/autumn/16-python-script-basics.md) |
+| 17 | NumPy・PyTorch Tensor・matplotlib の基礎 | [17 配列と tensor の基礎](materials/autumn/17-array-and-tensor-basics.md) |
+| 18 | 線形代数の基礎：ベクトル、内積、行列積、ノルム | [18 線形代数の基礎](materials/autumn/18-linear-algebra-basics.md) |
+| 19 | 確率統計の基礎：平均、分散、分布、サンプリング、基本指標 | [19 確率統計の基礎](materials/autumn/19-probability-and-statistics-basics.md) |
+| 20 | 離散信号、畳み込み、フィルタの基礎 | [20 離散信号と畳み込み](materials/autumn/20-discrete-signals-and-convolution.md) |
+| 21 | Fourier 変換と STFT の基礎 | [21 Fourier 変換と STFT](materials/autumn/21-fourier-and-stft-basics.md) |
+| 22 | 音響データの基礎：波形、spectrogram、mel、簡単な augmentation | [22 音響データの基礎](materials/autumn/22-audio-data-basics.md) |
+| 23 | 画像データの基礎：画像を配列として扱う、正規化、リサイズ、簡単なフィルタ | [23 画像データの基礎](materials/autumn/23-image-data-basics.md) |
+| 24 | PyTorch による model 実装の基礎：Module、Dataset、DataLoader、batch、logits | [24 PyTorch model と Dataset の基礎](materials/autumn/24-pytorch-model-dataset-basics.md) |
+| 25 | training loop の基礎：loss、optimizer、epoch、validation、overfitting | [25 training loop の基礎](materials/autumn/25-training-loop-basics.md) |
+| 26 | 音響ミニ実装：小規模 classification baseline | [26 音響 baseline ミニ実装](materials/autumn/26-audio-baseline-mini-implementation.md) |
+| 27 | 画像ミニ実装：小規模 classification baseline | [27 画像 baseline ミニ実装](materials/autumn/27-image-baseline-mini-implementation.md) |
+| 28 | 口頭技術確認・code walkthrough・repo 整理・PR / code review 体験 | [28 口頭確認と repo 整理](materials/autumn/28-oral-check-and-repo-wrapup.md) |
 
 ## 6. 前期と後期での学年ごとの役割の違い
 

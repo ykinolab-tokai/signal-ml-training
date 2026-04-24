@@ -15,36 +15,15 @@
 
 ## 演習
 ### 基礎レベル
-1. `session06_dataloader_demo.py` を作成し、次の import を書く。
-```python
-import torch
-from torch.utils.data import Dataset, DataLoader
-```
-2. metadata を次の通り定義する。
-```python
-metadata = [
-    ("vertical", 0),
-    ("horizontal", 1),
-    ("vertical", 0),
-    ("horizontal", 1),
-]
-```
-3. `StripeDataset` を作り、`mode` が `vertical` のときは中央縦線、`horizontal` のときは中央横線を持つ `(1, 16, 16)` tensor を返すようにする。
-4. `augment=False` のときはそのまま返す。
-5. `augment=True` のときは `torch.flip(image, dims=[2])` を適用して左右反転させる。
-6. `collate_fn` を作成し、images を `torch.stack`、labels を `torch.tensor` にまとめる。
-7. `loader = DataLoader(dataset, batch_size=2, shuffle=False, collate_fn=collate_fn)` を作り、`batch_x, batch_y = next(iter(loader))` を取り出す。
-8. `dataset_no_aug` と `dataset_aug` の 0 番目サンプルを比較し、同じ shape で値だけが変わることを確認する。
-9. `session06_dataloader_report.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## metadata`
-   - `## DataLoader の出力`
-   - `## augmentation の有無`
-10. `## augmentation の有無` には、左右反転で何が変わり、何が変わらないかを 3 行以内で書く。
+1. `session06_dataloader_demo.py` を作成し、`metadata` から `vertical` / `horizontal` の stripe 画像 `(1, 16, 16)` と label を返す `StripeDataset` を実装する。
+2. `augment=False` と `augment=True` の dataset を作り、左右反転によって入力 tensor のどこが変わり、shape と label がどう保たれるかを確認する。
+3. `collate_fn` と `DataLoader(batch_size=2, shuffle=False)` を実装し、`batch_x.shape == (2, 1, 16, 16)`, `batch_y.shape == (2,)` になることを確認する。
+4. `session06_dataloader_report.md` に `## metadata`, `## DataLoader の出力`, `## augmentation の有無` を書き、Dataset, collate, DataLoader の責務を混同しないように説明する。
 
 ### 発展レベル
-1. `StripeDataset` に `augment="shift"` を追加し、`torch.roll(image, shifts=2, dims=2)` で水平方向へずらす条件を実装する。
-2. `session06_dataloader_report.md` に `## label を保つ augmentation` を追加し、`flip` と `shift` のそれぞれについて、`vertical` / `horizontal` の label が保たれるかを表ではなく文章で書く。
-3. `flip` と `shift` のどちらが今回の task に向いているかを 3 行以内で説明する。shape ではなく、線の向きという task 定義に触れること。
+1. `augment="shift"` を追加し、`torch.roll(image, shifts=2, dims=2)` による水平方向 shift を実装する。
+2. `session06_dataloader_report.md` に `## label を保つ augmentation` を追加し、`flip` と `shift` が `vertical` / `horizontal` の label を保つかを task 定義に基づいて説明する。
+3. 今回の stripe 分類で最初に採用する augmentation を 1 つ選び、採用理由と避けたい失敗例を 3 行以内で書く。
 
 ## 確認ポイント
 - `len(metadata)` が `4` である。
@@ -53,5 +32,5 @@ metadata = [
 - `Dataset`、`collate_fn`、`DataLoader` の役割が混ざっていない。
 
 ## 詰まったときに見る資料
-- [`../autumn/22-image-data-basics.md`](../autumn/22-image-data-basics.md)
-- [`../autumn/24-pytorch-basics.md`](../autumn/24-pytorch-basics.md)
+- [`../autumn/23-image-data-basics.md`](../autumn/23-image-data-basics.md)
+- [`../autumn/24-pytorch-model-dataset-basics.md`](../autumn/24-pytorch-model-dataset-basics.md)

@@ -15,35 +15,14 @@
 
 ## 演習
 ### 基礎レベル
-1. `session18_linear_algebra_basics.py` を作成し、次の tensor をそのまま定義する。
-```python
-x = torch.tensor([1.0, 2.0, 3.0])
-y = torch.tensor([4.0, 5.0, 6.0])
-A = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
-B = torch.tensor([[0.0, 1.0], [1.0, 0.0]])
-v = torch.tensor([1.0, -1.0])
-```
-2. `x`, `y`, `A`, `B`, `v` の shape を表示する。
-3. 次の 5 つを計算し、変数名付きで表示する。
-```python
-dot_xy = torch.dot(x, y)
-Av = A @ v
-AB = A @ B
-x_norm = torch.linalg.vector_norm(x)
-A_norm = torch.linalg.matrix_norm(A)
-```
-4. `bad = A @ x` を `try` / `except` で囲み、shape mismatch のエラーメッセージを表示する。
-5. `session18_linear_algebra_report.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## shape 一覧`
-   - `## 計算結果`
-   - `## shape mismatch の原因`
-6. `## shape mismatch の原因` には `A @ x` が失敗する理由を 2 行以内で書く。
+1. `session18_linear_algebra_basics.py` を作成し、指定された `x`, `y`, `A`, `B`, `v` の tensor を定義して shape を表示する。
+2. `torch.dot`, `A @ v`, `A @ B`, vector norm, matrix norm を計算し、値と shape を対応づけて表示する。
+3. `A @ x` を `try` / `except` で実行し、shape mismatch が起きる理由を確認する。
+4. `session18_linear_algebra_report.md` に `## shape 一覧`, `## 計算結果`, `## shape mismatch の原因` を書く。
 
 ### 発展レベル
-1. `BA = B @ A` を追加で計算する。
-2. `session18_linear_algebra_report.md` に `## 行列積の順序` を追加し、`AB` と `BA` の値を書く。
-3. そのうえで、「どちらも計算できるのに結果が違う理由」を 3 行以内で説明する。
-4. `Av` と `B @ v` を見比べて、`A` と `B` がベクトルへ与えている変化の違いを 2 行で書く。
+1. `B @ A`, `A @ v`, `B @ v` を追加で計算する。
+2. report に `## 行列積の順序` を追加し、`AB` と `BA` の値が違う理由、`A` と `B` がベクトルへ与える変化の違いを説明する。
 
 ## 確認ポイント
 - `x` と `y` の shape が `(3,)`、`A` と `B` の shape が `(2, 2)`、`v` の shape が `(2,)` である。
@@ -51,5 +30,5 @@ A_norm = torch.linalg.matrix_norm(A)
 - report に、shape mismatch の原因と、行列積の順序の違いに関する説明がある。
 
 ## 詰まったときに見る資料
-- [`16-python-numpy-matplotlib-basics.md`](16-python-numpy-matplotlib-basics.md)
+- [`17-array-and-tensor-basics.md`](17-array-and-tensor-basics.md)
 - [`../../latex/markdown/ch06a-basics-of-linear-algebra.md`](../../latex/markdown/ch06a-basics-of-linear-algebra.md)

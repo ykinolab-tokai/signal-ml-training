@@ -15,65 +15,15 @@
 
 ## 演習
 ### 基礎レベル
-1. `session10_representation_learning.py` を作成し、次の import と出力ディレクトリ作成コードを書く。
-```python
-from pathlib import Path
-import matplotlib.pyplot as plt
-import torch
-from torch import nn
-
-out_dir = Path("outputs/figures")
-out_dir.mkdir(parents=True, exist_ok=True)
-torch.manual_seed(10)
-```
-2. pair データを次の通り定義する。
-```python
-x1 = torch.tensor([
-    [1.0, 0.0, 0.0, 0.0],
-    [0.9, 0.1, 0.0, 0.0],
-    [0.0, 1.0, 0.0, 0.0],
-    [0.0, 0.9, 0.1, 0.0],
-    [0.0, 0.0, 1.0, 0.0],
-    [0.0, 0.0, 0.9, 0.1],
-    [0.0, 0.0, 0.0, 1.0],
-    [0.1, 0.0, 0.0, 0.9],
-], dtype=torch.float32)
-x2 = torch.tensor([
-    [0.9, 0.1, 0.0, 0.0],
-    [1.0, 0.0, 0.0, 0.0],
-    [0.0, 0.9, 0.1, 0.0],
-    [0.0, 1.0, 0.0, 0.0],
-    [0.0, 0.0, 0.9, 0.1],
-    [0.0, 0.0, 1.0, 0.0],
-    [0.1, 0.0, 0.0, 0.9],
-    [0.0, 0.0, 0.0, 1.0],
-], dtype=torch.float32)
-target = torch.ones(8)
-```
-3. encoder を次の通り定義する。
-```python
-encoder = nn.Sequential(
-    nn.Linear(4, 8),
-    nn.ReLU(),
-    nn.Linear(8, 2),
-)
-```
-4. `nn.CosineEmbeddingLoss()` と `torch.optim.Adam(encoder.parameters(), lr=1e-2)` を使う。
-5. 学習前の `z1_before`, `z2_before` を取得し、2 枚の点群を 1 枚に描いて `outputs/figures/session10_embeddings_before.png` に保存する。
-6. `for step in range(50):` で 50 step 学習する。
-7. 学習後の `z1_after`, `z2_after` を同様に描いて `outputs/figures/session10_embeddings_after.png` に保存する。
-8. `session10_representation_learning_report.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## 学習設定`
-   - `## 学習前の embedding`
-   - `## 学習後の embedding`
-9. `## 学習後の embedding` には、pair がどう変化したかを 3 行以内で書く。
+1. `session10_representation_learning.py` を作成し、指定された positive pair データ、2 次元 encoder、`CosineEmbeddingLoss` を使って 50 step 学習する。
+2. 学習前後の embedding をそれぞれ `outputs/figures/session10_embeddings_before.png`, `outputs/figures/session10_embeddings_after.png` に保存する。同じ pair が対応して見えるように色や marker を工夫する。
+3. positive pair の平均 cosine similarity を学習前後で計算する。
+4. `session10_representation_learning_report.md` に `## 学習設定`, `## 学習前の embedding`, `## 学習後の embedding`, `## cosine similarity の比較` を書き、散布図と数値が対応しているかを説明する。
 
 ### 発展レベル
-1. 学習前後で positive pair の平均 cosine similarity を計算する。
-2. `session10_representation_learning_report.md` に `## cosine similarity の比較` を追加し、学習前後の数値を書く。
-3. negative pair として、`x1` と並び順を 1 つずらした `x2_neg` を作り、学習後 embedding で平均 cosine similarity を計算する。
-4. `## cosine similarity の比較` には、positive pair と negative pair のどちらが高くあるべきかを 2 行以内で説明する。
-5. M は、negative pair を loss に本格的に入れるなら何を追加するかを 2 行で書く。
+1. `x2` の並びを 1 つずらした negative pair を作り、学習後 embedding で平均 cosine similarity を計算する。
+2. positive pair と negative pair の similarity を比較し、どちらが高くあるべきか、今回の loss だけで十分かを説明する。
+3. M は negative pair を本格的に loss に入れる場合に追加したい設計上の注意を 2 つ書く。
 
 ## 確認ポイント
 - encoder の出力次元が `2` である。
@@ -82,5 +32,5 @@ encoder = nn.Sequential(
 - 発展課題で、positive と negative の違いを loss の目的と結びつけて説明している。
 
 ## 詰まったときに見る資料
-- [`../autumn/24-pytorch-basics.md`](../autumn/24-pytorch-basics.md)
+- [`../autumn/24-pytorch-model-dataset-basics.md`](../autumn/24-pytorch-model-dataset-basics.md)
 - PyTorch docs: [`torch.nn.CosineEmbeddingLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.CosineEmbeddingLoss.html)

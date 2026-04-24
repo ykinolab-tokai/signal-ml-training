@@ -4,7 +4,7 @@
 
 ## 構成
 
-- `spring/`: 前期 14 回の配布資料
+- `spring/`: 前期の固定回配布資料と年度別発展テーマ候補
 - `autumn/`: 後期 14 回の配布資料
 
 ## handout の共通方針
@@ -26,11 +26,11 @@
 - 以前の notebook 群と演習シートにあった具体課題は、現在の回構成に合わせて各 handout に再配置しています。
 - 旧 `initial-training/<your_name>/chapterXX` 前提の提出先指定は採用せず、現在の repo と授業運営に合わせて書き換えています。
 - B3 の通常提出は学生ごとの private な `submission repo` を前提とし、共通 repo は教材配布と見本コードの参照先として扱います。
-- `pull request` は Git 学習回で体験しますが、毎週の通常提出では `edit -> commit -> push` を基本にします。
+- `pull request` は第28回の code walkthrough と repo 整理で体験しますが、毎週の通常提出では `edit -> commit -> push` を基本にします。
 
 ## 読み方
 
 - B3 向けには `autumn/15` から `autumn/28` を順に使います。
-- B4・M 向けには `spring/01` から `spring/14` を使います。
-- 前期ローテーション回は、その年度で扱う題材を file 内で明記したうえで配布します。
+- B4・M 向けには、前期 1〜10 回と 14 回では回番号付き handout を使います。
+- 前期 11〜13 回は、画像・音響・共通基盤のうち年度ごとに 1 テーマだけを選び、3 回に分けて扱います。候補 handout は `spring/advanced-themes.md` から参照します。
 - handout に書かれていない追加作業をその場で課すのではなく、必要なら handout 自体を書き換えてから配布します。
