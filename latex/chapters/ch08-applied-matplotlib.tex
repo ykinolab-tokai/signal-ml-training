@@ -1,0 +1,356 @@
+% Re-authored after migration because the original notebook content was too list-like for self-study.
+
+\chapter{Matplotlib 応用}
+
+
+\section{この章の目的}
+
+Matplotlib の基本が分かっても，独学では次の段階で詰まりやすくなります．
+\begin{itemize}
+\item どのデータにどのグラフを使うべきか
+\item ノートブック上で見えた図を，どう保存して再利用するか
+\item 軸ラベル，凡例，色，複数図の配置をどう整えるか
+\end{itemize}
+
+本章では，単に「こう描ける」と列挙するのではなく，
+\textbf{目的に応じて図を選び，保存可能な形で出力する}ことを目標にします．
+
+本章の到達目標は次の通りです．
+\begin{itemize}
+\item 散布図，ヒストグラム，箱ひげ図，折れ線グラフの使い分けを説明できる
+\item \texttt{plt.figure()} や \texttt{plt.subplots()} で図の構成を制御できる
+\item \texttt{xlabel}, \texttt{ylabel}, \texttt{title}, \texttt{legend} を使って図を読める形にできる
+\item \texttt{savefig} を使って提出物や再現用の図を保存できる
+\item seaborn を併用して分布や相関を効率的に確認できる
+\end{itemize}
+
+
+\section{読み込みと保存先の準備}
+
+まずは Matplotlib，NumPy，Pandas を読み込み，図の保存先ディレクトリを作ります．
+ノートブックに表示されるだけでは後で見返せないので，\textbf{必ず保存先を決める}運用にします．
+
+\begin{lstlisting}[style=codecell,language=Python]
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+output_dir = Path("outputs/ch08")
+output_dir.mkdir(parents=True, exist_ok=True)
+\end{lstlisting}
+
+この章では California Housing のサンプルデータを使います．
+
+\begin{lstlisting}[style=codecell,language=Python]
+df = pd.read_csv("sample_data/california_housing_train.csv")
+print(df.shape)
+print(df.columns.tolist())
+\end{lstlisting}
+
+図を描く前に，どの列が何を表しているかをざっと確認してください．
+可視化は「図を出すこと」よりも，「どの変数を比較すべきかを決めること」の方が本質です．
+
+
+\section{散布図}
+
+\subsection{何を見るための図か}
+
+\textbf{散布図 (scatter plot)} は，2 つの連続値変数の関係を見るための基本図です．
+特に，
+\begin{itemize}
+\item 正の相関・負の相関がありそうか
+\item 直線的な関係か，曲線的な関係か
+\item 外れ値やクラスタがあるか
+\end{itemize}
+を確認するのに向いています．
+
+例えば収入と住宅価格の関係を見るなら，横軸に \texttt{median\_income}，縦軸に \texttt{median\_house\_value} を取ります．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(6, 4))
+plt.scatter(df["median_income"], df["median_house_value"], s=8, alpha=0.4)
+plt.xlabel("median_income")
+plt.ylabel("median_house_value")
+plt.title("Income vs house value")
+plt.tight_layout()
+plt.savefig(output_dir / "scatter_income_value.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-01.png}{収入と住宅価格の散布図の例}{figures/scripts/ch08_applied_matplotlib.py}
+
+この図では，収入が高いほど住宅価格も上がる傾向がある一方で，ばらつきもかなり大きいことが読み取れます．
+
+\subsection{散布図で注意すべき点}
+
+点が多すぎると，重なって密度が見えにくくなります．
+その場合は
+\begin{itemize}
+\item 点を小さくする
+\item \texttt{alpha} で透明度を下げる
+\item サンプリングして一部だけ描く
+\end{itemize}
+といった工夫が有効です．
+
+また，元 notebook には \texttt{pupulation} という誤記がありましたが，正しくは \texttt{population} 列です．
+列名の typo に気付けるかどうかも，実務では重要です．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(6, 4))
+plt.scatter(df["population"], df["median_house_value"], s=8, alpha=0.3)
+plt.xlabel("population")
+plt.ylabel("median_house_value")
+plt.tight_layout()
+plt.savefig(output_dir / "scatter_population_value.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-02.png}{人口と住宅価格の散布図の例}{figures/scripts/ch08_applied_matplotlib.py}
+
+
+\section{ヒストグラム}
+
+\subsection{何を見るための図か}
+
+\textbf{ヒストグラム (histogram)} は，1 つの変数の分布を見るための図です．
+散布図が「2 変数の関係」を見る図であるのに対し，ヒストグラムは
+\begin{itemize}
+\item 値がどのあたりに集中しているか
+\item 裾が長いか
+\item 分布が左右対称か
+\item 極端な山があるか
+\end{itemize}
+を確認するために使います．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(6, 4))
+plt.hist(df["median_house_value"], bins=30, edgecolor="black")
+plt.xlabel("median_house_value")
+plt.ylabel("count")
+plt.title("Distribution of house values")
+plt.tight_layout()
+plt.savefig(output_dir / "hist_house_value.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-03.png}{住宅価格のヒストグラムの例}{figures/scripts/ch08_applied_matplotlib.py}
+
+\subsection{\texttt{bins} の意味}
+
+ヒストグラムでは，棒 1 本 1 本が\textbf{ビン (bin)} と呼ばれる区間を表します．
+\texttt{bins} を大きくすると細かい構造が見えやすくなり，小さくすると全体傾向は見やすくなります．
+したがって，\texttt{bins} は「正解が 1 つある設定値」ではなく，\textbf{どの粒度で分布を見たいか}という判断です．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(6, 4))
+plt.hist(df["median_house_value"], bins=50, edgecolor="black")
+plt.xlabel("median_house_value")
+plt.ylabel("count")
+plt.tight_layout()
+plt.savefig(output_dir / "hist_house_value_bins50.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-04.png}{ビン数を増やしたヒストグラムの例}{figures/scripts/ch08_applied_matplotlib.py}
+
+このデータでは，\texttt{500000} 付近に不自然な山があり，上限で打ち切られているような分布に見えます．
+こうした「データ収集や前処理の制約」を見つけるのも可視化の重要な役割です．
+
+
+\section{箱ひげ図}
+
+\subsection{何を見るための図か}
+
+\textbf{箱ひげ図 (box plot)} は，分布を五数要約で要約した図です．
+\begin{itemize}
+\item 最小値
+\item 第 1 四分位点
+\item 中央値
+\item 第 3 四分位点
+\item 最大値
+\end{itemize}
+をもとに，ばらつきや外れ値をコンパクトに確認できます．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(4, 4))
+plt.boxplot(df["median_house_value"])
+plt.ylabel("median_house_value")
+plt.tight_layout()
+plt.savefig(output_dir / "box_house_value.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-05.png}{住宅価格の箱ひげ図の例}{figures/scripts/ch08_applied_matplotlib.py}
+
+\subsection{複数系列の比較}
+
+複数の分布を横並びに比較したいとき，箱ひげ図は特に便利です．
+ただし，単位や桁が極端に違う変数同士を並べると読みづらくなります．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(5, 4))
+plt.boxplot((df["total_bedrooms"], df["population"]),
+            labels=["total_bedrooms", "population"])
+plt.tight_layout()
+plt.savefig(output_dir / "box_multiple.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-06.png}{複数変数の箱ひげ図の例}{figures/scripts/ch08_applied_matplotlib.py}
+
+
+\section{折れ線グラフ}
+
+\subsection{何を見るための図か}
+
+\textbf{折れ線グラフ}は，時系列や連続的な変化を表すときに向いています．
+並び順に意味がないカテゴリデータにはあまり向きません．
+
+\texttt{plt.plot(y)} のように 1 引数で描くと，横軸はインデックスになります．
+
+\begin{lstlisting}[style=codecell,language=Python]
+rng = np.random.default_rng(0)
+x = np.linspace(0, 10, 100)
+y = x + rng.normal(scale=1.0, size=100)
+
+plt.figure(figsize=(6, 4))
+plt.plot(y)
+plt.xlabel("index")
+plt.ylabel("value")
+plt.tight_layout()
+plt.savefig(output_dir / "line_index_only.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-07.png}{インデックスを横軸にした折れ線グラフの例}{figures/scripts/ch08_applied_matplotlib.py}
+
+横軸に意味のある変数があるなら，\texttt{plt.plot(x, y)} のように明示した方が良いです．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(6, 4))
+plt.plot(x, y, label="noisy line")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
+plt.tight_layout()
+plt.savefig(output_dir / "line_xy.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-08.png}{横軸を明示した折れ線グラフの例}{figures/scripts/ch08_applied_matplotlib.py}
+
+
+\section{図を読める形に整える}
+
+グラフは描けるだけでは不十分で，\textbf{第三者が見て意味を読める}必要があります．
+最低限そろえるべき要素は次の通りです．
+\begin{itemize}
+\item 横軸ラベル
+\item 縦軸ラベル
+\item 必要ならタイトル
+\item 複数系列があるなら凡例
+\item 保存時の解像度と余白調整
+\end{itemize}
+
+代表的な設定は次です．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(6, 4))
+plt.plot(x, y, color="tab:blue", linewidth=2, label="signal")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Example plot")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig(output_dir / "styled_plot.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\texttt{tight\_layout()} を入れておくと，ラベルのはみ出しをかなり防げます．
+また，Jupyter で見えるだけで満足せず，\texttt{savefig} で保存してから終えるのがこの教材での基本です．
+
+
+\section{\texttt{subplots} で複数図を並べる}
+
+比較したい図を 1 枚にまとめるときは，\texttt{plt.subplots()} が便利です．
+探索的解析では，1 変数の分布と 2 変数の関係を並べて見ることがよくあります．
+
+\begin{lstlisting}[style=codecell,language=Python]
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+axes[0].hist(df["median_income"], bins=30, edgecolor="black")
+axes[0].set_title("median_income")
+axes[0].set_xlabel("value")
+axes[0].set_ylabel("count")
+
+axes[1].scatter(df["median_income"], df["median_house_value"], s=8, alpha=0.3)
+axes[1].set_title("income vs house value")
+axes[1].set_xlabel("median_income")
+axes[1].set_ylabel("median_house_value")
+
+fig.tight_layout()
+fig.savefig(output_dir / "subplots_example.png", dpi=150)
+plt.close(fig)
+\end{lstlisting}
+
+\texttt{plt.figure()} ベースより少し記述が増えますが，複数図を明示的に管理しやすくなります．
+
+
+\section{seaborn の使いどころ}
+
+seaborn は Matplotlib を土台にした高水準可視化ライブラリです．
+分布や相関を素早く見るときに便利ですが，内部では Matplotlib を使っているので，
+軸や図の基本概念は同じです．
+
+\begin{lstlisting}[style=codecell,language=Python]
+import seaborn as sns
+\end{lstlisting}
+
+\subsection{ヒストグラムと KDE}
+
+古い資料では \texttt{sns.distplot()} がよく紹介されますが，現在は非推奨です．
+代わりに \texttt{sns.histplot()} を使う方が安全です．
+
+\begin{lstlisting}[style=codecell,language=Python]
+plt.figure(figsize=(6, 4))
+sns.histplot(df["population"], bins=30, kde=True)
+plt.tight_layout()
+plt.savefig(output_dir / "sns_histplot_population.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-09.png}{分布確認に使う seaborn 図の例}{figures/scripts/ch08_applied_matplotlib.py}
+
+\subsection{複数変数の相関を俯瞰する}
+
+\texttt{sns.pairplot()} は複数列の関係を一気に見たいときに便利です．
+ただし列数が多いと非常に重くなるので，必要な列だけ絞って使うべきです．
+
+\begin{lstlisting}[style=codecell,language=Python]
+cols = ["median_income", "median_house_value", "population", "households"]
+grid = sns.pairplot(df[cols].sample(1000, random_state=0))
+grid.savefig(output_dir / "pairplot_selected_columns.png", dpi=150)
+plt.close("all")
+\end{lstlisting}
+
+\NotebookFigure{figures/generated/08-applied-matplotlib/figure-10.png}{複数変数の関係を俯瞰する pairplot の例}{figures/scripts/ch08_applied_matplotlib.py}
+
+pairplot は便利ですが，毎回フルデータで回す必要はありません．
+サンプリングして全体傾向だけ見た方が実用的な場面も多いです．
+
+
+\section{この章で押さえるべき点}
+
+\begin{itemize}
+\item 散布図は 2 変数の関係，ヒストグラムは 1 変数の分布，箱ひげ図は分布の要約，折れ線グラフは順序ある変化を見る図である
+\item グラフの種類を覚えるだけでなく，「何を確認したいからこの図を選ぶのか」を説明できることが重要である
+\item \texttt{xlabel}, \texttt{ylabel}, \texttt{legend}, \texttt{tight\_layout}, \texttt{savefig} は基本セットである
+\item 複数図を扱うときは \texttt{subplots} を使うと管理しやすい
+\item seaborn は便利だが，Matplotlib の基本概念を理解した上で使うべきである
+\end{itemize}
+
+可視化は「見た目をきれいにする作業」ではなく，データの構造を読み取るための観測手段です．
+その意識を持つと，どの図を選ぶべきかがかなり判断しやすくなります．

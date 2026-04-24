@@ -1,0 +1,303 @@
+% Re-authored after migration because the original notebook content was too GUI-centric for self-study.
+
+\chapter{Pillow 入門}
+
+
+\section{この章の目的}
+
+画像処理を Python で始めるとき，最初に必要なのは「画像をファイルとして読み込み，配列や画素として扱い，加工結果を保存する」ことです．
+Pillow はそのための基本ライブラリであり，
+\begin{itemize}
+\item 画像の読み込みと保存
+\item サイズ変更，回転，切り出し
+\item 色空間の変換
+\item 簡単なフィルタ処理
+\item NumPy 配列との相互変換
+\end{itemize}
+を手軽に行えます．
+
+本章の到達目標は次の通りです．
+\begin{itemize}
+\item Pillow の \texttt{Image} オブジェクトが何を表しているか説明できる
+\item 画像の \texttt{size}, \texttt{mode}, \texttt{format} を確認できる
+\item resize, crop, rotate, flip, filter を使って前処理を行える
+\item 画像を NumPy 配列に変換して shape や画素値を確認できる
+\item 結果を \texttt{save()} で保存し，提出や再現に使える形で残せる
+\end{itemize}
+
+
+\section{Pillow とは何か}
+
+Pillow は，かつての PIL (Python Imaging Library) を引き継ぐ形で整備されている Python の画像処理ライブラリです．
+PNG，JPEG，BMP，TIFF など多くの画像形式に対応し，画像ファイルを \texttt{Image} オブジェクトとして扱えます．
+
+ここで重要なのは，Pillow は「画像を表示するための GUI ライブラリ」ではなく，
+\textbf{画像データを操作するためのライブラリ}だという点です．
+この教材では，\texttt{show()} で一時表示するよりも，\texttt{save()} で結果を保存する流れを基本とします．
+
+
+\section{インストール}
+
+\begin{lstlisting}[style=codecell]
+python -m pip install Pillow
+\end{lstlisting}
+
+読み込みは通常次のように行います．
+
+\begin{lstlisting}[style=codecell,language=Python]
+from PIL import Image, ImageDraw, ImageFilter
+\end{lstlisting}
+
+
+\section{画像を開いて属性を確認する}
+
+画像ファイルを開くには \texttt{Image.open()} を使います．
+
+\begin{lstlisting}[style=codecell,language=Python]
+from pathlib import Path
+from PIL import Image
+
+output_dir = Path("outputs/ch12")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+img = Image.open("path/to/image.jpg")
+print(img.format)
+print(img.mode)
+print(img.size)
+\end{lstlisting}
+
+ここで確認すべき属性は次の通りです．
+\begin{itemize}
+\item \texttt{format}: JPEG や PNG などのファイル形式
+\item \texttt{mode}: RGB, L, RGBA などの画素表現
+\item \texttt{size}: \texttt{(width, height)} の順のサイズ
+\end{itemize}
+
+初学者がよく混乱する点として，\texttt{size} は NumPy 配列の \texttt{(height, width, channel)} とは順序が違います．
+Pillow では \texttt{(width, height)}，NumPy では一般に \texttt{(height, width, channel)} です．
+
+
+\section{結果を保存する流れを最初に作る}
+
+授業や演習では，「その場で見えた」ではなく「後で確認できる」ことが重要です．
+したがって，画像処理では最初に保存先を決めておく方が安全です．
+
+\begin{lstlisting}[style=codecell,language=Python]
+img.save(output_dir / "original_copy.png")
+\end{lstlisting}
+
+以後の各操作でも，結果を新しいファイル名で保存する癖を付けると比較しやすくなります．
+
+
+\section{サイズ変更}
+
+\texttt{resize()} は画像を指定サイズへ変換します．
+
+\begin{lstlisting}[style=codecell,language=Python]
+img_resized = img.resize((256, 256))
+img_resized.save(output_dir / "resized_256.png")
+\end{lstlisting}
+
+ただし，単に \texttt{(256, 256)} にすると元画像の縦横比が崩れることがあります．
+機械学習の前処理では，\textbf{縦横比を保つか，固定サイズにそろえるか}を明示的に決める必要があります．
+
+
+\section{回転と反転}
+
+\texttt{rotate()} は反時計回りに画像を回転させます．
+
+\begin{lstlisting}[style=codecell,language=Python]
+img_rotated = img.rotate(45, expand=True)
+img_rotated.save(output_dir / "rotated_45.png")
+\end{lstlisting}
+
+\texttt{expand=True} を付けると，回転後の全体が収まるようにキャンバスが広がります．
+これを付けないと，画像の端が切れることがあります．
+
+左右反転・上下反転には \texttt{transpose()} を使います．
+
+\begin{lstlisting}[style=codecell,language=Python]
+img_flip_lr = img.transpose(Image.FLIP_LEFT_RIGHT)
+img_flip_tb = img.transpose(Image.FLIP_TOP_BOTTOM)
+
+img_flip_lr.save(output_dir / "flip_left_right.png")
+img_flip_tb.save(output_dir / "flip_top_bottom.png")
+\end{lstlisting}
+
+画像分類では左右反転はよく使いますが，上下反転はタスクによって意味が変わることがあります．
+augmentation は「何でも増やせば良い」わけではありません．
+
+
+\section{切り出し}
+
+\texttt{crop()} は \texttt{(left, upper, right, lower)} を指定して部分画像を切り出します．
+
+\begin{lstlisting}[style=codecell,language=Python]
+crop_box = (50, 50, 200, 200)
+img_cropped = img.crop(crop_box)
+img_cropped.save(output_dir / "cropped.png")
+\end{lstlisting}
+
+ここでの座標系は，左上が原点で，右方向に \(x\)，下方向に \(y\) が増える画像座標です．
+これは数学でよく使う座標系と上下が逆なので注意してください．
+
+
+\section{描画と注釈}
+
+Pillow では画像の上に矩形や文字を重ねることもできます．
+例えばアノテーション確認用に矩形を描くなら次のようにします．
+
+\begin{lstlisting}[style=codecell,language=Python]
+annotated = img.copy()
+draw = ImageDraw.Draw(annotated)
+draw.rectangle(((50, 50), (200, 200)), outline="red", width=3)
+annotated.save(output_dir / "annotated_box.png")
+\end{lstlisting}
+
+元画像を壊したくない場合は，\texttt{copy()} してから描画する方が安全です．
+
+
+\section{フィルタ処理}
+
+\texttt{filter()} を使うと，ぼかしや輪郭強調などの簡単な処理ができます．
+
+\begin{lstlisting}[style=codecell,language=Python]
+img_blurred = img.filter(ImageFilter.BLUR)
+img_blurred.save(output_dir / "blurred.png")
+\end{lstlisting}
+
+Pillow のフィルタは教育用や軽い前処理には便利ですが，本格的な画像処理では OpenCV や scikit-image を使うこともあります．
+それでも，「畳み込み的な処理で画像の見え方が変わる」ことを掴む入口としては十分です．
+
+
+\section{色空間の変換}
+
+画像処理では，RGB のまま扱うだけでなく，グレースケールや HSV に変換した方が都合のよいことがあります．
+
+\begin{lstlisting}[style=codecell,language=Python]
+img_gray = img.convert("L")
+img_hsv = img.convert("HSV")
+
+img_gray.save(output_dir / "gray.png")
+img_hsv.save(output_dir / "hsv.png")
+\end{lstlisting}
+
+\texttt{L} は 1 チャネルのグレースケール画像です．
+色ではなく明るさだけを使うタスクでは，最初からグレースケールに落とす方が扱いやすい場合があります．
+
+
+\section{NumPy 配列との相互変換}
+
+機械学習では，最終的に画像を NumPy 配列や Tensor に変換して扱うことがほとんどです．
+
+\begin{lstlisting}[style=codecell,language=Python]
+import numpy as np
+
+img_array = np.array(img)
+print(img_array.shape)
+print(img_array.dtype)
+\end{lstlisting}
+
+RGB 画像なら，通常は \texttt{(height, width, 3)} の shape になります．
+ここで Pillow と NumPy の軸順の違いを再確認してください．
+
+NumPy 配列から Pillow 画像へ戻すこともできます．
+
+\begin{lstlisting}[style=codecell,language=Python]
+img_from_array = Image.fromarray(img_array)
+img_from_array.save(output_dir / "from_array.png")
+\end{lstlisting}
+
+
+\section{特定画素の値を調べる}
+
+特定の画素値を確認したい場合は \texttt{getpixel()} を使えます．
+
+\begin{lstlisting}[style=codecell,language=Python]
+rgb = img.getpixel((50, 50))
+print(rgb)
+\end{lstlisting}
+
+ただし，画像全体の処理では画素を 1 点ずつ Python でループするより，NumPy 配列へ変換してベクトル化した方が効率的です．
+\texttt{getpixel()} は確認用や学習用と考えた方がよいです．
+
+
+\section{ヒストグラム}
+
+画像の明るさや色の分布を見たいときはヒストグラムを使います．
+まずグレースケールへ変換してからヒストグラムを見ると解釈しやすいです．
+
+\begin{lstlisting}[style=codecell,language=Python]
+import matplotlib.pyplot as plt
+
+gray = img.convert("L")
+histogram = gray.histogram()
+
+plt.figure(figsize=(6, 4))
+plt.bar(range(256), histogram)
+plt.xlabel("pixel value")
+plt.ylabel("count")
+plt.tight_layout()
+plt.savefig(output_dir / "gray_histogram.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+元 notebook には \texttt{img} が未定義のままヒストグラムを取って失敗していたセルがありましたが，
+ここでは最初に画像を開いた流れの上で一貫して処理しています．
+
+
+\section{二値化}
+
+二値化は，画素値をしきい値で 0/255 のような 2 値へ分ける処理です．
+文書画像や簡単なマスク生成の入口としてよく使います．
+
+\begin{lstlisting}[style=codecell,language=Python]
+gray = img.convert("L")
+threshold = 127
+img_binarized = gray.point(lambda x: 0 if x < threshold else 255)
+img_binarized.save(output_dir / "binarized.png")
+\end{lstlisting}
+
+しきい値 127 が常に正しいわけではありません．
+画像ごとに明るさが違うので，ヒストグラムを見ながら妥当な閾値を考える必要があります．
+
+
+\section{最小の前処理パイプライン}
+
+以下は，画像を読み込み，RGB からグレースケールへ変換し，サイズをそろえて保存する最小例です．
+
+\begin{lstlisting}[style=codecell,language=Python]
+from pathlib import Path
+from PIL import Image
+
+input_path = "path/to/image.jpg"
+output_dir = Path("outputs/ch12")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+img = Image.open(input_path)
+img = img.convert("L")
+img = img.resize((128, 128))
+img.save(output_dir / "preprocessed_128_gray.png")
+\end{lstlisting}
+
+この程度の流れでも，
+\begin{itemize}
+\item 入力形式の統一
+\item 色空間の統一
+\item サイズの統一
+\end{itemize}
+という前処理の基本を一通り含んでいます．
+
+
+\section{この章で押さえるべき点}
+
+\begin{itemize}
+\item Pillow は画像ファイルを \texttt{Image} オブジェクトとして扱うための基本ライブラリである
+\item \texttt{size}, \texttt{mode}, \texttt{format} を最初に確認すると，後の処理で混乱しにくい
+\item \texttt{show()} に頼るより，\texttt{save()} で結果を残す方が教材・演習では重要である
+\item resize, crop, rotate, flip, filter, convert は画像前処理の基本操作である
+\item NumPy 配列へ変換すると，機械学習や数値処理へつなげやすい
+\end{itemize}
+
+この章の内容を押さえておくと，画像分類や画像変換タスクの前処理を「ブラックボックスの API 呼び出し」ではなく，
+どの形のデータをどのように整えているか意識しながら扱えるようになります．

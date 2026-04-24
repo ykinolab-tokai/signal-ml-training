@@ -1,0 +1,2648 @@
+\chapter{Python 入門}
+
+
+本章では、プログラミング言語 Python の基礎的な文法を学んでいきます。
+
+次章以降に登場するコードを理解するにあたって必要となる最低限の知識について、最短で習得するのが目標です。
+
+より正確かつ詳細な知識を確認したい場合には、\href{https://docs.python.jp/3/tutorial/index.html}{公式のチュートリアル}などを参照してください。
+
+
+Pythonにはバージョンとして 2 系と 3 系の 2 つの系統があり、互換性のない部分もあります。
+
+本研修では、3 系である \textbf{Python 3.12} 系を標準とします。
+上流の最新 stable は 2026年4月時点で Python 3.14.4 ですが、この repo は共有環境との整合のため 3.12 系で揃えます。
+
+
+\section{Python の特徴}
+
+
+プログラミング言語には、Python 以外にも C 言語や Java、Ruby、R のように様々なものがあります。それぞれの言語がすべての用途に適しているわけではなく、しばしば用途によって得手不得手があります。
+
+
+木下研では基本的に Python というプログラミング言語を扱います。
+
+その理由は、Python はデータ解析・機械学習のためのライブラリが充実しており、データ解析や機械学習の分野で最もよく使われている言語だからです。
+
+また、Web アプリケーションフレームワークの開発も活発で、データ解析だけでなく Web サービス開発まで同じ言語で統一して行える点も魅力です。
+
+
+さらには、初学者にとっても学びやすい言語です。
+
+初学者がプログラミングを学び始めるときにつまづきがちな難しい概念が他の言語と比べ多くなく、入門しやすい言語といえます。
+
+
+まとめると、Python には
+
+
+\begin{itemize}
+\item データ解析や機械学習によく使われている
+\item Web アプリケーションの開発などでもよく使われている
+\item 初学者がはじめやすい言語
+\end{itemize}
+
+
+のような魅力があります。
+
+
+\section{Python の実行}
+
+みなさんは，\href{https://colab.research.google.com/}{Google Colaboratory}を利用して Python を書いたことがあると思います．
+
+Google Colab は，Pythonをさっと書いて実行結果を確認する目的では大変便利です．
+
+一方，コードが長く複雑になってくると，Google Colab 上でプログラミングするのは難しくなってきます．
+
+そこで，本研修では，みなさんのPC上で Python を実行するやり方に慣れてもらおうと思います．
+
+
+まず，以下のコマンドを入力し，Python を実行するための仮想環境を構築します．
+
+\begin{lstlisting}[style=codecell]
+$ mkdir -p ~/workspace/python-basics
+$ cd ~/workspace/python-basics
+$ python3 -m venv .venv
+\end{lstlisting}
+
+Python の実行環境とは，Python のプログラムを実行するために必要となるソフトウェアの組み合わせを指します．
+
+また，仮想環境とは，簡単に言ってしまえば本研修のための専用環境のことです．
+
+普通 Python の実行環境は一台のPCにつき1つのみですが，
+
+仮想環境は一台のPC上にいくつも作ることができます．
+
+
+仮想環境を有効にするには以下のコマンドを入力します．
+
+\begin{lstlisting}[style=codecell]
+$ source .venv/bin/activate
+\end{lstlisting}
+
+仮想環境が有効になった状態で\texttt{python}と入力すると，
+
+Python プログラムを1行ごとに入力・実行できる対話型のインタープリタが起動します．
+
+インタープリタを終了するには以下のように入力します．
+
+\begin{lstlisting}[style=codecell]
+>>> exit()
+\end{lstlisting}
+
+また，仮想環境を無効にするには以下のコマンドを入力します．
+
+\begin{lstlisting}[style=codecell]
+$ deactivate
+\end{lstlisting}
+
+
+\subsection{文法とアルゴリズム}
+
+
+プログラミングによってある特定の処理をコンピュータで自動化したい場合、\textbf{文法}と\textbf{アルゴリズム}の 2 つを理解しておく必要があります。
+
+
+プログラムでは、まずはじめにコンピュータに命令を伝えるためのルールとなる\textbf{文法}を覚える必要があります。
+
+文法を無視した記述があるプログラムは、実行した際にエラーとなり処理が停止します。そのため、文法はしっかりと理解しておく必要があります。
+
+
+ただし、文法さえ理解していれば十分かというとそうではありません。一般的に、初学者向けのプログラミングの参考書では、この文法だけを取り扱うことも多いのですが、コンピュータに処理を自動化させることが目的であれば、文法だけでなく\textbf{アルゴリズム}も理解する必要があります。アルゴリズムとは、どういう順番でどのような処理をしていくかの一連の手順をまとめたものです。
+
+
+この章では、Python の文法について紹介し、機械学習やディープラーニングで必要となるアルゴリズムについてはこれ以降の章で紹介します。
+
+
+ここでは以下 4 つの文法に主眼を置きながら説明していきます。
+
+
+\begin{itemize}
+\item 変数
+\item 制御構文
+\item 関数
+\item クラス
+\end{itemize}
+
+
+\section{変数}
+
+
+\textbf{変数 (variable)} とは、様々な値を格納することができる、\textbf{名前がついた入れ物}です。
+
+この変数に値を格納したり、更新したりすることで、計算結果を一時的に保持しておくことができます。
+
+
+\subsection{代入と値の確認}
+
+
+それでは、以下のセルのように，\texttt{a} という名前の変数に\texttt{1} を\textbf{代入}してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a = 1
+\end{lstlisting}
+
+代入は \texttt{=} の記号を用います。
+
+数学的には \texttt{=} は等しいという意味を持ちますが、Python では\textbf{「左辺の変数に、右辺の値を代入する」}という意味になります。
+
+また，これ以降，Python のプログラムは上のようにコードセルを用いて記述します．
+
+
+対話型インタープリタ上では、変数名だけを記述した行を入力すると、値を確認することができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+このように、変数に格納されている値を確認することができました。
+
+また、値を確認するための他の方法として、\texttt{print()} と呼ばれる\textbf{関数 (function)} を使用することもできます。
+
+関数について詳しくは後述しますが、\texttt{print()} のように Python には予め多くの関数が定義されています。 そのような関数を\textbf{組み込み関数 (built-in function)} といいます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+print(a)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+変数名だけをセルに記入して実行する場合と\texttt{print()}を利用する場合の違いについては、後述します。
+
+
+変数につける名前は、コードを書く人が自由に決めることができます。
+
+ただし、わかりやすい名前をつけることがとても大切です。
+
+例えば、人の名前を格納するための変数が \texttt{a} という変数名だと、それがどのような使われ方をするのかを容易に類推することができません。
+
+\texttt{name} という名前であれば、ひと目で見て何のための変数かが分かるようになります。
+
+これは、自分のコードを読む他人や、未来の自分にとってコードを理解するための大きな手がかりとなります。
+
+
+\subsection{コメント}
+
+
+Python では、\texttt{\#} の後からその行の終わりまでに存在する全ての文字列は無視されます。
+
+この \texttt{\#} の後ろに続く部分を\textbf{コメント (comment)}と呼び、すでに書かれたコードをコメントにすることを\textbf{コメントアウト (comment out)}と言います。
+
+コメントは、コード中に変数の意味や処理の意味をコードを読む人に伝えるためによく使われます。
+
+
+Jupyter Notebook のコードセルに書かれたコードを行ごとコメントアウトしたい場合は、その行を選択した状態で \texttt{Ctrl + /} を入力することで自動的に行の先頭に \texttt{\#} 記号を挿入することができます。複数行を選択していれば、選択された複数の行が同時にコメントアウトされます。また、コメントアウトされている行を選択した状態で同じキー入力を送ると、コメントアウトが解除されます。これを\textbf{アンコメント (uncomment)}と呼ぶこともあります。
+
+
+下のセルを実行してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# この行及び下の行はコメントアウトされているため実行時に無視されます
+# print(a)
+\end{lstlisting}
+
+\texttt{print(a)} が書かれているにも関わらず、何も表示されませんでした。
+
+これは、\texttt{print(a)} 関数が書かれた行がコメントアウトされていたためです。
+
+
+\subsection{変数の型}
+
+
+プログラミングで扱う値には種類があります。
+
+Python では、\textbf{整数 (integer)}、\textbf{実数 (real number)}、\textbf{文字列 (string)} などが代表的な値の種類です。
+
+それぞれの種類によって、コンピュータ内での取扱い方が異なり、この種類のことは一般に\textbf{型 (type)} と呼びます。
+
+
+例えば、整数、実数、そして文字列をそれぞれ別々の変数に代入するコードは以下のとおりです。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a = 1
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+b = 1.2
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+c = 'Chainer'
+\end{lstlisting}
+
+コンピュータの中での取り扱い方は異なりますが、Python では\textbf{変数の型を自動的に決定する}ため、初めのうちはあまり気にする必要はありません。
+
+ただし、違う型同士の演算では場合によってエラーが発生するなどの問題が生じるため、簡単に型の特徴は把握しておく必要があります。
+
+
+まずは、上記の \texttt{a}, \texttt{b}, \texttt{c} の型を確認する方法を紹介します。
+
+型の確認は \texttt{type()} という組み込み関数を使用します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(a)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+int
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(b)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+float
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(c)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+str
+\end{lstlisting}
+
+\texttt{a} は \texttt{int} という整数の型をもつ変数であり、\texttt{b} は \texttt{float} という実数の型をもつ変数です。
+
+この \texttt{float} という型の名前は、コンピュータ内で実数を扱うときの形式である\textbf{浮動小数点数 (floating-point number)} に由来しています。
+
+
+\texttt{c} は \texttt{str} という文字列の型をもつ変数であり、値を定義するにはシングルクォーテーション \texttt{' '} もしくはダブルクォーテーション \texttt{" "} で対象の文字列をくくる必要があります。
+
+
+Python では、\texttt{.} を含まない連続した数字を \texttt{int}、直前・直後も含め \texttt{.} が含まれる連続した数字を \texttt{float} だと自動的に解釈します。
+
+例えば、\texttt{7} や \texttt{365} は \texttt{int} ですが、\texttt{2.718}、\texttt{.25}、\texttt{10.} などは \texttt{float} になります。
+
+
+実数の \texttt{0} は \texttt{0.0} とも \texttt{.0} とも \texttt{0.} とも書くことができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(0)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+int
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(0.)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+float
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(.0)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+float
+\end{lstlisting}
+
+例えば、実数の \texttt{5} は以下のように書くことができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(5.0)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+float
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(5.)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+float
+\end{lstlisting}
+
+一方、\texttt{.5} と書くと、これは \texttt{0.5} の略記と解釈されることに注意してください。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(.5)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+float
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+print(.5)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+0.5
+\end{lstlisting}
+
+\subsection{複数同時の代入}
+
+
+Python では複数の変数に対する代入を一度に行うことができ、\textbf{複数同時の代入 (multiple assignment)} と呼びます。
+
+例えば、上記の \texttt{a = 1} と \texttt{b = 1.2} を同時に一行で記述すると以下のようになります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a, b = 1, 1.2
+\end{lstlisting}
+
+3 つ以上の変数に対して、複数同時の代入を行うことも可能です。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a, b, c = 1, 1.2, 'Chainer'
+\end{lstlisting}
+
+複数同時の代入は後の章で頻出するため、覚えておきましょう。
+
+
+\subsection{算術演算子}
+
+
+様々な計算を意味する\textbf{演算子}と呼ばれる記号があります。
+
+はじめに紹介するのは\textbf{算術演算子 (arithmetic operator)} と呼ばれるもので、 2 つの変数または値を取り、 1 つの演算結果を返します。
+
+
+代表的な演算として\textbf{四則演算（加算・減算・乗算・除算）}があります。
+
+四則演算に対応する演算子として、Python では以下の記号が用いられます。
+
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+演算 & 記号 \\
+\hline
+加算（足し算） & \texttt{+} \\
+減算（引き算） & \texttt{-} \\
+乗算（掛け算） & \texttt{*} \\
+除算（割り算） & \texttt{/} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+具体例を見ながら使い方を説明します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 整数と整数で加算 -> 結果は整数
+1+1
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+2
+\end{lstlisting}
+
+このように、演算子を使う際には、\textbf{記号の両側に値を書きます。}
+
+このとき、演算子の両側にひとつずつ空白を空けることが多いです。
+
+文法的な意味はありませんが、コードが読みやすくなります。
+
+この空白は Python のコーディング規約である \href{https://www.python.org/dev/peps/pep-0008/#should-a-line-break-before-or-after-a-binary-operator}{PEP8} でも推奨されています。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+1 + 1
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+2
+\end{lstlisting}
+
+値が代入されている変数との演算も下記のように行うことができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a + 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+3
+\end{lstlisting}
+
+また、\texttt{int} と \texttt{float} は異なる型同士ですが、計算を行うことができます。
+
+\texttt{int} と \texttt{float} の演算結果の型は \texttt{float} になります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 整数と実数で加算 -> 結果は実数
+a + b
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+2.2
+\end{lstlisting}
+
+他の演算子の例を示します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 整数と整数で減算 -> 結果は整数
+2 - 1
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 実数と整数で減算 -> 結果は実数
+3.5 - 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1.5
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 整数と整数で乗算 -> 結果は整数
+3 * 5
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+15
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 実数と整数で乗算 -> 結果は実数
+2.5 * 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+5.0
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 整数と整数で除算 -> 結果は実数
+3 / 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1.5
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 整数と整数で除算 -> 結果は実数
+4 / 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+2.0
+\end{lstlisting}
+
+Python 3 では、 \texttt{/} 記号を用いて除算を行う場合、除数（割る数）と被除数（割られる数）が整数であっても、計算結果として実数が返ります。
+
+計算結果として実数を返す除算のことを特に、\textbf{真の除算 (true division)} と言います。
+
+一方、商（整数部分）を返すような除算演算子として、 \texttt{//} 記号が用意されています。 \texttt{/} 記号を 2 回、間を空けずに繰り返します。計算結果として商を返す除算のことを、 \textbf{切り捨て除算 (floor division)} と呼びます。
+
+商を計算したい場合に便利な演算子であるため、こちらも覚えておきましょう。
+
+
+※ Python 2 では、除数も被除数も整数であった場合、 \texttt{/} 記号を用いても切り捨て除算が行われるので注意してください。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 整数と整数で切り捨て除算 -> 結果は整数
+3 // 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 整数と整数で切り捨て除算 -> 結果は整数
+4 // 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+2
+\end{lstlisting}
+
+また、ここで注意すべき点として、整数や実数と文字列の演算は基本的にエラーになります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# error
+a + c
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-32-e81e582b6fa9> in <module>()
+----> 1 a + c
+
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+\end{lstlisting}
+
+\textbf{エラーメッセージを読みましょう。}
+
+
+> TypeError: unsupported operand type(s) for +: 'int' and 'str'
+
+
+と言われています。「+ にとって int と str はサポートされていない被作用子（+ が作用する対象のこと。operand）です」と書かれています。「int に str を足す」ということはできないというわけです。
+
+
+\texttt{int} もしくは \texttt{float} と、 \texttt{str} の間の加算、減算、除算では上記のエラーが生じます。
+
+ただし、\texttt{str} と \texttt{int} の\textbf{乗算}は特別にサポートされており、計算を実行することができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# str と int で乗算
+c * 3
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'ChainerChainerChainer'
+\end{lstlisting}
+
+上のコードは、\texttt{c} という文字列を \texttt{3} 回繰り返す、という意味になります。
+
+
+\texttt{str} 同士は足し算を行うことができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+name1 = 'Chainer'
+name2 = 'チュートリアル'
+
+name1 + name2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'Chainerチュートリアル'
+\end{lstlisting}
+
+整数と文字列を連結したいこともあります。
+
+例えば、\texttt{1} という整数に、 \texttt{'番目'} という文字列を足して \texttt{'1番目'} という文字列を作りたいような場合です。
+
+その場合には、型を変換する\textbf{キャスト (cast)} という操作をする必要があります。
+
+
+何かを \texttt{int} にキャストしたい場合は \texttt{int()} という組み込み関数を使い、\texttt{str} にキャストしたい場合は \texttt{str()} という組み込み関数を使います。では、\texttt{1} という整数を \texttt{str} にキャストして、 \texttt{'番目'} という文字列と足し算を行ってみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+1
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(1)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+int
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+str(1)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'1'
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+type(str(1))
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+str
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+str(1) + '番目'
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'1番目'
+\end{lstlisting}
+
+また、\texttt{+=} や \texttt{-=} もよく使います。
+
+これは、演算と代入を合わせて行うもので、\textbf{累積代入文 (augmented assignment statement)} と呼ばれます。
+
+
+下記に示すとおり、\texttt{+=} では左辺の変数に対して右辺の値を足した結果で、左辺の変数を更新します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 累積代入文を使わない場合
+count = 0
+count = count + 1
+count
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 累積代入文を使う場合
+count = 0
+count += 1
+count
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+四則演算の全てで累積代入文を利用することができます。
+
+つまり、\texttt{+=}, \texttt{-=}, \texttt{*=}, \texttt{/=} がそれぞれ利用可能です。
+
+
+Python には、他にも幾つかの算術演算子が用意されています。
+
+例えば以下の演算子です。
+
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+演算 & 記号 \\
+\hline
+累乗 & \texttt{**} \\
+剰余 & \texttt{\%} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\texttt{**} を使うと、$2^3$ は以下のように記述することができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 累乗
+2 ** 3
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+8
+\end{lstlisting}
+
+\texttt{\%} を使って、\texttt{9} を \texttt{2} で割った余りを計算してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 剰余
+9 % 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+\subsection{比較演算子}
+
+
+比較演算子は、2 つの値の比較を行うための演算子です。
+
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+演算 & 記号 \\
+\hline
+小なり & \texttt{<} \\
+大なり & \texttt{>} \\
+以下 & \texttt{<=} \\
+以上 & \texttt{>=} \\
+等しい & \texttt{==} \\
+等しくない & \texttt{!=} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+比較演算子は、その両側に与えられた値が決められた条件を満たしているかどうか計算し、満たしている場合は \texttt{True} を、満たしていない場合は \texttt{False} を返します。
+
+\texttt{True} や \texttt{False} は、\textbf{ブール (bool) 型}と呼ばれる型を持った値です。
+
+ブール型の値は \texttt{True} もしくは \texttt{False} の 2 つしか存在しません。
+
+
+いくつかの比較演算子の計算例を示します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+1 < 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+True
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 型の確認
+type(1 < 2)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+bool
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+2 == 5
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+False
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+1 != 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+True
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+3 >= 3
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+True
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+'test' == 'test'
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+True
+\end{lstlisting}
+
+等しいかどうかを判定する比較演算子 \texttt{==} を使う際は、代入演算子 \texttt{=} と間違えないように気をつけてください。
+
+
+\section{エスケープシーケンス}
+
+
+通常の文字列では表せない特殊な文字を、規定された特別な文字の並びにより表したものを\textbf{エスケープシーケンス (escape sequence)} と呼びます。
+
+
+よく使用するものとして、\textbf{改行}を意味する \texttt{\textbackslash{}n}（もしくは \texttt{¥n}）、\textbf{タブ}を意味する \texttt{\textbackslash{}t}（もしくは \texttt{¥t}）があります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+print('Hello\nWorld')
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+Hello
+World
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+print('Hello\tWorld')
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+Hello	World
+\end{lstlisting}
+
+最初に Jupyter Notebook 上で変数の値を確認する際に、\texttt{print()} を使う場合と使わない場合の違いについて触れましたが、エスケープシーケンスを評価したい場合には、\texttt{print()} を使う必要があります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+d = 'Hello\nWorld'
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# エスケープシーケンスが評価されない
+d
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'Hello\nWorld'
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# エスケープシーケンスが評価される
+print(d)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+Hello
+World
+\end{lstlisting}
+
+\section{文字列メソッド}
+
+
+\texttt{str} 型の変数には、いくつか便利な機能がついています。
+
+例えば、その変数が持つ全ての文字を小文字や大文字に変換する \texttt{lower()} や \texttt{upper()} といった機能があります。
+
+このような型が持っている関数を\textbf{メソッド (method)} と呼びます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+name = 'Chainer'
+
+name
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'Chainer'
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# すべてを小文字に変換
+name.lower()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'chainer'
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# すべてを大文字に変換
+name.upper()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'CHAINER'
+\end{lstlisting}
+
+\section{f 文字列}
+
+文字列の特殊な (かつ便利な) 書き方として\textbf{f 文字列}があります．
+
+これは、ある文字列の一部分に、あとから別な文字列を埋め込むために使用します。
+
+f 文字列は，\texttt{f}というキーワードではじまり，その後に通常の文字列と同じく\texttt{''} (または \texttt{""}) で文字列を囲みます．
+
+このとき，\texttt{{}}を文字列中に記述すると，そこに別の文字列を埋め込むことができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+name = 'Chainer'
+
+f'{name} チュートリアルへようこそ'
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'Chainer チュートリアルへようこそ'
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+name1 = 'Chainer'
+name2 = 'チュートリアル'
+
+f'{name1} {name2}へようこそ'
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'Chainer チュートリアルへようこそ'
+\end{lstlisting}
+
+f 文字列を用いると \texttt{int} 型 や \texttt{float} 型の変数を、\texttt{str} 型へ明示的にキャストすることなく文字列に埋め込むことができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+version = 3.7
+
+f'Python {version}'
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+'Python 3.7'
+\end{lstlisting}
+
+\section{浮動小数点数がもつメソッド}
+
+
+「メソッド」は \texttt{str} 型の変数だけが持つものではありません。
+
+\texttt{int} 型の変数や、\texttt{float} 型の変数にも、その型の特徴に合わせた機能が、メソッドとして提供されています。
+
+
+例えば、\texttt{float} 型の変数には、\texttt{as\_integer\_ratio()} というメソッドがあり、比がその浮動小数点数の値となるような整数の組を返します。
+
+
+例えば、0.5 という値は、分数で表すと $\frac{1}{2}$ です。
+
+これは、以下のようにして調べることができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+0.5.as_integer_ratio()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+(1, 2)
+\end{lstlisting}
+
+0.25 であれば、$\frac{1}{4}$ となります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+0.25.as_integer_ratio()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+(1, 4)
+\end{lstlisting}
+
+このような、型に紐付いたメソッドなどについては、この章の最後にある「クラス」という概念の説明の際にもう少し詳しく解説します。
+
+
+\section{複合データ型}
+
+
+これまでは \texttt{a = 1} のように 1 つの変数に 1 つの値を代入する場合を扱ってきましたが、複数の値をまとめて取り扱いたい場面もあります。
+
+Python では複数の変数や値をまとめて扱うのに便利な、以下の 3 つの複合データ型があります。
+
+
+\begin{itemize}
+\item リスト (list)
+\item タプル (tuple)
+\item 辞書 (dictionary)
+\end{itemize}
+
+
+\subsection{リスト}
+
+
+複数の変数を \texttt{,} （カンマ）区切りで並べ、それらの全体を \texttt{[ ]} で囲んだものを \textbf{リスト (list)} と言います。
+
+リストに含まれる値を\textbf{要素}と呼び、整数の\textbf{インデックス} （要素番号）を使ってアクセスします。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# リスト型の変数を定義
+numbers = [4, 5, 6, 7]
+
+# 値の確認
+print(numbers)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[4, 5, 6, 7]
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 型の確認
+type(numbers)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+list
+\end{lstlisting}
+
+\texttt{numbers} には 4 つの数値が入っており、\textbf{要素数} は 4 です。
+
+リストの要素数は、リストの\textbf{長さ (length)} とも呼ばれ、組み込み関数の \texttt{len()} を用いて取得することができます。
+
+\texttt{len()} はよく使う関数であるため、覚えておきましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 要素数の確認
+len(numbers)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+4
+\end{lstlisting}
+
+リストの各要素へアクセスする方法はいくつかあります。
+
+最も簡単な方法は \texttt{[]} を使ってアクセスしたい要素番号を指定して、リストから値を取り出したり、その位置の値を書き換えたりする方法です。
+
+ここで、注意が必要な点として、Python では先頭の要素のインデックス番号が \texttt{0} である点があります。
+
+インデックス番号 \texttt{1} は 2 番目の要素を指します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 先頭の要素にアクセス
+numbers[0]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+4
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 先頭から3番目の要素にアクセス
+numbers[2]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+6
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 2 番目の要素を書き換え
+numbers[1] = 10
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 値の確認
+numbers
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[4, 10, 6, 7]
+\end{lstlisting}
+
+また、インデックスに負の値を指定すると、末尾からの位置となります。
+
+要素番号 \texttt{-1} で最後の要素を参照することができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 末尾の要素にアクセス
+numbers[-1]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+7
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 末尾から3番目の要素にアクセス
+numbers[-3]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+10
+\end{lstlisting}
+
+次に、リストから一度に複数の要素を取り出す操作である\textbf{スライス (slice)} を紹介します。
+
+\texttt{開始位置:終了位置} のようにコロン \texttt{:} を用いてインデックスを範囲指定し、複数の部分要素にアクセスします。
+
+このスライスの処理は、この後の章でも多用するため、慣れておきましょう。
+
+
+例えば、先頭から 2 つの要素を取り出したい場合、以下のように指定します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+numbers[0:2]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[4, 10]
+\end{lstlisting}
+
+\texttt{開始位置:終了位置} と指定することで、開始位置から\textbf{終了位置のひとつ手前}までの要素を抽出します。
+
+終了位置に指定したインデックスの値は含まれないことに注意してください。
+
+
+また、指定する開始番号が \texttt{0} である場合、以下のような略記がよく用いられます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+numbers[:2]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[4, 10]
+\end{lstlisting}
+
+このように、先頭のインデックスは省略することができます。
+
+このような記法を使う場合は、終了位置を示す数字を\textbf{取り出したい要素の個数}と捉えて、\textbf{先頭から 2 つを取り出す}操作だと考えると分かりやすくなります。
+
+
+同様に、ある位置からリストの末尾までを取り出す場合も、終了位置のインデックスを省略することができます。
+
+例えば、2 個目の要素から最後までを取り出すには以下のようにします。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+numbers[1:]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[10, 6, 7]
+\end{lstlisting}
+
+この場合は、取り出される要素の個数は \texttt{len(numbers) - 1} 個となることに注意してください。
+
+
+以上から、\texttt{numbers[:2]} と \texttt{numbers[2:]} は、ちょうど 2 個目の要素を境に \texttt{numbers} の要素を 2 分割した前半部分と後半部分になっています。
+
+ここで、インデックスが 2 の要素自体は\textbf{後半部に含まれる}ということに注意してください。
+
+
+また、開始位置も終了位置も省略した場合は、すべての要素が選択されます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+numbers[:]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[4, 10, 6, 7]
+\end{lstlisting}
+
+現状では、\texttt{numbers[:]} と \texttt{numbers} の結果が同じであるため、どのように使用するか疑問に思われるかも知れません。
+
+しかし、後の章では NumPy というライブラリを用いてリストの中にリストが入ったような\textbf{多次元配列 (multidimensional array)} を扱っていきます。
+
+そして多次元配列を用いて行列を表す場合には、\texttt{0 列目のすべての値}を抽出するために \texttt{[:, 0]} のような記法を用いるケースが登場します。
+
+これは Python 標準の機能ではありませんが、Python 標準のスライス表記を拡張したものになっています。
+
+
+リストは数値以外に、文字列を扱うこともでき、また複数の型を同一のリスト内に混在させることもできます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 文字列を格納したリスト
+array = ['hello', 'world']
+array
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+['hello', 'world']
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 複数の型が混在したリスト
+array = [1, 1.2, 'Chainer']
+array
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[1, 1.2, 'Chainer']
+\end{lstlisting}
+
+リストにリストを代入することもできます。
+
+また、Python 標準のリストでは入れ子になったリスト内の要素数がばらばらでも問題ありません。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+array = [[1, 1.2, 'Chainer', True], [3.2, 'Tutorial']]
+array
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[[1, 1.2, 'Chainer', True], [3.2, 'Tutorial']]
+\end{lstlisting}
+
+リストを使う際に頻出する操作として、\textbf{リストへの値の追加}があります。
+
+リスト型には \texttt{append()} というメソッドが定義されており、これを用いてリストの末尾に新しい値を追加することができます。
+
+
+上記の \texttt{array} に値を追加してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 末尾に 2.5 を追加
+array.append(2.5)
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 値の確認
+array
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+[[1, 1.2, 'Chainer', True], [3.2, 'Tutorial'], 2.5]
+\end{lstlisting}
+
+また、今後頻出する処理として、\textbf{空のリスト}を定義しておき、そこに後段の処理の中で適宜新たな要素を追加していくという使い方があります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 空のリストを定義
+array = []
+
+# 空のリストに要素を追加
+array.append('Chainer')
+array.append('チュートリアル')
+
+array
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+['Chainer', 'チュートリアル']
+\end{lstlisting}
+
+\subsection{タプル}
+
+
+\textbf{タプル (tuple)} はリストと同様に複数の要素をまとめた型ですが、リストとは異なる点として、定義した後に\textbf{中の要素を変更できない}という性質を持ちます。
+
+
+タプルの定義には \texttt{( )}を用います。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# タプルを定義
+array = (4, 5, 6, 7)
+array
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+(4, 5, 6, 7)
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 型の確認
+type(array)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+tuple
+\end{lstlisting}
+
+タプルの定義する際に \texttt{( )} を使用したため、要素へのアクセスも \texttt{( )} を使うように感じるかもしれませんが、実際にはリストと同様 \texttt{[ ]} を使用します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 先頭の要素へアクセス
+array[0]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+4
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# リストと同様、スライスも使用可能
+array[:3]
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+(4, 5, 6)
+\end{lstlisting}
+
+先述の通り、タプルは各要素の値を変更することができません。
+
+この性質は、定数項などプログラムの途中で書き換わってしまうことが望ましくないものをまとめて扱うのに便利です。
+
+
+実際に、タプルの要素に値の書き換えを行うとエラーが発生します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# error
+array[0] = 10
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-86-a7859ae56fbe> in <module>()
+----> 1 array[0] = 10
+
+TypeError: 'tuple' object does not support item assignment
+\end{lstlisting}
+
+\texttt{tuple} のように中身が変更できない性質のことを\textbf{イミュータブル (immutable)}であると言います。反対に、\texttt{list} のように中身が変更できる性質のことを\textbf{ミュータブル (mutable)}であると言います
+
+
+タプルも Chainer でデータセットを扱うときなどに頻出する型です。その性質と取り扱い方を覚えておきましょう。
+
+
+\subsection{辞書}
+
+
+リストやタプルでは、複数の値をまとめて扱うことができました。
+
+そこで、定期テストの結果をまとめることを考えてみましょう。
+
+
+例えば、数学 90 点、理科 75 点、英語 80 点だったという結果を \texttt{scores = [90, 75, 80]} とリストで表してみます。
+
+しかし、これでは\textbf{何番目がどの教科の点数に対応するか}、一見して分かりにくいと思われます。
+
+
+Python の \texttt{dict} 型は、\textbf{キー (key)} とそれに対応する\textbf{値 (value)} をセットにして格納することができる型であり、このようなときに便利です。
+
+
+リストやタプルでは、各要素にアクセスする際に整数のインデックスを用いていましたが、辞書ではキーでインデックス化されているため、整数や文字列など、色々なものを使って要素を指定することができます。
+
+
+辞書は \texttt{{}} を用いて定義し、要素にアクセスする際には、リストやタプルと同様に \texttt{[ ]} を使用し、\texttt{[ ]} の中にキーを指定して対応する値を取り出します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 辞書を定義
+scores = {'Math': 90, 'Science': 75, 'English': 80 }
+scores
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+{'English': 80, 'Math': 90, 'Science': 75}
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# key が Math の value にアクセス
+scores['Math']
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+90
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# key に日本語を使用することも可能
+scores = {'数学': 90, '理科': 75, '英語': 80}
+scores
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+{'数学': 90, '理科': 75, '英語': 80}
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+scores['数学']
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+90
+\end{lstlisting}
+
+他の人が定義した辞書に、\textbf{どのようなキーが存在するのか}を調べたいときがあります。
+
+辞書には、そのような場合に使える便利なメソッドがいくつか存在します。
+
+
+\begin{itemize}
+\item \texttt{keys()}: キーのリストを取得。\texttt{dict\_keys} というリストと性質が似た型が返る
+\item \texttt{values()}: 値のリストを取得。\texttt{dict\_values} というリストと性質が似た型が返る
+\item \texttt{items()}: 各要素の \texttt{(key, value)} のタプルが並んだリストを取得。\texttt{dict\_items} というリストと性質が似た型が返る
+\end{itemize}
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# キーのリスト
+scores.keys()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+dict_keys(['数学', '理科', '英語'])
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 値のリスト
+scores.values()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+dict_values([90, 75, 80])
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# (キー, 値)というタプルを要素とするリスト
+scores.items()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+dict_items([('数学', 90), ('理科', 75), ('英語', 80)])
+\end{lstlisting}
+
+\texttt{dict\_keys}, \texttt{dict\_values}, \texttt{dict\_items} と新しい型が登場しましたが、これは辞書型特有の型であり厳密には標準のリストとは異なりますが、リストと性質の似た型であるという程度の認識で問題ありません。
+
+
+辞書に要素を追加する場合は、新しいキーを指定して値を代入します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+scores['国語'] = 85
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+scores
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+{'国語': 85, '数学': 90, '理科': 75, '英語': 80}
+\end{lstlisting}
+
+また、既に存在するキーを指定した場合には、値が上書きされます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+scores['数学'] = 95
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+scores
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+{'国語': 85, '数学': 95, '理科': 75, '英語': 80}
+\end{lstlisting}
+
+\section{Python プログラムのコマンドライン実行}
+
+だんだんとプログラムが長くなってくると，プログラムを1行1行インタプリタに入力していくのは大変です．
+
+Python には，テキストファイルに記述された Python プログラムを一度に実行する機能があるので，これを利用しましょう．
+
+
+一度，Python インタプリタを\texttt{exit()}により終了し，以下のコマンドを入力しましょう．
+
+\begin{lstlisting}[style=codecell]
+$ mkdir -p ~/workspace/python-basics/ch02
+$ cd ~/workspace/python-basics/ch02
+\end{lstlisting}
+
+
+その後，\texttt{sample.py}という名前のテキストファイルを作成して，以下のプログラムを書き込みましょう．
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+array = [50, 80, 40]
+s = 0
+s += array[0]
+s += array[1]
+s += array[2]
+s /= 3
+print(s)
+\end{lstlisting}
+
+この Python プログラムでは，\texttt{array} というリストの要素の平均値を求めています．
+
+このプログラムを実行するには，\texttt{python}コマンドの後ろに，プログラムを記述したファイルの名前を入力します．
+
+すなわち，以下のコマンドを入力します．
+
+\begin{lstlisting}[style=codecell]
+$ python sample.py
+\end{lstlisting}
+
+すると，すべての行が実行され，\texttt{s} の値が画面に表示されます．
+
+
+\section{制御構文}
+
+
+複雑なプログラムを記述しようとすると、繰り返しの処理や、条件によって動作を変える処理が必要となります。
+
+これらは\textbf{制御構文}を用いて記述します。
+
+
+ここでは最も基本的な制御構文を 2 つ紹介します。
+
+
+\begin{itemize}
+\item 繰り返し (\texttt{for}, \texttt{while})
+\item 条件分岐 (\texttt{if})
+\end{itemize}
+
+
+Python の制御構文は、\textbf{ヘッダ (header)} と \textbf{ブロック (block)} と呼ばれる 2 つの部分で構成されています。
+
+これらを合わせて \textbf{複合文 (compound statement)} と呼びます。
+
+
+\StaticFigure{figures/source/02-basics-of-python/02_05.png}{ヘッダーとブロック}
+
+
+上図に示すように、制御構文ではヘッダ行に \texttt{for} 文や \texttt{if-else} 句を記述し、行末に \texttt{:} 記号を書きます。次に、ヘッダ行の条件で実行したい一連の処理文を、ブロックとしてその次の行以降に記述していきます。その際、 \textbf{インデント (indent)} と呼ばれる空白文字を先頭に挿入することで、ブロックを表現します。同じ数の空白でインデントされた文がブロックとみなされます。
+
+Python では、インデントとして\textbf{スペース 4 つ}を用いることが推奨されています。
+
+
+\subsection{繰り返し（for 文）}
+
+
+同じ内容のメールを宛名だけ個別に変えて、1000 人に一斉送信したい場合など、繰り返す処理を記述する制御構文である \texttt{for} を使います。
+
+
+\StaticFigure{figures/source/02-basics-of-python/02_06.png}{for文}
+
+
+\texttt{for} 文の文法は上図のとおりです。
+
+
+\textbf{イテラブルオブジェクト (iterable object)} とは、反復可能オブジェクトのことであり、要素を一度に 1 つずつ返せるオブジェクトのことを指します。
+
+\texttt{range()} という組み込み関数を使うと、引数に与えた整数の回数だけ順番に整数を返すイテラブルオブジェクトを作ることができます。
+
+\texttt{range(5)} と書くと、0, 1, 2, 3, 4 という整数 5 つを順番に返すイテラブルオブジェクトになります。
+
+
+後述しますが、このイテラブルオブジェクトとして、リストやタプルも指定することができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 5回繰り返す
+for i in range(5):
+    print(i)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+0
+1
+2
+3
+4
+\end{lstlisting}
+
+上記の例では、イテラブルオブジェクトが1 つずつ返す値を変数 \texttt{i} で受け取っています。
+
+最初は \texttt{i = 0} から始まっていることに注意してください。
+
+最後の値も、\texttt{5} ではなく \texttt{4} となっています。
+
+このように、\texttt{range()} に 1 つの整数を与えた場合は、その整数 - 1 まで 0 から 1 つずつ増えていく整数を順番に返します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 繰り返し処理が終わった後の値の確認
+i
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+4
+\end{lstlisting}
+
+Jupyter Notebook では変数名をコードセルの最後の行に書いて実行するとその変数に代入されている値を確認できましたが、for 文の中のブロックでは明示的に \texttt{print()} を使う必要があります。
+
+\texttt{print()} を用いないと、以下のように何も表示されません。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 変数の値は表示されない
+for i in range(5):
+    i
+\end{lstlisting}
+
+for 文を使って、0 から始まって 1 ずつ大きくなっていく整数順番に取得し、これをリストのインデックスに利用すれば、リストの各要素に順番にアクセスすることができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+names = ['佐藤', '鈴木', '高橋']
+
+for i in range(3):
+    print(names[i])
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+佐藤
+鈴木
+高橋
+\end{lstlisting}
+
+少し応用して、自動的に敬称をつけて表示してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+for i in range(3):
+    print('{}さん'.format(names[i]))
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+佐藤さん
+鈴木さん
+高橋さん
+\end{lstlisting}
+
+つぎに、さらに汎用性の高いプログラムを目指します。
+
+
+上記のコードに関して、汎用性が低い点として、\texttt{range(3)} のように \texttt{3} という値を直接記述していることが挙げられます。
+
+この \texttt{3} はリストの要素の数を意味していますが、リストの要素の数が変わると、このプログラムも書き換える必要があり、手間がかかったり、ミスが発生する原因となったりします。
+
+
+リスト内の要素の数は、組み込み関数である \texttt{len()} を用いて取得できるため、これを使用した汎用性の高いプログラムに書き換えましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+len(names)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+3
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+for i in range(len(names)):
+    print('{}さん'.format(names[i]))
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+佐藤さん
+鈴木さん
+高橋さん
+\end{lstlisting}
+
+これでリストの要素数に依存しないプログラムにすることができました。
+
+
+また、リスト自体をイテラブルオブジェクトとして指定することにより、リスト要素数の取得も \texttt{[]} でのインデックス番号の指定もせずに、より可読性の高いプログラムを書くことができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# リストをイテラブルオブジェクトに指定
+for name in names:
+    print(f'{name}さん')
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+佐藤さん
+鈴木さん
+高橋さん
+\end{lstlisting}
+
+最初のケースと比べていかがでしょうか。
+
+動作としては変わりがありませんが、可読性という観点も重要です。
+
+
+リストをイテラブルオブジェクトとして指定した場合、要素番号を取得できませんが、状況によっては要素番号を使用したいことがあります。
+
+
+そのような場合は、\texttt{enumerate()} という組み込み関数を使います。
+
+これにイテラブルオブジェクトを渡すと、\texttt{(要素番号, 要素)} というタプルを 1 つずつ返すイテラブルオブジェクトになります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+for i, name in enumerate(names):
+    message = f'{i}番目: {name}さん'
+    print(message)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+0番目: 佐藤さん
+1番目: 鈴木さん
+2番目: 高橋さん
+\end{lstlisting}
+
+\texttt{enumerate()} と同様、\texttt{for} 文と合わせてよく使う組み込み関数に \texttt{zip()} があります。
+
+
+\texttt{zip()} は、複数のイテラブルオブジェクトを受け取り、その要素のペアを順番に返すイテラブルオブジェクトを作ります。
+
+このイテラブルオブジェクトは、渡されたイテラブルオブジェクトそれぞれの先頭の要素から順番に、タプルに束ねて返します。
+
+このイテラブルオブジェクトの長さは、渡されたイテラブルオブジェクトのうち最も短い長さと一致します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+names = ['Python', 'Chainer']
+versions = ['3.7', '5.3.0']
+suffixes = ['!!', '!!', '?']
+
+for name, version, suffix in zip(names, versions, suffixes):
+    print(f'{name} {version} {suffix}')
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+Python 3.7 !!
+Chainer 5.3.0 !!
+\end{lstlisting}
+
+\texttt{suffixes} の要素数は 3 ですが、より短いイテラブルオブジェクトと共に \texttt{zip} に渡されたため、先頭から 2 つ目までしか値が取り出されていません。
+
+
+\subsection{条件分岐（if 文）}
+
+
+\texttt{if} は、指定した条件が \texttt{True} か \texttt{False} かによって、処理を変えるための制御構文です。
+
+
+\StaticFigure{figures/source/02-basics-of-python/02_08.png}{if文}
+
+
+\texttt{elif} と \texttt{else} は任意であり、\texttt{elif} は 1 つだけでなく複数連ねることができます。
+
+
+例えば、0 より大きいことを条件とした処理を書いてみます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# if の条件を満たす場合
+a = 1
+
+if a > 0:
+    print('0より大きいです')
+else:
+    print('0以下です')
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+0より大きいです
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# if の条件を満たさない場合
+a = -1
+
+if a > 0:
+    print('0より大きいです')
+else:
+    print('0以下です')
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+0以下です
+\end{lstlisting}
+
+また、\texttt{if} に対する条件以外の条件分岐を追加する場合は、下記のように \texttt{elif} を使います。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a = 0
+
+if a > 0:    
+    print('0より大きいです')
+elif a == 0:
+    print('０です')
+else:
+    print('0より小さいです')
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+０です
+\end{lstlisting}
+
+\subsection{繰り返し（while 文）}
+
+
+繰り返し処理は、\texttt{for} 以外にも \texttt{while} を用いて記述することもできます。
+
+\texttt{while} 文では、以下のように\textbf{ループを継続する条件}を指定します。
+
+指定された条件文が \texttt{True} である限り、ブロックの部分に記述された処理が繰り返し実行されます。
+
+
+\StaticFigure{figures/source/02-basics-of-python/02_09.png}{while文}
+
+
+\texttt{while} 文を使用した 3 回繰り返すプログラムは下記のとおりです。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+count = 0
+
+while count < 3:
+    print(count)
+    count += 1
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+0
+1
+2
+\end{lstlisting}
+
+ここで使われている \texttt{count} という変数は、ループの中身が何回実行されたかを数えるために使われています。
+
+まず \texttt{0} で初期化し、ループ内の処理が一度行われるたびに \texttt{count} の値に 1 を足しています。
+
+この \texttt{count} を使った条件式を \texttt{while} 文に与えることで、ループを回したい回数を指定しています。
+
+
+一方、\texttt{while True} と指定すると、\texttt{True} は変数ではなく値なので、変更されることはなく、ループは無限に回り続けます。
+
+\texttt{while} 文自体は無限ループの状態にしておき、ループの中で \texttt{if} 文を使って、ある条件が満たされた場合はループを中断する、という使い方ができます。
+
+これには \texttt{break} 文が用いられます。
+
+
+以下は、\texttt{break} 文を使って上のコードと同様に 3 回ループを回すコードです。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+count = 0
+
+while True:
+    print(count)
+    count += 1
+    
+    if count == 3:
+        break
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+0
+1
+2
+\end{lstlisting}
+
+\texttt{count} の値が 3 と等しいかどうかが毎回チェックされ、等しくなっていれば \texttt{break} 文が実行されて \texttt{while} ループが終了します。
+
+
+\texttt{while} 文を使って、指定された条件を満たして\textbf{いない}間ループを繰り返すという処理も書くことができます。\texttt{while} 文自体の使い方は同じですが、条件を反転して与えることで、与えた条件が \texttt{False} である間繰り返されるようにすることができます。
+
+
+これには、ブール値を反転する \texttt{not} を用います。
+
+\texttt{not True} は \texttt{False} を返し、\texttt{not False} は \texttt{True} を返します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+not True
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+False
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+not False
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+True
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+not 1 == 2
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+True
+\end{lstlisting}
+
+このように、\texttt{not} はあとに続くブール値を反転します。
+
+これを用いて、\texttt{count} が 3 \textbf{ではない}限りループを繰り返すというコードを \texttt{while} 文を使って書いてみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+count = 0
+
+while not count == 3:
+    print(count)
+    count += 1
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+0
+1
+2
+\end{lstlisting}
+
+\section{関数}
+
+
+何かひとまとまりの処理を書いた際には、その処理のためのコードをまとめて、プログラム全体の色々な箇所から再利用できるようにしておくと、便利な場合があります。
+
+ここでは、処理をひとまとめにする方法の一つとして\textbf{関数 (function)} を定義する方法を紹介します。
+
+
+\subsection{関数を定義する}
+
+
+\StaticFigure{figures/source/02-basics-of-python/02_10.png}{関数の定義}
+
+
+例えば、\textbf{受け取った値を 2 倍して表示する関数}を作ってみましょう。
+
+
+関数を定義するには、まず名前を決める必要があります。
+
+今回は \texttt{double()} という名前の関数を定義してみます。
+
+
+関数も制御構文と同じく\textbf{ヘッダー}と\textbf{ブロック}を持っています。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 関数 double() の定義
+def double(x):
+    print(2 * x)
+\end{lstlisting}
+
+\textbf{関数は定義されただけでは実行されません。}
+
+定義した関数を使用するためには、定義を行うコードとは別に、実行を行うコードが必要です。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 関数の実行
+double(3)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+6
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+double(5)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+10
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+double(1.5)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+3.0
+\end{lstlisting}
+
+\texttt{double(x)} における \texttt{x} のように、関数に渡される変数や値のことを\textbf{引数 (argument)} といいます。
+
+上の例は、名前が \texttt{double} で、1つの引数 \texttt{x} をとり、\texttt{2 * x} という計算を行い、その結果を表示しています。
+
+
+\subsection{複数の引数をとる関数}
+
+
+複数の引数をとる関数を定義する場合は、関数名に続く \texttt{()} の中に、カンマ \texttt{,} 区切りで引数名を並べます。
+
+
+例えば、引数を 2 つとり、足し算を行う関数 \texttt{add()} を作ってみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 関数の定義
+def add(a, b):
+    print(a + b)
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 関数の実行
+add(1, 2)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+3
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+add(3, 2.5)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+5.5
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+add(1, -5)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+-4
+\end{lstlisting}
+
+今回の \texttt{double()} や \texttt{add()} は定義を行い自作した関数ですが、Python には予め多くの関数が定義されています。
+
+そのような関数を\textbf{組み込み関数 (built-in function)} と呼びます。
+
+すでに使用している \texttt{print()} や \texttt{len()}, \texttt{range()} などが、これに該当します。
+
+組み込み関数の一覧は\href{https://docs.python.org/ja/3/library/functions.html}{こちら}で確認することができます。
+
+
+\subsection{引数をとらない関数}
+
+
+引数をとらない関数を定義する場合でも、関数名の後に \texttt{()} を加える必要があります。
+
+
+例えば、実行するとメッセージを表示する関数を定義して、実行してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 引数のない関数の定義
+def hello():
+    print('Chainerチュートリアルにようこそ')
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 引数のない関数の実行
+hello()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+Chainerチュートリアルにようこそ
+\end{lstlisting}
+
+\subsection{引数のデフォルト値}
+
+
+引数には、あらかじめ値を与えておくことができます。
+
+これは、引数をとる関数を定義する際に、何も引数に値が渡されなかったときにどのような値がその引数に渡されたことにするかをあらかじめ決めておける機能で、その値のことを\textbf{デフォルト値}と呼びます。
+
+
+例えば、上の \texttt{hello()} という関数に、\texttt{message} という引数をもたせ、そこにデフォルト値を設定しておきます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+def hello(message='Chainerチュートリアルにようこそ'):
+    print(message)
+\end{lstlisting}
+
+この関数は引数に何も与えずに呼び出すと、「Chainerチュートリアルにようこそ」というメッセージを表示し、引数に別な値が渡されると、その値を表示します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+hello()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+Chainerチュートリアルにようこそ
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+hello('Welcome to Chainer tutorial')
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+Welcome to Chainer tutorial
+\end{lstlisting}
+
+デフォルト値が与えられていない引数は、関数呼び出しの際に必ず何らかの値が渡される必要がありますが、デフォルト値を持つ場合は、何も指定しなくても関数を呼び出すことができるようになります。
+
+
+\subsection{返り値のある関数}
+
+
+上で定義した足し算を行う関数 \texttt{add()} では、計算結果を表示するだけで、計算結果を呼び出し元に戻していませんでした。
+
+そのため、このままでは計算結果を関数の外から利用することができません。
+
+
+そこで、\texttt{add()} 関数の末尾に \texttt{return} 文を追加して、計算結果を呼び出し元に返すように変更してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# 返り値のある関数の定義
+def add(a, b):
+    return a + b
+\end{lstlisting}
+
+このように、呼び出し元に返したい値を \texttt{return} に続いて書くと、その値が \texttt{add()} 関数を呼び出したところへ戻されます。
+
+\texttt{return} で返される値のことを\textbf{返り値 (return value)} と言います。
+
+
+以下に、計算結果を \texttt{result} という変数に格納し、表示する例を示します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+result = add(1, 3)
+
+result
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+4
+\end{lstlisting}
+
+計算結果が \texttt{result} に格納されているので、この結果を用いてさらに別の処理を行うことができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+result = add(1, 3)
+
+result_doubled = result * 2
+
+result_doubled
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+8
+\end{lstlisting}
+
+また、返り値は「呼び出し元」に返されると書きました。
+
+この「呼び出し元」というのは、関数を呼び出す部分のことで、上のコードは \texttt{add(1, 3)} の部分が \texttt{4} という結果の値になり、それが左辺の \texttt{result} に代入されています。
+
+
+これを用いると、例えば「2 と 3 を足した結果と、1 と 3 を足した結果を、掛け合わせる」という計算が、以下のように書けます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+add(2, 3) * add(1, 3)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+20
+\end{lstlisting}
+
+\subsection{変数のスコープ}
+
+
+関数の中で定義した変数は基本的には関数の外では利用できません。
+
+例えば、以下の例を見てみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a = 1
+
+# 関数の内部で a に 2 を代入
+def change():
+    a = 2
+    
+change()
+
+a
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+関数の外で \texttt{a = 1} と初期化した変数と同じ名前の変数に対して、\texttt{change()} 関数の内部で \texttt{a = 2} という代入を行っているにもかかわらず、\texttt{change()} 関数の実行後にも関数の外側では \texttt{a} の値は 1 のままになっています。
+
+\textbf{関数の外側で定義された変数} \texttt{a} \textbf{に、関数内部での処理が影響していないことがわかります。}
+
+
+なぜこうなるかというと、関数の中で変数に値が代入されるとき、その変数はその関数の\textbf{スコープ (scope)} でだけ有効な\textbf{ローカル変数}になり、関数の外にある同じ名前の変数とは別のものを指すようになるためです。
+
+スコープとは、その変数が参照可能な範囲のことです。
+
+上の例では、\texttt{a = 2} の代入を行った時点で\texttt{change()} 関数のスコープに \texttt{a} という変数が作られ、\texttt{change()} 関数の中からは \texttt{a} といえばこれを指すようになります。関数から抜けると、\texttt{a} は 1 を値に持つ外側の変数を指すようになります。
+
+
+ただし、代入を行わずに、参照するだけであれば、関数の内側から外側で定義された変数を利用することができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a = 1
+
+def change():
+    print('From inside:', a)
+    
+change()
+
+print('From outside:', a)
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+From inside: 1
+From outside: 1
+\end{lstlisting}
+
+この場合は、\texttt{change()} 関数のスコープには \texttt{a} という変数は作られないので、関数の中で \texttt{a} といえば外側で定義された変数を指します。
+
+
+関数の外で定義された変数は\textbf{グローバル変数}と呼ばれます。
+
+グローバル変数は、特に特別な記述を要せず参照することはできますが、関数の中で\textbf{代入}を行う場合は、\texttt{global} 文を使って、代入先をグローバル変数とする宣言を行う必要があります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+a = 1
+
+def change():
+    global a  # a をグローバル変数である宣言
+    a = 2       # グローバル変数への代入
+
+# 関数の実行
+change()
+
+# 結果の確認 <- a の値が上書きされている
+a
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+2
+\end{lstlisting}
+
+\texttt{global a} という行を \texttt{change()} 関数内で \texttt{a} という変数を使用する前に追加すると、その行以降は \texttt{a} という変数への代入も関数の外側で定義されたグローバル変数の \texttt{a} に対して行われます。
+
+
+\section{クラス}
+
+
+\textbf{オブジェクト指向プログラミング (object-oriented programming)} の特徴の一つである\textbf{クラス (class)} は、\textbf{オブジェクト (object)} を生成するための設計図にあたるものです。
+
+まず、クラスとは何か、オブジェクトとは何かについて説明します。
+
+
+ここで、唐突に感じられるかもしれませんが、家を何軒も建てるときのことを考えましょう。
+
+それぞれの家の形や大きさ、構造は同じですが、表札に書かれている名前は異なっているとします。
+
+この場合、家の設計図は同じですが、表札に何と書くか、において多少の変更がそれぞれの家ごとに必要となります。
+
+この\textbf{全ての家に共通した設計図の役割を果たすのがクラス}です。
+
+そして、設計図は、家として現実に存在しているわけではありませんが、個別の家は、現実に家としての\textbf{実体}を持って存在しています。
+
+よって、\textbf{設計図に基づいて個別の家を建てる}ということを抽象的に言うと、\textbf{クラスから実体を作成する}、となります。
+
+クラスから作成された実体のことを\textbf{インスタンス (instance)} または\textbf{オブジェクト (object)} とも呼び、\textbf{クラスから実体を作成する}という操作のことを\textbf{インスタンス化 (instantiation)} と呼びます。
+
+
+\subsection{クラスの定義}
+
+
+それでは、家の設計図を表す \texttt{House} というクラスを定義してみましょう。
+
+\texttt{House} クラスには、インスタンス化されたあとに、各インスタンス、すなわち誰か特定の人の家ごとに異なる値を持つ、\texttt{name\_plate} という変数を持たせてみます。
+
+
+\texttt{name\_plate} という変数には、個別の家の表札に表示するための文字列が与えられますが、クラスを定義する際には「\texttt{name\_plate} という変数を持つことができる」ようにしておくだけでよく、\textbf{実際にその変数に何か具体的な値を与える必要はありません。}
+
+クラスは、\textbf{設計図}であればよく、具体的な値を持たせなくてもよいためです。
+
+具体的な値は、個別の家を作成するとき、すなわちインスタンス化の際に与え、各インスタンスが \texttt{name\_plate} という値に自分の家の表札の名前を保持するようにします。
+
+
+このような、インスタンスに属している変数を\textbf{属性 (attribute)} と呼びます。同様に、インスタンスから呼び出すことができる関数のことを\textbf{メソッド (method)} と呼びます。
+
+
+クラスは、以下のような構文を使って定義します。
+
+
+\StaticFigure{figures/source/02-basics-of-python/02_11.png}{クラス}
+
+
+具体的には、以下のようになります。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# クラスの定義
+class House:
+
+    # __init__() メソッドの定義
+    def __init__(self, name):
+        self.name_plate = name
+\end{lstlisting}
+
+ここで、\texttt{\_\_init\_\_()} という名前のメソッドが \texttt{House} クラスの中に定義されています。
+
+メソッドの名前は自由に名付けることができますが、いくつか特別な意味を持つメソッド名が予め決められています。
+
+\texttt{\_\_init\_\_()} はそういったメソッドの一つで、\textbf{インスタンス化する際に自動的に呼ばれるメソッド}です。
+
+
+\texttt{House} クラスの \texttt{\_\_init\_\_()} は、\texttt{name} という引数をとり、これを \texttt{self.name\_plate} という変数に代入しています。
+
+この \texttt{self} というのは、クラスがインスタンス化されたあと、作成されたインスタンス自身を参照するのに用いられます。
+
+これを使って、\texttt{self.name\_plate = name} とすることで、作成された個別のインスタンスに属する変数 \texttt{self.name\_plate} へ、引数に渡された \texttt{name} が持つ値を代入することができます。
+
+\texttt{self} が指すものは、各インスタンスから見た「自分自身」なので、各インスタンスごとに異なります。
+
+これによって、\texttt{self.name\_plate} は各インスタンスに紐付いた別々の値を持つものとなります。
+
+
+メソッドは、インスタンスから呼び出されるとき自動的に第一引数にそのインスタンスへの参照を渡します。
+
+そのため、メソッドの第一引数は \texttt{self} とし、渡されてくる自分自身への参照を受け取るようにしています。
+
+ただし、呼び出す際には\textbf{そのインスタンスを引数に指定する必要はありません。}
+
+以下に具体例を示し、再度このことを確認します。
+
+
+それでは、上で定義した \texttt{House} クラスのインスタンスを作成してみます。
+
+クラスのインスタンス化には、クラス名のあとに \texttt{()} を追加して、クラスを呼び出すような記法を使います。
+
+この際、関数を呼び出すときと同様にして、\texttt{()} に引数を渡すことができます。
+
+その引数は、\texttt{\_\_init\_\_()} メソッドに渡されます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+my_house = House('Chainer')
+\end{lstlisting}
+
+\texttt{House} というクラスの \texttt{\_\_init\_\_()} メソッドに、\texttt{'Chainer'} という文字列を渡しています。
+
+\texttt{my\_house} が、\texttt{House} クラスから作成されたインスタンスです。
+
+ここで、クラス定義では \texttt{\_\_init\_\_()} メソッドは \texttt{self} と \texttt{name} という 2 つの引数をとっていましたが、呼び出しの際には \texttt{'Chainer'} という一つの引数しか与えていませんでした。
+
+この \texttt{'Chainer'} という文字列は、1 つ目の引数であるにも関わらず、\texttt{\_\_init\_\_()} メソッドの定義では 2 つ目の引数であった \texttt{name} に渡されます。
+
+前述のように、\textbf{メソッドは、インスタンスから呼び出されるとき自動的に第一引数にそのインスタンスへの参照を渡す}ためです。
+
+この自動的に渡される自身への参照は、呼び出しの際には明示的に指定しません。
+
+また、かならず 1 つ目の引数に自動的に渡されるため、呼び出し時に明示的に与えられた引数は 2 つ目以降の引数に渡されたものとして取り扱われます。
+
+
+それでは次に、このクラスに \texttt{hello()} というメソッドを追加し、呼び出すと誰の家であるかを表示するという機能を実装してみます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# クラスの定義
+class House:
+
+    # __init__() の定義
+    def __init__(self, name):
+        self.name_plate = name
+
+    # メソッドの定義
+    def hello(self):
+        print('{}の家です。'.format(self.name_plate))
+\end{lstlisting}
+
+それでは、2 つのインスタンスを作成して、それぞれから \texttt{hello()} メソッドを呼び出してみます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+sato = House('佐藤')
+suzuki = House('スズキ')
+
+sato.hello()   # 実行の際には hello() の引数にある self は無視
+suzuki.hello() # 実行の際には hello() の引数にある self は無視
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+佐藤の家です。
+スズキの家です。
+\end{lstlisting}
+
+\texttt{sato} というインスタンスの \texttt{name\_plate} 属性には、\texttt{'佐藤'} という文字列が格納されています。
+
+\texttt{suzuki} というインスタンスの \texttt{name\_plate} 属性には、\texttt{'スズキ'} という文字列が格納されています。
+
+それぞれのインスタンスから呼び出された \texttt{hello()} メソッドは、\texttt{self.name\_plate} に格納された別々の値を \texttt{print()} を用いて表示しています。
+
+
+このように、同じ機能を持つが、インスタンスによって保持するデータが異なったり、一部の動作が異なったりするようなケースを扱うのにクラスを利用します。
+
+Python の \texttt{int} 型、\texttt{float} 型、\texttt{str} 型…などは、実際には \texttt{int} クラス、\texttt{float} クラス、\texttt{str} クラスであり、それらの中では個別の変数（インスタンス）がどのような値になるかには関係なく、同じ型であれば共通して持っている機能が定義されています。
+
+\texttt{5} や \texttt{0.3} や \texttt{'Chainer'} などは、それぞれ \texttt{int} クラスのインスタンス、\texttt{float} クラスのインスタンス、\texttt{str} クラスのインスタンスです。
+
+
+以上から、クラスを定義するというのは、\textbf{新しい型を作る}ということでもあると分かります。
+
+
+\subsection{継承}
+
+
+あるクラスを定義したら、その一部の機能を変更したり、新しい機能を付け足したりしたくなることがあります。
+
+これを実現する機能が\textbf{継承 (inheritance)} です。
+
+例えば、\texttt{Link} というクラスを定義し、そのクラスを継承した \texttt{Chain} という新しいクラスを作ってみましょう。
+
+まず、\texttt{Link} クラスを定義します。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+class Link:
+
+    def __init__(self):
+        self.a = 1
+        self.b = 2
+\end{lstlisting}
+
+この \texttt{Link} というクラスは、インスタンス化を行う際には 1 つも引数をとりませんが、属性として \texttt{a} と \texttt{b} の 2 つの変数を保持し、それぞれには \texttt{\_\_init\_\_()} メソッドで 1 と 2 という値が代入されます。
+
+このクラスのインスタンスを作成してみます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+l = Link()
+
+l.a
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+l.b
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+2
+\end{lstlisting}
+
+\texttt{l} という \texttt{Link} クラスのインスタンスが持つ 2 つの属性を表示しています。
+
+インスタンス化を行った際に \texttt{\_\_init\_\_()} メソッドの中で代入していた値が、表示されています。
+
+
+次に、このクラスを\textbf{継承}する、\texttt{Chain} というクラスを定義してみます。
+
+継承を行う場合は、クラス定義の際にクラス名に続けて \texttt{()} を書き、その中にベースにしたいクラスの名前を書きます。
+
+\texttt{()} の中に書かれたクラスのことを、定義されるクラスの\textbf{親クラス}といいます。
+
+それに対し、\texttt{()} の中に書かれたクラスからみると、定義されるクラスは\textbf{子クラス}と呼ばれます。
+
+親から子へ機能が受け継がれるためです。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+class Chain(Link):
+    
+    def sum(self):
+        return self.a + self.b
+\end{lstlisting}
+
+\texttt{Chain} クラスは \texttt{\_\_init\_\_()} メソッドの定義を持ちません。
+
+\texttt{\_\_init\_\_()} メソッドが定義されていない場合、親クラスの \texttt{\_\_init\_\_()}  メソッドが自動的に呼び出されます。
+
+そのため、\texttt{Chain} クラスでは一見何も属性を定義していないように見えますが、インスタンス化を行うと親クラスである \texttt{Link} の \texttt{\_\_init\_\_()}  メソッドが自動的に実行され、\texttt{a}、\texttt{b} という属性が定義されます。
+
+以下のコードで確認してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# Chain クラスをインスタンス化
+c = Chain()
+
+c.a
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+1
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+c.b
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+2
+\end{lstlisting}
+
+\texttt{Chain} クラスの \texttt{sum()} メソッドでは、この親クラスの \texttt{\_\_init\_\_()}  メソッドで定義されている 2 つの属性を足し合わせて返しています。
+
+今作成したインスタンスから、この \texttt{sum()} メソッドを呼び出してみます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+# sum メソッドを実行
+c.sum()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+3
+\end{lstlisting}
+
+このように、\textbf{親クラスを継承し、親クラスに無かった新しい機能が追加された、新しいクラスを定義することができます。}
+
+
+それでは、この \texttt{Chain} というクラスにも \texttt{\_\_init\_\_()}  メソッドを定義して、新しい属性 \texttt{c} を定義し、\texttt{sum()} メソッドでは親クラスの \texttt{a}、\texttt{b} という属性とこの新たな \texttt{c} という属性の 3 つの和を返すように変更してみます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+class Chain(Link):
+
+    def __init__(self):
+        self.c = 5  # self.c を新たに追加
+    
+    def sum(self):
+        return self.a + self.b + self.c
+
+# インスタンス化
+C = Chain()
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+# error
+C.sum()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-149-5d0c7cc9b080> in <module>()
+----> 1 C.sum()
+
+<ipython-input-148-1e932a4aed85> in sum(self)
+      5 
+      6     def sum(self):
+----> 7         return self.a + self.b + self.c
+      8 
+      9 # インスタンス化
+
+AttributeError: 'Chain' object has no attribute 'a'
+\end{lstlisting}
+
+エラーが出ました。
+
+
+\textbf{エラーメッセージを読みましょう。}
+
+
+> AttributeError: 'Chain' object has no attribute 'a'
+
+
+\texttt{'Chain'} というオブジェクトは、\texttt{'a'} という名前の属性を持っていない、と言われています。
+
+\texttt{a} という属性は、\texttt{Chain} の親クラスである \texttt{Link} の \texttt{\_\_init\_\_()}  メソッドで定義されています。
+
+そのため、\texttt{Chain} クラスをインスタンス化する際に、親クラスである \texttt{Link} の \texttt{\_\_init\_\_()}  メソッドが呼ばれているのであれば、このエラーは起こらないはずです。
+
+なぜエラーとなってしまったのでしょうか。
+
+
+それは、\texttt{Chain} クラスにも \texttt{\_\_init\_\_()} メソッドを定義したため、親クラスである \texttt{Link} の \texttt{\_\_init\_\_()}  メソッドが上書きされてしまい、実行されなかったためです。
+
+しかし、親クラスの \texttt{\_\_init\_\_()}  メソッドを明示的に呼ぶことで、これは解決できます。
+
+
+それには、\texttt{super()} という組み込み関数を用います。
+
+これを用いると、子クラスから親クラスを参照することができます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+class Chain(Link):
+
+    def __init__(self):
+        # 親クラスの `__init__()` メソッドを呼び出す
+        super().__init__()
+        
+        # self.c を新たに追加
+        self.c = 5
+    
+    def sum(self):
+        return self.a + self.b + self.c
+
+# インスタンス化
+c = Chain()
+\end{lstlisting}
+
+\begin{lstlisting}[style=codecell,language=Python]
+c.sum()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+8
+\end{lstlisting}
+
+今回はエラーが起きませんでした。
+
+\texttt{Link} クラスの \texttt{\_\_init\_\_()}  メソッドの冒頭で、まず親クラスの \texttt{\_\_init\_\_()}  メソッドを実行し、\texttt{a}、\texttt{b} という属性を定義しているためです。
+
+
+あるクラスを継承して作られたクラスを、さらに継承して別のクラスを定義することもできます。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+class MyNetwork(Chain):
+    
+    def mul(self):
+        return self.a * self.b * self.c
+\end{lstlisting}
+
+\texttt{MyNetwork} クラスは、\texttt{Link} クラスを継承した \texttt{Chain} クラスをさらに継承したクラスで、\texttt{a}、\texttt{b}、\texttt{c} という 3 つの属性を掛け合わせた結果を返す \texttt{mul()} というメソッドを持ちます。
+
+
+このクラスのインスタンスを作成し、\texttt{mul()} を実行してみましょう。
+
+
+\begin{lstlisting}[style=codecell,language=Python]
+net = MyNetwork()
+
+net.mul()
+\end{lstlisting}
+
+\begin{lstlisting}[style=outputcell]
+10
+\end{lstlisting}
+
+$1 \times 2 \times 5 = 10$ が返ってきました。
+
+
+以上で、Python の基本についての解説を終了します。
+
+Python には他にもここでは紹介されていない多くの特徴や機能があります。
+
+さらに詳しく学びたい方は、\href{https://docs.python.org/ja/3/tutorial/index.html}{Pythonチュートリアル} などを参照してください。
