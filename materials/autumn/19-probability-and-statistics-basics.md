@@ -15,41 +15,15 @@
 
 ## 演習
 ### 基礎レベル
-1. `session19_probability_statistics.py` を作成し、次の import と出力ディレクトリ作成コードを書く。
-```python
-from pathlib import Path
-import matplotlib.pyplot as plt
-import torch
-
-out_dir = Path("outputs/figures")
-out_dir.mkdir(parents=True, exist_ok=True)
-```
-2. 固定データを次の 1 行で定義する。
-```python
-x = torch.tensor([1.0, 2.0, 2.0, 4.0, 7.0])
-```
-3. `mean_x`, `var_x`, `std_x` を次の通り計算し、表示する。
-```python
-mean_x = x.mean()
-var_x = x.var(unbiased=False)
-std_x = x.std(unbiased=False)
-```
-4. `x` のヒストグラムを 4 bins で描き、`outputs/figures/session19_hist_fixed.png` に保存する。
-5. `torch.manual_seed(19)` を実行し、次のサンプルを生成する。
-```python
-samples = torch.randint(low=1, high=7, size=(1000,))
-```
-6. `samples.float().mean()` を計算し、`samples` のヒストグラムを 6 bins で描いて `outputs/figures/session19_hist_sampled.png` に保存する。
-7. `session19_probability_statistics_report.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## 固定データの統計量`
-   - `## サンプリング結果`
-   - `## 2 枚のヒストグラムの違い`
+1. `session19_probability_statistics.py` を作成し、固定データ `x = torch.tensor([1.0, 2.0, 2.0, 4.0, 7.0])` の平均、分散、標準偏差を計算する。
+2. 固定データのヒストグラムを `outputs/figures/session19_hist_fixed.png` に保存する。
+3. `torch.randint(low=1, high=7, size=(1000,))` でサイコロのようなサンプルを作り、平均とヒストグラム `outputs/figures/session19_hist_sampled.png` を確認する。
+4. `session19_probability_statistics_report.md` に `## 固定データの統計量`, `## サンプリング結果`, `## 2 枚のヒストグラムの違い` を書き、数値と図の読み取りを対応づける。
 
 ### 発展レベル
-1. `var_x_unbiased = x.var(unbiased=True)` を追加で計算する。
-2. `session19_probability_statistics_report.md` に `## 分散の計算方法の違い` を追加し、`unbiased=False` と `unbiased=True` の値を両方書く。
-3. そのうえで、「固定データそのもののばらつきを見たいとき」と「標本から推定したいとき」でどちらを使うかを 3 行以内で説明する。
-4. `samples.float().mean()` と `mean_x` を見比べて、同じとは限らない理由を 2 行で書く。
+1. `unbiased=False` と `unbiased=True` の分散を比較する。
+2. report に `## 分散の計算方法の違い` を追加し、固定データそのもののばらつきを見る場合と、標本から母集団を推定する場合で何が違うかを説明する。
+3. 既存演習の「平均や標準偏差が近くても分布が違う例」を参考に、平均だけでは分からないことを 2 行で書く。
 
 ## 確認ポイント
 - `mean_x` が `3.2`、`var_x` が `4.56`、`std_x` が約 `2.1354` である。
@@ -57,5 +31,5 @@ samples = torch.randint(low=1, high=7, size=(1000,))
 - report に、ヒストグラムの違いと分散の定義の違いが書かれている。
 
 ## 詰まったときに見る資料
-- [`16-python-numpy-matplotlib-basics.md`](16-python-numpy-matplotlib-basics.md)
+- [`17-array-and-tensor-basics.md`](17-array-and-tensor-basics.md)
 - [`../../latex/markdown/ch06b-basics-of-probability-statistics.md`](../../latex/markdown/ch06b-basics-of-probability-statistics.md)

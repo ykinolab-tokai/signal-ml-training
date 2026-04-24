@@ -15,46 +15,14 @@
 
 ## 演習
 ### 基礎レベル
-1. `session20_convolution_basics.py` を作成し、次の import と出力ディレクトリ作成コードを書く。
-```python
-from pathlib import Path
-import matplotlib.pyplot as plt
-import torch
-import torch.nn.functional as F
-
-out_dir = Path("outputs/figures")
-out_dir.mkdir(parents=True, exist_ok=True)
-```
-2. 1D 信号と kernel を次の通り定義する。
-```python
-signal = torch.tensor([[[0.0, 1.0, 2.0, 1.0, 0.0]]])
-kernel = torch.tensor([[[1.0, 0.0, -1.0]]])
-edge = F.conv1d(signal, kernel, padding=1)
-```
-3. `signal.shape`, `kernel.shape`, `edge.shape` を表示する。
-4. `signal.squeeze()` と `edge.squeeze()` を同じ図に描き、`outputs/figures/session20_conv1d.png` に保存する。
-5. 2D 画像と blur kernel を次の通り定義する。
-```python
-image = torch.tensor([[[[0.0, 1.0, 0.0],
-                        [1.0, 2.0, 1.0],
-                        [0.0, 1.0, 0.0]]]])
-blur = torch.tensor([[[[1.0, 1.0, 1.0],
-                       [1.0, 1.0, 1.0],
-                       [1.0, 1.0, 1.0]]]]) / 9.0
-smoothed = F.conv2d(image, blur, padding=1)
-```
-6. `image.shape`, `blur.shape`, `smoothed.shape` を表示する。
-7. `image.squeeze()` と `smoothed.squeeze()` を横並び 2 枚の `imshow` で表示し、`outputs/figures/session20_conv2d.png` に保存する。
-8. `session20_convolution_report.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## conv1d の結果`
-   - `## conv2d の結果`
-   - `## padding を 1 にした理由`
+1. `session20_convolution_basics.py` を作成し、指定された 1D signal と edge kernel に `F.conv1d` を適用する。入力、kernel、出力の shape を表示する。
+2. 指定された 2D image と平均化 kernel に `F.conv2d` を適用する。入力、kernel、出力の shape を表示する。
+3. 1D の入力と出力を `outputs/figures/session20_conv1d.png`、2D の入力と出力を `outputs/figures/session20_conv2d.png` に保存する。
+4. `session20_convolution_report.md` に `## conv1d の結果`, `## conv2d の結果`, `## padding を 1 にした理由` を書く。
 
 ### 発展レベル
-1. `padding=0` の条件でも `conv1d` と `conv2d` を計算する。
-2. `session20_convolution_report.md` に `## padding あり / なしの比較` を追加し、1D と 2D のそれぞれで output shape がどう変わるかを書く。
-3. そのうえで、「padding を 1 にすると何が保たれ、何が新たに仮定されるか」を 3 行以内で説明する。
-4. 1D と 2D のどちらか一方について、境界付近の値が中央と違って見える理由を 2 行で書く。
+1. `padding=0` の条件でも 1D/2D convolution を計算し、output shape と境界付近の値を比較する。
+2. report に `## padding あり / なしの比較` を追加し、padding によって保たれるものと、新たに仮定される境界の値を説明する。
 
 ## 確認ポイント
 - `edge.shape` が `(1, 1, 5)`、`smoothed.shape` が `(1, 1, 3, 3)` である。

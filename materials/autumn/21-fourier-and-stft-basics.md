@@ -15,36 +15,14 @@
 
 ## 演習
 ### 基礎レベル
-1. `session21_fourier_stft_basics.py` を作成し、次の import と出力ディレクトリ作成コードを書く。
-```python
-from pathlib import Path
-import math
-import matplotlib.pyplot as plt
-import torch
-
-out_dir = Path("outputs/figures")
-out_dir.mkdir(parents=True, exist_ok=True)
-```
-2. 次のコードで合成波形を作る。
-```python
-sr = 16000
-t = torch.arange(0, sr, dtype=torch.float32) / sr
-wave = torch.sin(2 * math.pi * 440 * t) + 0.5 * torch.sin(2 * math.pi * 880 * t)
-```
-3. `torch.fft.rfft` で `spec`、`freq`、`magnitude` を計算する。
-4. `torch.topk(magnitude, k=2)` を使ってピーク 2 つの index を取り、その周波数を表示する。
-5. spectrum 図を `outputs/figures/session21_spectrum.png` に保存する。
-6. `torch.stft(..., n_fft=512, hop_length=128, return_complex=True)` で STFT を計算し、`stft.abs()` を `outputs/figures/session21_stft.png` に保存する。
-7. `session21_fourier_stft_report.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## 波形と周波数ピーク`
-   - `## spectrum 図`
-   - `## STFT 図`
+1. `session21_fourier_stft_basics.py` を作成し、440 Hz と 880 Hz を含む 1 秒の合成波形を生成する。
+2. `torch.fft.rfft` で spectrum を計算し、magnitude のピーク 2 つの周波数を表示する。spectrum 図を `outputs/figures/session21_spectrum.png` に保存する。
+3. `torch.stft` で STFT を計算し、`stft.abs()` を `outputs/figures/session21_stft.png` に保存する。
+4. `session21_fourier_stft_report.md` に `## 波形と周波数ピーク`, `## spectrum 図`, `## STFT 図` を書き、どの図で何が分かるかを説明する。
 
 ### 発展レベル
-1. `n_fft=256` の条件でも STFT を計算する。
-2. `session21_fourier_stft_report.md` に `## n_fft の比較` を追加し、`256` と `512` のどちらが周波数の区別を細かく見やすいかを 2 行以内で書く。
-3. そのうえで、「なぜ `n_fft` を大きくすると周波数側が細かく見えやすくなるか」を 3 行以内で説明する。
-4. spectrum と STFT を見比べて、「どちらの図で何が分かり、何が分からないか」を 2 行で書く。
+1. `n_fft=256` と `n_fft=512` の STFT を比較する。
+2. report に `## n_fft の比較` を追加し、周波数側の見え方と時間方向の見え方の trade-off を説明する。
 
 ## 確認ポイント
 - `wave.shape` が `(16000,)` である。

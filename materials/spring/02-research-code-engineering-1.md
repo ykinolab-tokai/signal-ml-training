@@ -15,40 +15,14 @@
 
 ## 演習
 ### 基礎レベル
-1. `session02_config.json` を作成し、次の内容をそのまま書く。
-```json
-{
-  "lr": 0.001,
-  "epochs": 3,
-  "name": "session02-demo"
-}
-```
-2. `session02_cli_logging_demo.py` を作成し、`--config` と `--out` を受け取る CLI script を実装する。
-3. script には次の処理を入れる。
-   - `argparse` で `--config` と `--out` を受け取る。
-   - `json` で設定ファイルを読む。
-   - `Path(args.out).mkdir(parents=True, exist_ok=True)` を実行する。
-   - `logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")` を設定する。
-   - `lr`, `epochs`, `name`, `out` を `logging.info()` で出力する。
-4. 次のコマンドで script を実行する。
-```bash
-python3 session02_cli_logging_demo.py --config session02_config.json --out outputs/session02_run
-```
-5. `session02_run_log.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## config の内容`
-   - `## 実行コマンド`
-   - `## ログに残った値`
-6. `## ログに残った値` には `lr`, `epochs`, `name`, `out` が表示されたことを書く。
-7. `session02_run_log.md` の最後に 2 行追加し、`lr` と `epochs` を config に置き、`out` を CLI に置いた理由を書く。
+1. `session02_config.json` を作成し、`lr`, `epochs`, `name` を設定として保存する。値は `0.001`, `3`, `session02-demo` とする。
+2. `session02_cli_logging_demo.py` を作成し、`argparse`, `json`, `logging`, `pathlib.Path` を使って `--config` と `--out` を受け取る CLI script にする。出力先ディレクトリを作成し、読み込んだ設定と出力先を log に残す。
+3. 同じ config を使って、`outputs/session02_run` と `outputs/session02_run_alt` の 2 通りで実行する。2 回の実行で何が同じで何が変わったかを確認する。
+4. `session02_run_log.md` を作成し、`## config の内容`, `## 実行コマンド`, `## ログに残った値`, `## config と CLI の分担` の 4 見出しを書く。`lr` と `epochs` を config に置き、`out` を CLI に置いた理由を自分の言葉で説明する。
 
 ### 発展レベル
-1. `session02_cli_logging_demo.py` をそのまま使い、出力先だけを変えて 2 回目の実行を行う。
-```bash
-python3 session02_cli_logging_demo.py --config session02_config.json --out outputs/session02_run_alt
-```
-2. `session02_run_log.md` に `## 2 回の実行をどう区別するか` を追加し、2 回の実行で変わった値と変わらない値を 1 行ずつ書く。
-3. `session02_run_log.md` に `## config と CLI の分担` を追加し、`name` を config 側に置く理由と、`out` を CLI 側に置く理由を 3 行以内で説明する。
-4. 可能なら `session02_cli_logging_demo.py` に設定ファイルが存在しない場合の明示的なエラーメッセージを追加し、なぜそのチェックが必要かを 2 行で書く。
+1. config file が存在しない場合に、Python の traceback だけで終わらないよう明示的なエラーメッセージを追加する。どの例外を捕まえたかも report に書く。
+2. `session02_run_log.md` に `## 再実行しやすさの確認` を追加し、別の人が同じ結果を再実行するために必要な情報と、まだ足りない情報を分けて書く。
 
 ## 確認ポイント
 - `session02_config.json` が指定どおりの内容になっている。

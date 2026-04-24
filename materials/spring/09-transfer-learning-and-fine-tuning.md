@@ -15,41 +15,14 @@
 
 ## 演習
 ### 基礎レベル
-1. `session09_transfer_learning_demo.py` を作成し、次の import を書く。
-```python
-import torch
-from torch import nn
-```
-2. backbone と head を次の通り定義する。
-```python
-backbone = nn.Sequential(
-    nn.Linear(8, 16),
-    nn.ReLU(),
-    nn.Linear(16, 8),
-    nn.ReLU(),
-)
-head = nn.Linear(8, 2)
-model = nn.Sequential(backbone, head)
-```
-3. 比較用入力を `x = torch.randn(4, 8)` として作る。
-4. `linear_probe` 条件では backbone をすべて `requires_grad=False`、head を `True` にする。
-5. `partial_ft` 条件では backbone の最後の `nn.Linear(16, 8)` と head を `True`、それ以前を `False` にする。
-6. `full_ft` 条件ではすべて `requires_grad=True` にする。
-7. 各条件で trainable parameter 数を数える関数を作る。
-8. 各条件で `model(x)` を実行し、`logits.shape` を表示する。
-9. `session09_transfer_learning_report.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## 3 条件の定義`
-   - `## trainable parameter 数`
-   - `## 使い分けの考え方`
-10. `## 使い分けの考え方` には、3 条件の違いを 4 行以内で書く。
+1. `session09_transfer_learning_demo.py` を作成し、backbone と head からなる小さな `nn.Sequential` model を実装する。
+2. `linear_probe`, `partial_ft`, `full_ft` の 3 条件を作り、各条件でどの layer の `requires_grad` を `True` にするかを明示する。
+3. 各条件で trainable parameter 数と logits shape を確認する。logits shape が同じでも、更新される parameter が異なることを確認する。
+4. `session09_transfer_learning_report.md` に `## 3 条件の定義`, `## trainable parameter 数`, `## 使い分けの考え方` を書き、データ量と backbone への信頼度に応じた選び方を説明する。
 
 ### 発展レベル
-1. `session09_transfer_learning_report.md` に `## 最初に試す条件` を追加し、次の 2 ケースでどの条件から始めるかを書く。
-   - データが少なく、backbone をかなり信頼している場合
-   - データが十分あり、backbone の表現が task に合わないかもしれない場合
-2. 各ケースで、選んだ条件の理由を 2 行以内で書く。`parameter 数` か `更新対象` のどちらかに触れること。
-3. B4 は、自分の研究テーマに近いと仮定したときに追加で見たい比較観点を 1 つ書く。
-4. M は、条件比較に review で追加したい観点を 2 行書く。例として、学習安定性、過学習、再現性のどれを見るかを明記する。
+1. `## 最初に試す条件` を追加し、データが少ない場合と十分ある場合で、どの条件から試すかを理由付きで書く。
+2. B4 は自分の研究テーマに近い task を仮定し、追加で比較したい観点を 1 つ書く。M は review で確認したい観点を、学習安定性・過学習・再現性のうち少なくとも 1 つに触れて書く。
 
 ## 確認ポイント
 - 3 条件が `linear_probe`, `partial_ft`, `full_ft` の名前で実装されている。
@@ -58,5 +31,5 @@ model = nn.Sequential(backbone, head)
 - 発展課題では、条件選択の理由がデータ量や更新自由度に結びついている。
 
 ## 詰まったときに見る資料
-- [`../autumn/24-pytorch-basics.md`](../autumn/24-pytorch-basics.md)
+- [`../autumn/24-pytorch-model-dataset-basics.md`](../autumn/24-pytorch-model-dataset-basics.md)
 - [`../autumn/25-training-loop-basics.md`](../autumn/25-training-loop-basics.md)

@@ -15,60 +15,14 @@
 
 ## 演習
 ### 基礎レベル
-1. `session07_image_block_compare.py` を作成し、次の import を書く。
-```python
-import torch
-from torch import nn
-```
-2. `torch.manual_seed(7)` を実行し、`x = torch.randn(2, 8, 32, 32)` を作る。
-3. `PlainBlock` を次の通り実装する。
-```python
-class PlainBlock(nn.Module):
-    def __init__(self, channels):
-        super().__init__()
-        self.block = nn.Sequential(
-            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
-            nn.BatchNorm2d(channels),
-            nn.ReLU(),
-            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
-            nn.BatchNorm2d(channels),
-            nn.ReLU(),
-        )
-
-    def forward(self, x):
-        return self.block(x)
-```
-4. `ResidualBlock` を次の通り実装する。
-```python
-class ResidualBlock(nn.Module):
-    def __init__(self, channels):
-        super().__init__()
-        self.block = nn.Sequential(
-            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
-            nn.BatchNorm2d(channels),
-            nn.ReLU(),
-            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
-            nn.BatchNorm2d(channels),
-        )
-        self.act = nn.ReLU()
-
-    def forward(self, x):
-        return self.act(x + self.block(x))
-```
-5. `plain_out = PlainBlock(8)(x)` と `res_out = ResidualBlock(8)(x)` を実行する。
-6. `plain_out.shape` と `res_out.shape` を表示し、各 block の parameter 数を数える。
-7. `session07_image_block_compare_report.md` を作成し、次の 3 見出しをこの順で書く。
-   - `## 入力と出力 shape`
-   - `## parameter 数`
-   - `## block の違い`
-8. `## block の違い` には、skip connection の有無を 3 行以内で書く。
+1. `session07_image_block_compare.py` を作成し、同じ入力 `x = torch.randn(2, 8, 32, 32)` に対して `PlainBlock` と `ResidualBlock` の forward を通す。
+2. 2 つの block の output shape、parameter 数、`(out - x).abs().mean()` を計算する。
+3. `session07_image_block_compare_report.md` に `## 入力と出力 shape`, `## parameter 数`, `## block の違い`, `## 入力との差分` を書く。
+4. shape と parameter 数が近くても、skip connection の有無によって block の意味が変わる理由を、`x + F(x)` という見方に触れて説明する。
 
 ### 発展レベル
-1. `plain_diff = (plain_out - x).abs().mean()` と `res_diff = (res_out - x).abs().mean()` を計算する。
-2. `session07_image_block_compare_report.md` に `## 入力との差分` を追加し、`plain_diff` と `res_diff` の値を書く。
-3. `parameter 数` と `入力との差分` を見比べて、「shape と parameter 数が似ていても block の意味が同じではない理由」を 3 行以内で説明する。
-4. B4 は residual block を 2 個並べたときに期待する利点を 2 行書く。
-5. M は shape が保てない場合に skip connection をそのまま足せない理由を 2 行書く。
+1. residual block を 2 個並べた model を作り、shape と parameter 数がどう変わるかを確認する。
+2. B4 は、block を深くする利点と起きやすい問題を 2 行ずつ書く。M は、channel 数や解像度が変わる場合に skip connection をそのまま足せない理由と対処案を 2 行ずつ書く。
 
 ## 確認ポイント
 - `x.shape`, `plain_out.shape`, `res_out.shape` がすべて `(2, 8, 32, 32)` である。
@@ -76,5 +30,5 @@ class ResidualBlock(nn.Module):
 - skip connection の説明が、単に「足している」ではなく、入力を保持しながら変化量を学ぶという見方に触れている。
 
 ## 詰まったときに見る資料
-- [`../autumn/26-image-baseline-mini-implementation.md`](../autumn/26-image-baseline-mini-implementation.md)
+- [`../autumn/27-image-baseline-mini-implementation.md`](../autumn/27-image-baseline-mini-implementation.md)
 - [`../../latex/markdown/ch23-basics-of-neural-networks.md`](../../latex/markdown/ch23-basics-of-neural-networks.md)
