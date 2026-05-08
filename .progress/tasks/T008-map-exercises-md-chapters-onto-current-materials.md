@@ -1,4 +1,4 @@
-# T008 Map exercises.md chapters onto current materials
+# T008 Map exercises.md chapters onto current handouts
 
 Last updated: 2026-04-11
 Status: done
@@ -9,7 +9,7 @@ Milestone: M003
 
 ## Background
 - `exercises.md` still contains the most concrete task statements in the repository.
-- The current `materials/` handouts need those exercises redistributed into the new semester/session structure.
+- The current `handouts/` handouts need those exercises redistributed into the new semester/session structure.
 
 ## Scope
 - In: inspect exercises chapters, decide which current material file should absorb each relevant exercise set.
@@ -22,7 +22,7 @@ Milestone: M003
 ## Acceptance Criteria
 - [x] Relevant exercises are mapped to current sessions.
 - [x] Unused or placeholder chapters are identified explicitly.
-- [x] The mapping is reflected in `materials/README.md`.
+- [x] The mapping is reflected in `handouts/README.md`.
 
 ## Dependencies / Blockers
 - None.

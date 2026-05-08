@@ -8,19 +8,19 @@ Due: 2026-04-23
 Milestone: M007
 
 ## Background
-- Full-corpus conversion is only usable if the integrated `latex/main.tex` includes every chapter and still builds.
+- Full-corpus conversion is only usable if the integrated `textbook/main.tex` includes every chapter and still builds.
 - Some notebooks contain unsupported assets such as GIFs or unusual Markdown patterns that may require post-conversion cleanup.
 
 ## Scope
-- In: generating the full `main.tex`, fixing build-breaking chapter output, and verifying `latex/main.pdf`.
+- In: generating the full `main.tex`, fixing build-breaking chapter output, and verifying `textbook/main.pdf`.
 - Out: visual polishing beyond what is required for a successful integrated build.
 
 ## Deliverables
-- Updated `latex/main.tex` that inputs the entire chapter set in order.
+- Updated `textbook/main.tex` that inputs the entire chapter set in order.
 - A successful integrated `latexmk` build, or explicit documentation of any residual blockers.
 
 ## Acceptance Criteria
-- [x] `latex/main.tex` includes the full converted corpus in order.
+- [x] `textbook/main.tex` includes the full converted corpus in order.
 - [x] `latexmk` succeeds on the integrated document.
 - [x] Any non-embedded asset fallbacks are explicit in the generated chapters rather than hidden build failures.
 

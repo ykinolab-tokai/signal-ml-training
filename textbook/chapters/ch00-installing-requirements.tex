@@ -1,0 +1,410 @@
+\chapter{Windows}
+
+\section{Visual Studio Code と Windowsターミナルのインストール}
+
+
+\begin{enumerate}
+\item Microsoft Storeから\texttt{アプリ インストーラー}をインストール
+\end{enumerate}
+
+
+\begin{itemize}
+\item https://github.com/microsoft/winget-cli
+\end{itemize}
+
+
+\begin{enumerate}
+\item 画面左下の検索から\texttt{PowerShell}と検索し，クリックしてPowerShellを起動
+\end{enumerate}
+
+
+\begin{enumerate}
+\item PowerShellで以下のコマンドを1行ずつ実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    winget install vscode
+    winget install "Windows Terminal"
+\end{lstlisting}
+
+
+\begin{enumerate}
+\item 画面左下の検索から\texttt{ターミナル}と検索し，クリックしてターミナルを開く
+\end{enumerate}
+
+\begin{itemize}
+\item ターミナル上で\texttt{PowerShell}が起動し操作できる
+\end{itemize}
+
+
+\begin{enumerate}
+\item 以降，PowerShellを起動する場合は，Windowsターミナルを介すると便利
+\end{enumerate}
+
+
+\begin{itemize}
+\item タスクバーなどにピンどめしておくと良い
+\end{itemize}
+
+
+\section{WSL2 (Ubuntu) のインストール}
+
+\begin{enumerate}
+\item PowerShellを管理者権限で起動し，以下のコマンドを実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    wsl --install
+\end{lstlisting}
+
+2026年4月時点の標準的な LTS は Ubuntu 24.04 LTS です．
+明示的に選びたい場合は \texttt{wsl --list --online} で候補を確認し，
+\texttt{wsl --install -d Ubuntu-24.04} を使います．
+
+
+\begin{enumerate}
+\item PCを再起動する
+\item windowsターミナルを起動し，画面上部のv字ボタンから Ubuntu を選択して起動する
+\item ユーザ名とパスワードの入力を求められるので，好きなものを入力
+\end{enumerate}
+
+
+\begin{itemize}
+\item パスワード入力の際，画面には入力した文字が全く表示されないが，きちんと入力されているので気にせず続けること
+\item 必要なら \texttt{wsl -l -v} で Ubuntu が WSL2 で動いていることを確認する
+\end{itemize}
+
+
+\section{Python3 のインストール}
+
+\begin{enumerate}
+\item Ubuntuを起動し，以下のコマンドを実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    sudo apt update
+    sudo apt install python3 python3-venv python3-pip
+\end{lstlisting}
+
+WSL 上の Ubuntu 24.04 LTS では標準の \texttt{python3} は 3.12 系です．
+
+
+\section{Git のインストール}
+
+
+\begin{enumerate}
+\item Ubuntuを起動し，以下のコマンドを実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    sudo apt update
+    sudo apt install git 
+\end{lstlisting}
+
+
+\section{GitHub CLIのインストール}
+
+
+\begin{enumerate}
+\item Ubuntuを起動し，以下のコマンドを実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && sudo apt update \
+    && sudo apt install gh -y
+\end{lstlisting}
+
+
+
+\chapter{Mac}
+
+
+\section{Homebrew のインストール}
+
+\begin{enumerate}
+\item ターミナルを起動し，以下のコマンド (最新のコマンドは\href{https://brew.sh/ja/}{HomebrewのWebページ}を参照) を実行
+\end{enumerate}
+
+\begin{lstlisting}[style=codecell]
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+\end{lstlisting}
+
+
+\begin{enumerate}
+\item パスワードを入力
+\item インストールされるもののリストが表示されるので，続ける場合はEnterキーを入力
+\item インストールが完了すると実行すべきコマンドが表示されるので，それらを実行
+\end{enumerate}
+
+
+\section{Visual Studio Code のインストール}
+
+\begin{enumerate}
+\item ターミナルを起動し，以下のコマンドを実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    brew install --cask visual-studio-code
+\end{lstlisting}
+
+\begin{enumerate}
+\item ターミナルからVSCodeを起動できるように，VSCodeへのPATHを \texttt{.zshrc} に追加
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    echo 'export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/
+bin":$PATH' >> ~/.zshrc
+\end{lstlisting}
+
+
+\section{Python3 のインストール}
+
+\begin{enumerate}
+\item ターミナルを起動し，以下のコマンドを実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    brew install python@3.12
+\end{lstlisting}
+
+この repo では Python 3.12 系を標準にします．
+\texttt{brew install python} で上流最新の 3.14 系を入れる方法もありますが，
+まずは共有環境と揃える方を優先してください．
+
+
+\section{Git のインストール}
+
+\begin{enumerate}
+\item Macは，Gitがデフォルトでインストールされている．ターミナルで以下のコマンドを実行し，Gitのバージョンが表示されれば問題ない
+\end{enumerate}
+
+\begin{lstlisting}[style=codecell]
+    git --version
+\end{lstlisting}
+
+\begin{enumerate}
+\item もし，Gitがインストールされていない場合は，以下のコマンドを実行
+\end{enumerate}
+
+\begin{lstlisting}[style=codecell]
+    brew install git
+\end{lstlisting}
+
+
+\section{GitHub CLIのインストール}
+
+\begin{enumerate}
+\item ターミナルを起動し，以下のコマンドを実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    brew install gh
+\end{lstlisting}
+
+
+\chapter{共通}
+
+
+\section{GitHub の設定}
+
+\begin{enumerate}
+\item \href{https://github.co.jp/}{GitHub}から、「\href{https://github.com/join}{GitHubに登録する}」という項目に飛ぶことができるのでそこでGitHubに登録する。
+\end{enumerate}
+
+注）ユーザアカウント名は英語で登録する。
+
+\begin{enumerate}
+\item https://github.co.jp/pricing の一番左の項目である「Developer」から、「学生の方は、\href{https://education.github.com/}{Student Developer Pack}の一環として、無料で利用できます。」 という項目を選択する。
+\item そこのページから、「\href{https://education.github.com/pack}{Get Your Pack}」という項目を選択し、自分のアカウント情報、学校名など必要な情報を入力する。
+\item GitHubに登録したメールアドレスに「Powerup get! Welcome to the Student Developer Pack.」というタイトルのメールが届いたら無料の学生パックに登録が完了したこととなる。
+\item 管理者にお願いして ykinolab-tokai のメンバーに招待してもらう。
+\item Ubuntuを起動し，以下のコマンドを実行
+\end{enumerate}
+
+
+\begin{lstlisting}[style=codecell]
+    gh auth login
+\end{lstlisting}
+
+
+\section{作業ディレクトリの準備}
+
+環境構築が終わっても，どこで作業するかが曖昧だとすぐに迷います．
+まずはホームディレクトリの下に授業用の作業ディレクトリを作り，その中にリポジトリを置くようにします．
+
+\begin{lstlisting}[style=codecell]
+mkdir -p ~/workspace
+cd ~/workspace
+\end{lstlisting}
+
+以後は，教材，演習，出力ファイルをすべてこのような決まった場所の下に置く方が安全です．
+ダウンロードフォルダやデスクトップ直下に散らすと，再現や提出が難しくなります．
+
+
+\section{Python 仮想環境と依存関係}
+
+Python では，プロジェクトごとに依存関係を分けるために仮想環境を使います．
+この repo では，個別に \texttt{pip install} を並べるよりも，
+\texttt{pyproject.toml} と \texttt{uv.lock} から共有環境を再現する方を標準にします．
+
+上流の最新 stable は 2026年4月時点で Python 3.14.4 ですが，
+この repo は \texttt{pyproject.toml} の
+\texttt{requires-python = ">=3.12,<3.13"} に合わせて Python 3.12 系を使います．
+NumPy や matplotlib，pandas，scikit-learn，Pillow，soundfile，PyTorch 系も更新が速いため，
+本文に固定値を並べるのではなく，正確な依存関係は \texttt{pyproject.toml} と \texttt{uv.lock} を参照してください．
+
+\begin{enumerate}
+\item \texttt{uv} を入れていない場合は，まずインストールします
+\end{enumerate}
+
+\begin{lstlisting}[style=codecell]
+curl -LsSf https://astral.sh/uv/install.sh | sh
+\end{lstlisting}
+
+\begin{enumerate}
+\item repo ルートで共有環境を作ります
+\end{enumerate}
+
+\begin{lstlisting}[style=codecell]
+uv python install 3.12
+uv sync
+source .venv/bin/activate
+\end{lstlisting}
+
+有効化に成功すると，シェルの先頭に \texttt{(.venv)} のような表示が出ます．
+作業を終えたら
+
+\begin{lstlisting}[style=codecell]
+deactivate
+\end{lstlisting}
+
+で抜けられます．
+
+
+\section{最初の動作確認}
+
+環境構築では「インストールできた」だけでは不十分です．
+実際に Python が起動し，必要なライブラリを import でき，図を保存できるところまで確認してください．
+
+\begin{lstlisting}[style=codecell,language=Python]
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+output_dir = Path("outputs/setup_check")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+x = np.linspace(0, 2 * np.pi, 400)
+y = np.sin(x)
+
+plt.plot(x, y)
+plt.xlabel("x")
+plt.ylabel("sin(x)")
+plt.tight_layout()
+plt.savefig(output_dir / "sin.png", dpi=150)
+plt.close()
+
+print("setup check completed")
+\end{lstlisting}
+
+このコードで
+\begin{itemize}
+\item Python が起動する
+\item NumPy と matplotlib を import できる
+\item \texttt{outputs/setup\_check/sin.png} が保存される
+\end{itemize}
+ことを確認できれば，最初の一歩は通っています．
+
+
+\section{Git の初期設定}
+
+Git をインストールしただけでは，まだ commit の準備が終わっていません．
+最初に名前とメールアドレスを設定します．
+
+\begin{lstlisting}[style=codecell]
+git config --global user.name "Your Name"
+git config --global user.email "your-email@example.com"
+\end{lstlisting}
+
+設定内容は次で確認できます．
+
+\begin{lstlisting}[style=codecell]
+git config --global --list
+\end{lstlisting}
+
+研究室や授業で GitHub を使うなら，Git のローカル設定と GitHub 側のアカウント情報が大きく矛盾していない方が管理しやすいです．
+
+
+\section{リポジトリを clone して動作確認する}
+
+GitHub 認証が済んだら，対象リポジトリを clone して中に入ります．
+
+\begin{lstlisting}[style=codecell]
+git clone <repository-url>
+cd <repository-name>
+\end{lstlisting}
+
+リポジトリを開いたら，少なくとも次の 3 つを確認してください．
+\begin{itemize}
+\item \texttt{pwd} で今どこにいるか
+\item \texttt{ls} でファイルが見えるか
+\item \texttt{git status} で Git 管理下にあるか
+\end{itemize}
+
+\begin{lstlisting}[style=codecell]
+pwd
+ls
+git status
+\end{lstlisting}
+
+
+\section{VS Code から開く}
+
+WSL や macOS では，ターミナルから VS Code を開けるようにしておくと作業が速くなります．
+カレントディレクトリをそのまま開くには，
+
+\begin{lstlisting}[style=codecell]
+code .
+\end{lstlisting}
+
+を使います．
+
+ターミナルで見ている場所と VS Code で開いている場所が一致していることは，初学者にとって非常に重要です．
+別のフォルダを開いたまま作業すると，実行結果と編集対象がずれて混乱しやすくなります．
+
+
+\section{詰まりやすい点}
+
+環境構築では，次のような詰まり方が非常に多いです．
+
+\begin{itemize}
+\item 仮想環境に入っていないまま \texttt{pip install} している
+\item Windows 側と WSL 側のどちらで作業しているか分からなくなっている
+\item \texttt{python} と \texttt{python3} が別物で混乱している
+\item ターミナルでいる場所と VS Code で開いている場所が一致していない
+\item 図は表示されたが保存されておらず，提出物になっていない
+\end{itemize}
+
+何かがおかしいと感じたら，まず
+\begin{lstlisting}[style=codecell]
+which python
+python --version
+pwd
+git status
+\end{lstlisting}
+を順に見てください．
+「どの Python を使っているか」「どこで作業しているか」を確認するだけで，多くの問題は切り分けられます．

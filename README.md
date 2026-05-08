@@ -6,9 +6,9 @@
 
 ## 配布資料とテンプレート
 
-- 学生に直接配布する配布資料は、すべて Markdown ファイルとして [`materials/spring`](materials/spring) と [`materials/autumn`](materials/autumn) に配置します。
-- 前期の固定配布資料は `materials/spring/01-...md` から `10-...md` と `14-...md`、後期配布資料は `materials/autumn/15-...md` から `28-...md` とし、回番号と一致させます。
-- 前期 11〜13 回の発展枠は、年度ごとに画像・音響・共通基盤のうち 1 テーマだけを選び、3 回に分けて扱います。候補 handout は回番号を付けず、テーマ別の記録として `materials/spring/advanced-...md` に置きます。
+- 学生に直接配布する配布資料は、すべて Markdown ファイルとして [`handouts/spring`](handouts/spring) と [`handouts/autumn`](handouts/autumn) に配置します。
+- 前期の固定配布資料は `handouts/spring/01-...md` から `10-...md` と `14-...md`、後期配布資料は `handouts/autumn/15-...md` から `28-...md` とし、回番号と一致させます。
+- 前期 11〜13 回の発展枠は、年度ごとに画像・音響・共通基盤のうち 1 テーマだけを選び、3 回に分けて扱います。候補 handout は回番号を付けず、テーマ別の記録として `handouts/spring/advanced-...md` に置きます。
 - 雛形は [`templates/spring-session-template.md`](templates/spring-session-template.md) と [`templates/autumn-session-template.md`](templates/autumn-session-template.md) に置きます。
 - README から各ディレクトリへの案内は相対リンクで統一します。GitHub 上でも clone 後でも追いやすい構成を保つためです。
 
@@ -155,20 +155,20 @@ M2 がいない年度は、この役割を最上級の M1 が代替します。
 
 | 回 | 内容 | 配布資料 |
 | -- | -- | -- |
-| 1 | 年間方針、役割分担、共通 repo、生成 AI 運用、コーディング規約 | [01 年間方針と役割](materials/spring/01-annual-policy-and-roles.md) |
-| 2 | research code engineering I：project 構造、config、logging、CLI | [02 research code engineering I](materials/spring/02-research-code-engineering-1.md) |
-| 3 | research code engineering II：Git flow、PR、code review、簡単な test | [03 research code engineering II](materials/spring/03-research-code-engineering-2.md) |
-| 4 | 数値線形代数の実装：最小二乗、SVD、PCA | [04 数値線形代数](materials/spring/04-numerical-linear-algebra.md) |
-| 5 | autodiff と最適化：backprop、optimizer、scheduler、勾配確認 | [05 autodiff と最適化](materials/spring/05-autodiff-and-optimization.md) |
-| 6 | data pipeline engineering：Dataset、DataLoader、前処理、augmentation | [06 data pipeline engineering](materials/spring/06-data-pipeline-engineering.md) |
-| 7 | 画像モデル基礎：CNN、ResNet、U-Net、receptive field、normalization | [07 画像モデル基礎](materials/spring/07-image-model-basics.md) |
-| 8 | 音響表現とモデル：STFT、mel、1D CNN、CRNN、Conformer の入口 | [08 音響表現とモデル](materials/spring/08-audio-representations-and-models.md) |
-| 9 | transfer learning と fine-tuning：freeze、linear probe、adapter 的発想 | [09 transfer learning と fine-tuning](materials/spring/09-transfer-learning-and-fine-tuning.md) |
-| 10 | representation learning：contrastive、masked prediction、embedding | [10 representation learning](materials/spring/10-representation-learning.md) |
-| 11 | 年度別発展テーマ 第 1 回：選択テーマの問題設定、最小実装、評価観点 | [発展テーマ handout 一覧](materials/spring/advanced-themes.md) |
-| 12 | 年度別発展テーマ 第 2 回：選択テーマの比較実験、失敗分析、改善 | [発展テーマ handout 一覧](materials/spring/advanced-themes.md) |
-| 13 | 年度別発展テーマ 第 3 回：選択テーマの整理、再利用可能な実装資産化、共有 | [発展テーマ handout 一覧](materials/spring/advanced-themes.md) |
-| 14 | 技術デモ・code walkthrough・共通資産反映 | [14 技術デモと walkthrough](materials/spring/14-technical-demo-and-walkthrough.md) |
+| 1 | 年間方針、役割分担、共通 repo、生成 AI 運用、コーディング規約 | [01 年間方針と役割](handouts/spring/01-annual-policy-and-roles.md) |
+| 2 | research code engineering I：project 構造、config、logging、CLI | [02 research code engineering I](handouts/spring/02-research-code-engineering-1.md) |
+| 3 | research code engineering II：Git flow、PR、code review、簡単な test | [03 research code engineering II](handouts/spring/03-research-code-engineering-2.md) |
+| 4 | 数値線形代数の実装：最小二乗、SVD、PCA | [04 数値線形代数](handouts/spring/04-numerical-linear-algebra.md) |
+| 5 | autodiff と最適化：backprop、optimizer、scheduler、勾配確認 | [05 autodiff と最適化](handouts/spring/05-autodiff-and-optimization.md) |
+| 6 | data pipeline engineering：Dataset、DataLoader、前処理、augmentation | [06 data pipeline engineering](handouts/spring/06-data-pipeline-engineering.md) |
+| 7 | 画像モデル基礎：CNN、ResNet、U-Net、receptive field、normalization | [07 画像モデル基礎](handouts/spring/07-image-model-basics.md) |
+| 8 | 音響表現とモデル：STFT、mel、1D CNN、CRNN、Conformer の入口 | [08 音響表現とモデル](handouts/spring/08-audio-representations-and-models.md) |
+| 9 | transfer learning と fine-tuning：freeze、linear probe、adapter 的発想 | [09 transfer learning と fine-tuning](handouts/spring/09-transfer-learning-and-fine-tuning.md) |
+| 10 | representation learning：contrastive、masked prediction、embedding | [10 representation learning](handouts/spring/10-representation-learning.md) |
+| 11 | 年度別発展テーマ 第 1 回：選択テーマの問題設定、最小実装、評価観点 | [発展テーマ handout 一覧](handouts/spring/advanced-themes.md) |
+| 12 | 年度別発展テーマ 第 2 回：選択テーマの比較実験、失敗分析、改善 | [発展テーマ handout 一覧](handouts/spring/advanced-themes.md) |
+| 13 | 年度別発展テーマ 第 3 回：選択テーマの整理、再利用可能な実装資産化、共有 | [発展テーマ handout 一覧](handouts/spring/advanced-themes.md) |
+| 14 | 技術デモ・code walkthrough・共通資産反映 | [14 技術デモと walkthrough](handouts/spring/14-technical-demo-and-walkthrough.md) |
 
 前期 11〜13 回は、その年度に選んだ 1 つの発展テーマを 3 回に分けて扱う枠です。画像、音響、共通基盤を同じ年度にすべて扱う枠ではありません。候補 handout は記録として残しますが、回番号は付けません。
 
@@ -176,20 +176,20 @@ M2 がいない年度は、この役割を最上級の M1 が代替します。
 
 | 回 | 内容 | 配布資料 |
 | -- | -- | -- |
-| 15 | 研究室オンボーディング：Linux、SSH、ディレクトリ、仮想環境、repo clone、提出用 Git 最小運用 | [15 研究室オンボーディング](materials/autumn/15-onboarding.md) |
-| 16 | Python script の基礎：変数、list、dict、関数、例外、Path、ファイル保存 | [16 Python script の基礎](materials/autumn/16-python-script-basics.md) |
-| 17 | NumPy・PyTorch Tensor・matplotlib の基礎 | [17 配列と tensor の基礎](materials/autumn/17-array-and-tensor-basics.md) |
-| 18 | 線形代数の基礎：ベクトル、内積、行列積、ノルム | [18 線形代数の基礎](materials/autumn/18-linear-algebra-basics.md) |
-| 19 | 確率統計の基礎：平均、分散、分布、サンプリング、基本指標 | [19 確率統計の基礎](materials/autumn/19-probability-and-statistics-basics.md) |
-| 20 | 離散信号、畳み込み、フィルタの基礎 | [20 離散信号と畳み込み](materials/autumn/20-discrete-signals-and-convolution.md) |
-| 21 | Fourier 変換と STFT の基礎 | [21 Fourier 変換と STFT](materials/autumn/21-fourier-and-stft-basics.md) |
-| 22 | 音響データの基礎：波形、spectrogram、mel、簡単な augmentation | [22 音響データの基礎](materials/autumn/22-audio-data-basics.md) |
-| 23 | 画像データの基礎：画像を配列として扱う、正規化、リサイズ、簡単なフィルタ | [23 画像データの基礎](materials/autumn/23-image-data-basics.md) |
-| 24 | PyTorch による model 実装の基礎：Module、Dataset、DataLoader、batch、logits | [24 PyTorch model と Dataset の基礎](materials/autumn/24-pytorch-model-dataset-basics.md) |
-| 25 | training loop の基礎：loss、optimizer、epoch、validation、overfitting | [25 training loop の基礎](materials/autumn/25-training-loop-basics.md) |
-| 26 | 音響ミニ実装：小規模 classification baseline | [26 音響 baseline ミニ実装](materials/autumn/26-audio-baseline-mini-implementation.md) |
-| 27 | 画像ミニ実装：小規模 classification baseline | [27 画像 baseline ミニ実装](materials/autumn/27-image-baseline-mini-implementation.md) |
-| 28 | 口頭技術確認・code walkthrough・repo 整理・PR / code review 体験 | [28 口頭確認と repo 整理](materials/autumn/28-oral-check-and-repo-wrapup.md) |
+| 15 | 研究室オンボーディング：Linux、SSH、ディレクトリ、仮想環境、repo clone、提出用 Git 最小運用 | [15 研究室オンボーディング](handouts/autumn/15-onboarding.md) |
+| 16 | Python script の基礎：変数、list、dict、関数、例外、Path、ファイル保存 | [16 Python script の基礎](handouts/autumn/16-python-script-basics.md) |
+| 17 | NumPy・PyTorch Tensor・matplotlib の基礎 | [17 配列と tensor の基礎](handouts/autumn/17-array-and-tensor-basics.md) |
+| 18 | 線形代数の基礎：ベクトル、内積、行列積、ノルム | [18 線形代数の基礎](handouts/autumn/18-linear-algebra-basics.md) |
+| 19 | 確率統計の基礎：平均、分散、分布、サンプリング、基本指標 | [19 確率統計の基礎](handouts/autumn/19-probability-and-statistics-basics.md) |
+| 20 | 離散信号、畳み込み、フィルタの基礎 | [20 離散信号と畳み込み](handouts/autumn/20-discrete-signals-and-convolution.md) |
+| 21 | Fourier 変換と STFT の基礎 | [21 Fourier 変換と STFT](handouts/autumn/21-fourier-and-stft-basics.md) |
+| 22 | 音響データの基礎：波形、spectrogram、mel、簡単な augmentation | [22 音響データの基礎](handouts/autumn/22-audio-data-basics.md) |
+| 23 | 画像データの基礎：画像を配列として扱う、正規化、リサイズ、簡単なフィルタ | [23 画像データの基礎](handouts/autumn/23-image-data-basics.md) |
+| 24 | PyTorch による model 実装の基礎：Module、Dataset、DataLoader、batch、logits | [24 PyTorch model と Dataset の基礎](handouts/autumn/24-pytorch-model-dataset-basics.md) |
+| 25 | training loop の基礎：loss、optimizer、epoch、validation、overfitting | [25 training loop の基礎](handouts/autumn/25-training-loop-basics.md) |
+| 26 | 音響ミニ実装：小規模 classification baseline | [26 音響 baseline ミニ実装](handouts/autumn/26-audio-baseline-mini-implementation.md) |
+| 27 | 画像ミニ実装：小規模 classification baseline | [27 画像 baseline ミニ実装](handouts/autumn/27-image-baseline-mini-implementation.md) |
+| 28 | 口頭技術確認・code walkthrough・repo 整理・PR / code review 体験 | [28 口頭確認と repo 整理](handouts/autumn/28-oral-check-and-repo-wrapup.md) |
 
 ## 6. 前期と後期での学年ごとの役割の違い
 

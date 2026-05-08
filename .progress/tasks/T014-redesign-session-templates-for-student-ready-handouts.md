@@ -8,7 +8,7 @@ Due: 2026-04-24
 Milestone: M005
 
 ## Background
-- `materials/` is the student-facing primary source, so each handout template must tell students how to start work directly from the document.
+- `handouts/` is the student-facing primary source, so each handout template must tell students how to start work directly from the document.
 - The current templates still emphasize summary sections such as goals and notes more than executable task flow.
 
 ## Scope

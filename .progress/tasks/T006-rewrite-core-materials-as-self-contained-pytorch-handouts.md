@@ -1,4 +1,4 @@
-# T006 Rewrite core materials as self-contained PyTorch handouts
+# T006 Rewrite core handouts as self-contained PyTorch handouts
 
 Last updated: 2026-04-11
 Status: done
@@ -8,7 +8,7 @@ Due: 2026-04-11
 Milestone: M002
 
 ## Background
-- The user required `materials/` to stand alone without relying on `text/` for essential content.
+- The user required `handouts/` to stand alone without relying on `text/` for essential content.
 - Core implementation topics needed direct PyTorch examples.
 
 ## Scope

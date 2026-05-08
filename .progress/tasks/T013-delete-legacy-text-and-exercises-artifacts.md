@@ -12,7 +12,7 @@ Milestone: M004
 
 ## Scope
 - In: `text/`, `exercises.md`, `exercises.html`.
-- Out: active materials, templates, progress files, and root policy docs.
+- Out: active handouts, templates, progress files, and root policy docs.
 
 ## Deliverables
 - Removal of the legacy teaching assets from the repository.
@@ -28,4 +28,4 @@ Milestone: M004
 ## Next Action
 - owner: codex
 - due: 2026-04-11
-- action: Re-add any future teaching content directly under materials/ or templates/ rather than reviving the removed layout.
+- action: Re-add any future teaching content directly under handouts/ or templates/ rather than reviving the removed layout.

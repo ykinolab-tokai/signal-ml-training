@@ -16,12 +16,12 @@ Milestone: M007
 - Out: migrating every notebook in this task alone.
 
 ## Deliverables
-- A `latex/` directory that acts as the new book root.
+- A `textbook/` directory that acts as the new book root.
 - A minimal `main.tex` and shared preamble/macros.
 - Directory conventions for chapter `.tex`, chapter `.md`, extracted figures, and future figure replay scripts.
 
 ## Acceptance Criteria
-- [x] `latex/` contains a compilable main document skeleton with `\input`-based chapter integration.
+- [x] `textbook/` contains a compilable main document skeleton with `\input`-based chapter integration.
 - [x] The directory layout distinguishes canonical `.tex`, pandoc-friendly `.md`, and figure assets.
 - [x] The structure is concrete enough for one prototype chapter to be generated into it.
 
@@ -31,4 +31,4 @@ Milestone: M007
 ## Next Action
 - owner: codex
 - due: 2026-04-23
-- action: Reuse the established `latex/` layout for the next migration batches instead of creating per-chapter ad hoc structures.
+- action: Reuse the established `textbook/` layout for the next migration batches instead of creating per-chapter ad hoc structures.

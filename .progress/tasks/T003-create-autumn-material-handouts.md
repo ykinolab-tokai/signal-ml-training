@@ -9,14 +9,14 @@ Milestone: M001
 
 ## Background
 - Autumn covers sessions 15-28 for the fixed B3 bootcamp.
-- Each session needs a student-facing Markdown handout under `materials/autumn`.
+- Each session needs a student-facing Markdown handout under `handouts/autumn`.
 
 ## Scope
 - In: 14 Markdown handouts for sessions 15-28.
 - Out: notebooks or scripts beyond the handout references.
 
 ## Deliverables
-- `materials/autumn/*.md` for all autumn sessions.
+- `handouts/autumn/*.md` for all autumn sessions.
 
 ## Acceptance Criteria
 - [x] There are 14 autumn handouts.

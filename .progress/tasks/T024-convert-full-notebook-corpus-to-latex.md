@@ -12,7 +12,7 @@ Milestone: M007
 - The remaining work is bulk generation, chapter ordering, and explicit handling of empty notebooks.
 
 ## Scope
-- In: converting every `text/*.ipynb` into `latex/chapters/*.tex` and `latex/markdown/*.md`, copying static assets, and generating figure replay scripts where needed.
+- In: converting every `text/*.ipynb` into `textbook/chapters/*.tex` and `textbook/markdown/*.md`, copying static assets, and generating figure replay scripts where needed.
 - Out: hand-redrawing figures in TikZ.
 
 ## Deliverables

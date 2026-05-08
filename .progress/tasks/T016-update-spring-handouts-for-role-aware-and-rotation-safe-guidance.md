@@ -8,7 +8,7 @@ Due: 2026-04-26
 Milestone: M005
 
 ## Background
-- Spring materials serve B4/M students, whose responsibilities differ by role and by whether the session is fixed or rotational.
+- Spring handouts serve B4/M students, whose responsibilities differ by role and by whether the session is fixed or rotational.
 - A student-ready template for spring must preserve that role split while still giving a direct path to action.
 
 ## Scope

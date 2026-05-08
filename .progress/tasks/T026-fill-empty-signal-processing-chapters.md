@@ -12,13 +12,13 @@ Milestone: M008
 - As a self-study text, leaving the core signal-processing bridge empty breaks the path from calculus/probability to spectrum analysis and filtering.
 
 ## Scope
-- In: authoring new canonical content for chapters 13-15 in both `latex/chapters/` and `latex/markdown/`, then rebuilding the integrated LaTeX book.
+- In: authoring new canonical content for chapters 13-15 in both `textbook/chapters/` and `textbook/markdown/`, then rebuilding the integrated LaTeX book.
 - Out: TikZ redraws, advanced DSP topics such as z-transform proofs, and chapter-wide visual polishing.
 
 ## Deliverables
 - New self-contained content for signal basics, spectrum analysis, and LTI systems in the canonical `.tex` sources.
 - Matching chapter-scoped Markdown files so the pandoc-friendly parallel representation remains populated.
-- A verified integrated `latex/main.pdf` build after the additions.
+- A verified integrated `textbook/main.pdf` build after the additions.
 
 ## Acceptance Criteria
 - [x] Chapters 13-15 are no longer empty.

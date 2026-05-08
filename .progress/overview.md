@@ -27,7 +27,7 @@ Source records: `.progress/records.log`
   Chapter 05 on integrals was also rewritten so the math prerequisites are no longer interrupted by placeholder headings.
   Chapter 11 on PySoundFile and the common onboarding section of chapter 00 were expanded so audio I/O and post-install startup steps are no longer too thin for self-study.
   Chapter 08 on Matplotlib and chapter 12 on Pillow were rewritten to emphasize save-first workflows, practical preprocessing, and tool choice rather than display-only examples.
-- `M009` completed: `materials/`, the semester templates, and the materials index now use `この回の目標`, expose minimum required work more clearly, and point to detailed repo-internal or official references more consistently.
+- `M009` completed: `handouts/`, the semester templates, and the handouts index now use `この回の目標`, expose minimum required work more clearly, and point to detailed repo-internal or official references more consistently.
 - `M010` completed: all 28 handouts now use `この回の目標`, `ミニ講義`, `演習`, `確認ポイント`, `詰まったときに見る資料`, and every `演習` section is split into `基礎レベル` and `発展レベル`.
 
 ## Next actions

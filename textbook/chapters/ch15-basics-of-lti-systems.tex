@@ -1,0 +1,247 @@
+\chapter{LTI 系の基礎}
+
+
+\section{システムとして信号処理を見る}
+
+これまでの章では，主に信号そのものを見てきました．
+本章では，信号を入力すると別の信号を出力する仕組みを\textbf{システム}として考えます．
+
+システムを
+\[
+y[n] = \mathcal{T}\{x[n]\}
+\]
+と書くことにします．
+ここで $\mathcal{T}$ は変換規則そのものを表します．
+
+例えば，
+\begin{itemize}
+\item ノイズを減らす平滑化フィルタ
+\item 画像のぼかしやエッジ抽出
+\item 音声の残響付与
+\item ニューラルネットワークの 1 層
+\end{itemize}
+は，いずれも広い意味で入力信号を出力信号へ写すシステムです．
+
+その中でも特に重要なのが，\textbf{線形時不変 (Linear Time-Invariant; LTI) 系}です．
+LTI 系は解析しやすく，多くのフィルタや信号処理アルゴリズムの基礎になります．
+
+
+\section{線形性}
+
+システム $\mathcal{T}$ が\textbf{線形}であるとは，任意の信号 $x_1[n], x_2[n]$ と定数 $a, b$ に対して
+\[
+\mathcal{T}\{a x_1[n] + b x_2[n]\}
+= a\mathcal{T}\{x_1[n]\} + b\mathcal{T}\{x_2[n]\}
+\]
+が成り立つことです．
+
+これは
+\begin{itemize}
+\item 入力を足したとき，出力も足し合わせで表せる
+\item 入力を定数倍したとき，出力も同じ定数倍になる
+\end{itemize}
+という 2 つの性質をまとめたものです．
+
+線形性があると，複雑な入力を簡単な成分に分けて考えられます．
+スペクトル解析や畳み込みが有効なのは，この分解可能性のおかげです．
+
+
+\section{時不変性}
+
+システム $\mathcal{T}$ が\textbf{時不変}であるとは，入力を $n_0$ サンプル遅らせたとき，
+出力も同じだけ遅れることです．
+式で書くと，
+\[
+\mathcal{T}\{x[n-n_0]\} = y[n-n_0]
+\]
+です．
+
+この性質は，「いつ入力したか」ではなく「どのような形の入力か」にだけシステムが反応することを意味します．
+同じ拍手音でも，1 秒後に入れても 2 秒後に入れても，応答波形の形は変わらず位置だけがずれる，というのが時不変の直感です．
+
+
+\section{インパルス応答}
+
+LTI 系に単位インパルス $\delta[n]$ を入力したときの出力を
+\[
+h[n] = \mathcal{T}\{\delta[n]\}
+\]
+と定義し，これを\textbf{インパルス応答}と呼びます．
+
+インパルス応答が重要なのは，LTI 系では任意の入力に対する出力を $h[n]$ だけで決められるからです．
+これは，任意の離散信号が
+\[
+x[n] = \sum_{m=-\infty}^{\infty} x[m]\delta[n-m]
+\]
+と表せることから分かります．
+
+右辺は「各時刻 $m$ に置かれたシフト付きインパルスを，重み $x[m]$ で足し合わせたもの」です．
+LTI 系にこの表現を入れると，線形性と時不変性によって
+\[
+y[n] = \sum_{m=-\infty}^{\infty} x[m] h[n-m]
+\]
+が得られます．
+
+これが\textbf{畳み込み和}です．
+
+
+\section{畳み込み}
+
+離散時間の畳み込みを
+\[
+y[n] = (x * h)[n] = \sum_{m=-\infty}^{\infty} x[m] h[n-m]
+\]
+と書きます．
+
+畳み込みの計算では，$h[n]$ を反転して平行移動し，入力 $x[m]$ と重ね合わせながら総和を取る，という見方が有用です．
+公式だけ暗記するのではなく，
+\begin{itemize}
+\item 反転
+\item シフト
+\item 各点での積
+\item 総和
+\end{itemize}
+の流れを頭の中で再現できるようにしておく必要があります．
+
+有限長の FIR フィルタなら，実際には和の範囲は有限個の項だけになります．
+例えば
+\[
+h[0] = \frac{1}{3}, \quad h[1] = \frac{1}{3}, \quad h[2] = \frac{1}{3}
+\]
+だけが非ゼロなら，
+\[
+y[n] = \frac{x[n] + x[n-1] + x[n-2]}{3}
+\]
+となり，3 点移動平均フィルタになります．
+
+
+\section{差分方程式による表現}
+
+LTI 系は，差分方程式で書かれることも多いです．
+例えば
+\[
+y[n] = x[n] + 0.5x[n-1]
+\]
+は FIR 系です．
+
+一方，
+\[
+y[n] = 0.8 y[n-1] + x[n]
+\]
+のように過去の出力を使う系は IIR 系です．
+
+FIR は有限長のインパルス応答を持ち，実装や安定性の扱いが比較的簡単です．
+IIR は少ない係数で鋭い周波数特性を作りやすい一方で，安定性や初期条件の扱いが重要になります．
+
+
+\section{因果性と BIBO 安定性}
+
+\subsection{因果性}
+
+実時間で動作するシステムでは，現在の出力が未来の入力に依存してはいけません．
+この性質を\textbf{因果性}と呼びます．
+
+LTI 系が因果的であるためには，
+\[
+h[n] = 0 \quad (n < 0)
+\]
+であることが必要です．
+つまり，インパルスを入れる前に応答が始まってはいけません．
+
+
+\subsection{BIBO 安定性}
+
+有界な入力に対して常に有界な出力が得られる性質を\textbf{BIBO 安定}と呼びます．
+離散時間 LTI 系では
+\[
+\sum_{n=-\infty}^{\infty} |h[n]| < \infty
+\]
+であれば BIBO 安定です．
+
+直感的には，インパルス応答の総量が無限に大きくならないなら，入力を有限範囲に抑えたとき出力も暴走しない，ということです．
+
+
+\section{周波数応答}
+
+複素指数信号
+\[
+x[n] = \exp(\mathrm{j}\omega n)
+\]
+を LTI 系に入れると，出力は同じ周波数のまま定数倍されます．
+すなわち
+\[
+y[n] = H(\mathrm{e}^{\mathrm{j}\omega}) \exp(\mathrm{j}\omega n)
+\]
+と書けます．
+
+ここで
+\[
+H(\mathrm{e}^{\mathrm{j}\omega}) = \sum_{n=-\infty}^{\infty} h[n]\exp(-\mathrm{j}\omega n)
+\]
+を\textbf{周波数応答}と呼びます．
+
+$|H(\mathrm{e}^{\mathrm{j}\omega})|$ は周波数ごとの増幅率，
+$\angle H(\mathrm{e}^{\mathrm{j}\omega})$ は位相のずれを表します．
+ローパスフィルタ，高域強調，帯域通過といった設計は，この周波数応答を狙って行います．
+
+
+\section{Python で移動平均と IIR を比べる}
+
+以下のコードでは，ノイズを含む信号に対して，FIR の移動平均と 1 次 IIR を適用します．
+
+\begin{lstlisting}[style=codecell,language=Python]
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+output_dir = Path("outputs/ch15")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+rng = np.random.default_rng(0)
+n = np.arange(200)
+x = np.sin(2 * np.pi * 0.03 * n) + 0.4 * rng.standard_normal(size=n.shape)
+
+h = np.ones(5) / 5
+y_fir = np.convolve(x, h, mode="same")
+
+y_iir = np.zeros_like(x)
+alpha = 0.8
+for i in range(len(x)):
+    prev = y_iir[i - 1] if i > 0 else 0.0
+    y_iir[i] = alpha * prev + (1 - alpha) * x[i]
+
+plt.figure(figsize=(8, 3))
+plt.plot(n, x, label="input", alpha=0.5)
+plt.plot(n, y_fir, label="FIR moving average", linewidth=2)
+plt.plot(n, y_iir, label="first-order IIR", linewidth=2)
+plt.xlabel("sample index n")
+plt.ylabel("amplitude")
+plt.legend()
+plt.tight_layout()
+plt.savefig(output_dir / "fir_vs_iir.png", dpi=150)
+plt.close()
+\end{lstlisting}
+
+この例では，どちらも平滑化を行いますが，性質は同じではありません．
+\begin{itemize}
+\item FIR 移動平均は有限個の過去サンプルだけを見る
+\item IIR は過去の出力を再帰的に使うので，より長い記憶を持つ
+\item 同じ「なめらかにする」処理でも，遅延や立ち上がりの鋭さが異なる
+\end{itemize}
+
+この差は，周波数応答を見るとさらに明確になります．
+
+
+\section{この章で押さえるべき点}
+
+\begin{itemize}
+\item LTI 系は線形性と時不変性を持つシステムである
+\item LTI 系はインパルス応答 $h[n]$ だけで記述できる
+\item 任意入力への出力は畳み込み和 $y[n] = (x*h)[n]$ で与えられる
+\item 因果性は $h[n]=0$ for $n<0$，BIBO 安定性は $\sum_n |h[n]| < \infty$ と関係する
+\item 周波数応答 $H(\mathrm{e}^{\mathrm{j}\omega})$ を見ると，フィルタが各周波数をどう変えるか分かる
+\end{itemize}
+
+本章まで理解できれば，離散信号，スペクトル，LTI 系という信号処理の中核概念が一通りつながります．
+この基盤の上に，STFT，画像フィルタ，音響特徴量抽出，畳み込みニューラルネットワークの理解を積み上げていけます．

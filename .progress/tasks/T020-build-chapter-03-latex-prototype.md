@@ -16,10 +16,10 @@ Milestone: M007
 - Out: polishing every formatting edge case across the whole notebook corpus.
 
 ## Deliverables
-- `latex/chapters/` chapter file for chapter 03.
-- `latex/markdown/` chapter Markdown for chapter 03.
-- Extracted figure image files under `latex/figures/generated/`.
-- A future replay script under `latex/figures/scripts/`.
+- `textbook/chapters/` chapter file for chapter 03.
+- `textbook/markdown/` chapter Markdown for chapter 03.
+- Extracted figure image files under `textbook/figures/generated/`.
+- A future replay script under `textbook/figures/scripts/`.
 
 ## Acceptance Criteria
 - [x] Chapter 03 has both `.tex` and `.md` outputs under the new layout.

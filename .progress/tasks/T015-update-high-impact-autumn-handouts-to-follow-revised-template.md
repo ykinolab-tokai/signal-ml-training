@@ -17,11 +17,11 @@ Milestone: M005
 
 ## Deliverables
 - Updated autumn handouts with concrete task flow and student-facing verification points.
-- Removal or relocation of internal-only notes from active student materials.
+- Removal or relocation of internal-only notes from active student handouts.
 
 ## Acceptance Criteria
 - [x] Priority autumn sessions tell students what file or artifact to create and what to verify before submission.
-- [x] Student-facing materials no longer expose internal migration notes.
+- [x] Student-facing handouts no longer expose internal migration notes.
 - [x] Revised handouts remain consistent with the updated autumn template.
 
 ## Dependencies / Blockers
