@@ -48,7 +48,7 @@ latexmk -interaction=nonstopmode -halt-on-error main.tex
 ```text
 README.md            canonical seminar policy and yearly structure
 textbook/            canonical LaTeX source for the legacy textbook-style material
-handouts/            student-facing handouts for spring/autumn sessions
+handouts/            student-facing handouts numbered in student work order
 templates/           handout templates for new or revised sessions
 .progress/           task and milestone tracking for repository updates
 ```

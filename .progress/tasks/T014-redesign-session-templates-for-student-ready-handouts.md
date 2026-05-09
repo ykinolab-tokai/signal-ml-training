@@ -1,6 +1,6 @@
 # T014 Redesign session templates for student-ready handouts
 
-Last updated: 2026-04-22
+Last updated: 2026-05-09
 Status: done
 Priority: high
 Owner: codex
@@ -12,11 +12,11 @@ Milestone: M005
 - The current templates still emphasize summary sections such as goals and notes more than executable task flow.
 
 ## Scope
-- In: `templates/spring-session-template.md`, `templates/autumn-session-template.md`, and the section model they impose on future handouts.
+- In: `templates/session-template.md` and the section model it imposes on future handouts.
 - Out: full rewrites of all existing handouts.
 
 ## Deliverables
-- Revised spring and autumn templates centered on actionable student workflow.
+- A unified session template centered on actionable student workflow.
 - A clear list of mandatory vs optional sections for future handouts.
 
 ## Acceptance Criteria
