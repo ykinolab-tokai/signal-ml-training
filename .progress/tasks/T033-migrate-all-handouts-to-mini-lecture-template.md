@@ -12,8 +12,8 @@ Milestone: M010
 - The new default template should give students the minimum conceptual bridge they need before coding, then require both execution and interpretation through clearly bounded `基礎レベル` and `発展レベル` exercises.
 
 ## Scope
-- In: `materials/README.md`, `materials/spring/*.md`, and `materials/autumn/*.md`.
-- Out: seminar policy changes in `README.md`, repository layout changes, and deep expansion of `latex/` chapters.
+- In: `handouts/README.md`, `handouts/spring/*.md`, and `handouts/autumn/*.md`.
+- Out: seminar policy changes in `README.md`, repository layout changes, and deep expansion of `textbook/` chapters.
 
 ## Deliverables
 - All 28 handouts rewritten to the new five-section template.
@@ -21,7 +21,7 @@ Milestone: M010
 - Self-check points and fallback references remain available after the rewrite.
 
 ## Acceptance Criteria
-- [x] All files under `materials/spring/` and `materials/autumn/` use only the new section headings.
+- [x] All files under `handouts/spring/` and `handouts/autumn/` use only the new section headings.
 - [x] Each handout contains `## ミニ講義` plus `### 基礎レベル` and `### 発展レベル` under `## 演習`.
 - [x] Exercises remain concrete enough to start without instructor translation but include at least one reasoning, comparison, or interpretation task.
 - [x] `詰まったときに見る資料` still points to the most relevant repo-internal or official references.

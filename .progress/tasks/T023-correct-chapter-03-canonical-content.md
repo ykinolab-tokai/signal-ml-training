@@ -21,8 +21,8 @@ Milestone: M007
 
 ## Acceptance Criteria
 - [x] Chapter 03 no longer contains contradictory statistics outputs or local-environment traceback leakage where the content should succeed.
-- [x] Chapter 03 references only migrated figure assets under `latex/`.
-- [x] Chapter 03 remains buildable from `latex/main.tex`.
+- [x] Chapter 03 references only migrated figure assets under `textbook/`.
+- [x] Chapter 03 remains buildable from `textbook/main.tex`.
 
 ## Dependencies / Blockers
 - Depends on the converter fixes where possible, but content cleanup may also require direct edits to the canonical outputs.

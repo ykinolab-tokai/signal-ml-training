@@ -1,4 +1,4 @@
-# T017 Rewrite materials and policy docs for script-first execution
+# T017 Rewrite handouts and policy docs for script-first execution
 
 Last updated: 2026-04-22
 Status: done
@@ -12,7 +12,7 @@ Milestone: M006
 - Policy docs and several handouts still described the expected student output as notebooks.
 
 ## Scope
-- In: `README.md`, `AGENTS.md`, `materials/README.md`, templates, and handouts that still required notebook submissions.
+- In: `README.md`, `AGENTS.md`, `handouts/README.md`, templates, and handouts that still required notebook submissions.
 - Out: deleting historical references that explain migration away from notebooks.
 
 ## Deliverables

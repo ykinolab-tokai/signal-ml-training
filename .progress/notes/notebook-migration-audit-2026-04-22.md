@@ -5,15 +5,15 @@ Milestone: M007
 
 ## Scope
 - Corpus: `text/*.ipynb`
-- Output roots: `latex/chapters/`, `latex/markdown/`, `latex/figures/`
+- Output roots: `textbook/chapters/`, `textbook/markdown/`, `textbook/figures/`
 
 ## Migration groups
 - Empty notebooks: `13_Basics_of_Signal_Processing.ipynb`, `14_Basics_of_Spectrum_Analysis.ipynb`, `15_Basics_of_LTI_Systems.ipynb`
   These now map to intentionally empty `.tex` and `.md` files.
 - Markdown-first chapters with local static assets: `01`, `02`, `04`, `06a`, `06b`, `21`, `23`
-  The converter copies static assets out of `text/images/` into `latex/figures/source/`.
+  The converter copies static assets out of `text/images/` into `textbook/figures/source/`.
 - Code-heavy chapters with embedded notebook figures: `03`, `08`
-  These chapters also emit replay scripts under `latex/figures/scripts/`.
+  These chapters also emit replay scripts under `textbook/figures/scripts/`.
 - Code-heavy chapters without embedded figures: `07`, `11`, `12`, `22`
   These convert mechanically after table, code, and output normalization fixes.
 - Markdown-first chapters without special assets: `00`, `05`
@@ -25,5 +25,5 @@ Milestone: M007
 
 ## Tooling status
 - The converter now handles empty notebooks, duplicate chapter numbers (`06a`, `06b`), sparse Markdown tables, chapter-local note labels, local fallback for URL-based images, and malformed display-math closing markers.
-- `latex/main.pdf` builds successfully from the full converted corpus.
+- `textbook/main.pdf` builds successfully from the full converted corpus.
 - The `uv` Python environment is available, so replay scripts can be run later with the managed dependencies.

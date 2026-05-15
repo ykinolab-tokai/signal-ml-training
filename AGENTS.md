@@ -29,7 +29,7 @@ git pull origin main
 # No automated test suite; re-run any edited `.py` script or Markdown example manually.
 
 # Build
-cd latex
+cd textbook
 latexmk -interaction=nonstopmode -halt-on-error main.tex
 ```
 
@@ -47,8 +47,8 @@ latexmk -interaction=nonstopmode -halt-on-error main.tex
 
 ```text
 README.md            canonical seminar policy and yearly structure
-latex/               canonical LaTeX source for the legacy textbook-style material
-materials/           student-facing handouts for spring/autumn sessions
+textbook/            canonical LaTeX source for the legacy textbook-style material
+handouts/            student-facing handouts numbered in student work order
 templates/           handout templates for new or revised sessions
 .progress/           task and milestone tracking for repository updates
 ```

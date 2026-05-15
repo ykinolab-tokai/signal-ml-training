@@ -9,14 +9,14 @@ Milestone: M001
 
 ## Background
 - Spring covers sessions 1-14 for B4/M advanced work.
-- Each session needs a student-facing Markdown handout under `materials/spring`.
+- Each session needs a student-facing Markdown handout under `handouts/spring`.
 
 ## Scope
 - In: 14 Markdown handouts for sessions 1-14.
 - Out: executable code assets beyond what the handouts reference.
 
 ## Deliverables
-- `materials/spring/*.md` for all spring sessions.
+- `handouts/spring/*.md` for all spring sessions.
 
 ## Acceptance Criteria
 - [x] There are 14 spring handouts.

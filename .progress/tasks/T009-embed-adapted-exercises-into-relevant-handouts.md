@@ -8,7 +8,7 @@ Due: 2026-04-11
 Milestone: M003
 
 ## Background
-- The user asked for the actionable content of `exercises.md` to be reflected in `materials/`.
+- The user asked for the actionable content of `exercises.md` to be reflected in `handouts/`.
 - Handouts should carry concrete recommended tasks instead of only topic summaries.
 
 ## Scope
@@ -16,7 +16,7 @@ Milestone: M003
 - Out: copying the old chapter structure verbatim where it no longer fits the seminar plan.
 
 ## Deliverables
-- Updated materials files containing adapted exercise sections.
+- Updated handouts files containing adapted exercise sections.
 
 ## Acceptance Criteria
 - [x] Matching handouts contain concrete exercises derived from `exercises.md`.
