@@ -31,5 +31,5 @@
 - 発展課題では、条件選択の理由がデータ量や更新自由度に結びついている。
 
 ## 詰まったときに見る資料
-- [`10-pytorch-model-dataset-basics.md`](10-pytorch-model-dataset-basics.md)
-- [`11-training-loop-basics.md`](11-training-loop-basics.md)
+- [`10-noise-and-signal-restoration.md`](10-noise-and-signal-restoration.md)
+- [`11-audio-signals.md`](11-audio-signals.md)

@@ -7,8 +7,7 @@
 扱う範囲は、数学、信号処理、機械学習の理論とそれらの Python 実装です。
 研究設計、研究評価、文章作法、発表作法などの研究スキルは、このリポジトリでは扱いません。
 
-全28回の構成で、**第 1〜14 回を新規配属 B3 向けの固定ブートキャンプ、第 15〜28 回を B4・M 向けの発展枠** 
-として設計します。
+全28回の構成で設計します。
 
 # 全 28 回の内容
 
@@ -16,18 +15,18 @@
 
 | 回 | 主題 | 内容 | 資料 |
 | -- | -- | -- | -- |
-| 1 | 環境構築とワークフロー | ターミナル，ファイルパス，ディレクトリ操作，Python 仮想環境，VS Code, Git | [01 研究室オンボーディング](handouts/01-onboarding.md) |
-| 2 | Python 基礎 | 変数、関数，条件分岐，繰り返し，list、dict、スライス | [02 Python script の基礎](handouts/02-python-script-basics.md) |
-| 3 | 数学基礎とNumpy, Matplotlib | 初等関数とグラフ，グラフの平行移動，Numpy配列，Matplotlibによるグラフの描画 | [03 配列と tensor の基礎](handouts/03-array-and-tensor-basics.md) |
-| 4 | 微分と積分 | 傾き，数値微分，偏微分，勾配，関数の極値，区分求積法，定積分と数値積分 | [04 線形代数の基礎](handouts/04-linear-algebra-basics.md) |
-| 5 | 線形代数 | ベクトル・行列の和，内積，行列積，ノルム，射影，線形変換，逆行列 | [05 確率統計の基礎](handouts/05-probability-and-statistics-basics.md) |
-| 6 | 確率 | 平均，分散，共分散，一様分布，正規分布，最尤推定 | [06 離散信号と畳み込み](handouts/06-discrete-signals-and-convolution.md) |
-| 7 | 信号とサンプリング | 連続時間と離散時間，サンプリング周波数，サンプリング定理，信号に対する演算，量子化 | [07 Fourier 変換と STFT](handouts/07-fourier-and-stft-basics.md) |
-| 8 | Fourier 変換 | DFT, 振幅スペクトルと位相スペクトル，窓関数 | [08 音響データの基礎](handouts/08-audio-data-basics.md) |
-| 9 | 線形時不変システムと畳み込み | 線形時不変システム，畳み込み，畳み込み定理，フィルタと周波数応答 | [09 画像データの基礎](handouts/09-image-data-basics.md) |
-| 10 | ノイズと信号復元 | 加法性ノイズ，信号とノイズのスペクトル，フィーナーフィルタ | [10 PyTorch model と Dataset の基礎](handouts/10-pytorch-model-dataset-basics.md) |
-| 11 | 音響信号 | 音の読み込み，再生，リサンプリング，STFT，メルスペクトログラム | [11 training loop の基礎](handouts/11-training-loop-basics.md) |
-| 12 | 画像信号 | 2次元信号，画像の読み込み，表示，幾何変換，2次元DFT，2次元フィルタ | [12 音響 baseline ミニ実装](handouts/12-audio-baseline-mini-implementation.md) |
+| 1 | 環境構築とワークフロー | ターミナル，ファイルパス，ディレクトリ操作，Python 仮想環境，VS Code, Git | [01 環境構築とワークフロー](handouts/01-environment-and-workflow.md) |
+| 2 | Python 基礎 | 変数、関数，条件分岐，繰り返し，list、dict、スライス | [02 Python 基礎](handouts/02-python-basics.md) |
+| 3 | 数学基礎とNumpy, Matplotlib | 初等関数とグラフ，グラフの平行移動，Numpy配列，Matplotlibによるグラフの描画 | [03 数学基礎とNumpy, Matplotlib](handouts/03-math-basics-numpy-matplotlib.md) |
+| 4 | 微分と積分 | 傾き，数値微分，偏微分，勾配，関数の極値，区分求積法，定積分と数値積分 | [04 微分と積分](handouts/04-differentiation-and-integration.md) |
+| 5 | 線形代数 | ベクトル・行列の和，内積，行列積，ノルム，射影，線形変換，逆行列 | [05 線形代数](handouts/05-linear-algebra.md) |
+| 6 | 確率 | 平均，分散，共分散，一様分布，正規分布，最尤推定 | [06 確率](handouts/06-probability.md) |
+| 7 | 信号とサンプリング | 連続時間と離散時間，サンプリング周波数，サンプリング定理，信号に対する演算，量子化 | [07 信号とサンプリング](handouts/07-signals-and-sampling.md) |
+| 8 | Fourier 変換 | DFT, 振幅スペクトルと位相スペクトル，窓関数 | [08 Fourier 変換](handouts/08-fourier-transform.md) |
+| 9 | 線形時不変システムと畳み込み | 線形時不変システム，畳み込み，畳み込み定理，フィルタと周波数応答 | [09 線形時不変システムと畳み込み](handouts/09-lti-systems-and-convolution.md) |
+| 10 | ノイズと信号復元 | 加法性ノイズ，信号とノイズのスペクトル，フィーナーフィルタ | [10 ノイズと信号復元](handouts/10-noise-and-signal-restoration.md) |
+| 11 | 音響信号 | 音の読み込み，再生，リサンプリング，STFT，メルスペクトログラム | [11 音響信号](handouts/11-audio-signals.md) |
+| 12 | 画像信号 | 2次元信号，画像の読み込み，表示，幾何変換，2次元DFT，2次元フィルタ | [12 画像信号](handouts/12-image-signals.md) |
 | 13 | ミニプロジェクト | 画像: ノイズ除去，鮮鋭化，トーンマッピング，色変換，音: ノイズ除去，簡易イコライザ作成，音声のピッチ推定 | [13 画像 baseline ミニ実装](handouts/13-image-baseline-mini-implementation.md) |
 | 14 | 統合確認 | 口頭技術確認、code walkthrough、repo 整理、PR / code review 体験 | [14 口頭確認と repo 整理](handouts/14-oral-check-and-repo-wrapup.md) |
 

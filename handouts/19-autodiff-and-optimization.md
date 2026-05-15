@@ -32,5 +32,5 @@
 - report に、loss の数値だけでなく scheduler の役割に関する説明がある。
 
 ## 詰まったときに見る資料
-- [`10-pytorch-model-dataset-basics.md`](10-pytorch-model-dataset-basics.md)
+- [`10-noise-and-signal-restoration.md`](10-noise-and-signal-restoration.md)
 - [`../textbook/markdown/ch23-basics-of-neural-networks.md`](../textbook/markdown/ch23-basics-of-neural-networks.md)

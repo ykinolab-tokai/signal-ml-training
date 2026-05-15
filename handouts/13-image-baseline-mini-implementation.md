@@ -31,5 +31,5 @@
 - report に、単一の推論例だけでなく全体評価がある。
 
 ## 詰まったときに見る資料
-- [`09-image-data-basics.md`](09-image-data-basics.md)
-- [`11-training-loop-basics.md`](11-training-loop-basics.md)
+- [`09-lti-systems-and-convolution.md`](09-lti-systems-and-convolution.md)
+- [`11-audio-signals.md`](11-audio-signals.md)

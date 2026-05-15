@@ -31,5 +31,5 @@
 - 発展課題で、中心化の有無による違いを shape ではなく意味の違いとして説明している。
 
 ## 詰まったときに見る資料
-- [`04-linear-algebra-basics.md`](04-linear-algebra-basics.md)
+- [`05-linear-algebra.md`](05-linear-algebra.md)
 - [`../textbook/markdown/ch06a-basics-of-linear-algebra.md`](../textbook/markdown/ch06a-basics-of-linear-algebra.md)

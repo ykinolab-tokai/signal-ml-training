@@ -31,5 +31,5 @@
 - report に、shape の列挙だけでなく、軸の意味と表現と model の相性に関する説明がある。
 
 ## 詰まったときに見る資料
-- [`07-fourier-and-stft-basics.md`](07-fourier-and-stft-basics.md)
-- [`08-audio-data-basics.md`](08-audio-data-basics.md)
+- [`07-signals-and-sampling.md`](07-signals-and-sampling.md)
+- [`08-fourier-transform.md`](08-fourier-transform.md)

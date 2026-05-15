@@ -38,5 +38,5 @@
 - 発展課題で、自分の弱点と見直すべき file が対応づいている。
 
 ## 詰まったときに見る資料
-- [`12-audio-baseline-mini-implementation.md`](12-audio-baseline-mini-implementation.md)
+- [`12-image-signals.md`](12-image-signals.md)
 - [`13-image-baseline-mini-implementation.md`](13-image-baseline-mini-implementation.md)

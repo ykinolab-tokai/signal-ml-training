@@ -32,5 +32,5 @@
 - 発展課題で、positive と negative の違いを loss の目的と結びつけて説明している。
 
 ## 詰まったときに見る資料
-- [`10-pytorch-model-dataset-basics.md`](10-pytorch-model-dataset-basics.md)
+- [`10-noise-and-signal-restoration.md`](10-noise-and-signal-restoration.md)
 - PyTorch docs: [`torch.nn.CosineEmbeddingLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.CosineEmbeddingLoss.html)

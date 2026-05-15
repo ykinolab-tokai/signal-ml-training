@@ -384,7 +384,7 @@ VS Code から実行する Python も
 
 環境構築後は，Pythonを実行できることまで確認する。
 次の Python スクリプトを
-`signal-ml-training/exercises/exc00_01.py` として
+`signal-ml-training/exercises/exc01_01.py` として
 作成し，
 実行の結果 `singal-ml-training/outputs/setup_check/sin.png` が作られれば正しく環境構築できている。
 

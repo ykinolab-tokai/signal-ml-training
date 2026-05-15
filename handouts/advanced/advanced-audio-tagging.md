@@ -33,4 +33,4 @@
 
 ## 詰まったときに見る資料
 - [`22-audio-representations-and-models.md`](../22-audio-representations-and-models.md)
-- [`12-audio-baseline-mini-implementation.md`](../12-audio-baseline-mini-implementation.md)
+- [`12-image-signals.md`](../12-image-signals.md)
