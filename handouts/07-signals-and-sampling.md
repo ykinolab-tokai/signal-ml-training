@@ -11,7 +11,10 @@
 
 **信号 (signal)** とは，情報を伝達する音や光などに対するその物理量．
 信号は，1つ以上の独立変数を有する関数・数列・ベクトルとして表される．
-以下では，時間を独立変数とする信号を考える．
+物理的に観測される信号は実数値であることが多いが，
+理論的には複素数値信号を考えるほうが便利である．
+よって，これ以降は特に指定のない限り複素数値信号を考えることにする．
+また，以下では，時間を独立変数とする信号を考える．
 
 #### 連続時間信号
 
@@ -21,7 +24,7 @@
 
 とびとびの時間（整数 $n \in \mathbb{Z}$） に対して定義される信号で，$x[n]$ と表す（角括弧）．
 
-$x[n]$ を要素とするベクトル $ \boldsymbol{x} = (\cdots, x[n-1], x[n], x[n+1], \cdots)^\top$ として表現する場合もある．
+$x[n]$ を要素とするベクトル $\boldsymbol{x} = (\cdots, x[n-1], x[n], x[n+1], \cdots)^\top$ として表現する場合もある．
 
 
 #### 正弦波信号と周期信号
@@ -42,6 +45,8 @@ $$
 - $\Omega = 2\pi F$：**角周波数 (angular frequency)** [rad/s]
 
 正弦波信号のように， $x(t) = x(t+T)$ を満たす $T$ が存在する信号を **周期信号** という．
+周期 $T$ を持つ信号は，その整数倍 $kT (k \in \mathbb{N})$ も周期として持つ．
+周期信号に対する最小の周期を **基本周期 (fundamental period)** という．
 
 #### 標本化（サンプリング）
 
@@ -150,7 +155,11 @@ $$
 
 - **加算**：$y(t) = x_1(t) + x_2(t), \quad y[n] = x_1[n] + x_2[n]$
 - **乗算**：$y(t) = x_1(t) \cdot x_2(t), \quad y[n] = x_1[n] \cdot x_2[n]$
-- **内積**：$\langle x_1, x_2 \rangle = \int_\mathbb{R} x_1(t) x_2(t) \mathrm{d}t, \quad \langle x_1, x_2 \rangle = \sum_{-\infty}^{\infty} x_1[n] x_2[n] = \boldsymbol{x}_1^\top \boldsymbol{x}_2$
+- **内積**：$\langle x_1, x_2 \rangle = \int_\mathbb{R} \overline{x_1(t)} x_2(t) \mathrm{d}t, \quad \langle x_1, x_2 \rangle = \sum_{-\infty}^{\infty} \overline{x_1[n]} x_2[n] = \boldsymbol{x}_1^* \boldsymbol{x}_2$
+
+    - ここで，$\overline{z}$ は複素数 $z$ の複素共役を表す．
+    - また，$\boldsymbol{x}^*$ はベクトル $\boldsymbol{x}$ の複素共役転置（各要素の複素共役をとって転置）を表す．
+    - 複素数値信号の場合，内積は $x_1$ の複素共役をとることに注意．
 
 ---
 
