@@ -32,5 +32,5 @@
 - `Dataset`、`collate_fn`、`DataLoader` の役割が混ざっていない。
 
 ## 詰まったときに見る資料
-- [`09-lti-systems-and-convolution.md`](09-lti-systems-and-convolution.md)
-- [`10-noise-and-signal-restoration.md`](10-noise-and-signal-restoration.md)
+- [`10-lti-systems-and-convolution.md`](10-lti-systems-and-convolution.md)
+- [`11-noise-and-signal-restoration.md`](11-noise-and-signal-restoration.md)

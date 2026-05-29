@@ -13,7 +13,7 @@
 
 **Project type:** Seminar curriculum repository for image/audio signal processing and deep-learning implementation training  
 **Primary language:** Markdown, LaTeX, Python 3  
-**Key dependencies:** NumPy, matplotlib, pandas, scikit-learn, Pillow, soundfile, PyTorch, torchvision, torchaudio
+**Key dependencies:** NumPy, matplotlib, pandas, scikit-learn, Pillow, soundfile, sounddevice, librosa, PyTorch, torchvision, torchaudio
 
 ---
 
