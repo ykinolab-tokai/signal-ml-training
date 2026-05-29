@@ -4,13 +4,12 @@
 - 音を再生・保存し，数値配列としての信号と実際の聞こえ方を対応づける．
 - Fourier 変換によって振幅スペクトルを可視化する．
 - STFT とメルスペクトログラムを計算し，時間周波数表現として可視化する．
-- リサンプリングによってサンプル数，時間長，周波数成分がどう変わるか確認する．
 
 ## 解説
 
 ### 0. 準備
 
-この回では，音信号の読み書きに `soundfile`，再生に `sounddevice`，STFT・メルスペクトログラム・リサンプリングに `librosa` を用いる．
+この回では，音信号の読み書きに `soundfile`，再生に `sounddevice`，STFT・メルスペクトログラムに `librosa` を用いる．
 - [soundfile documentation](https://python-soundfile.readthedocs.io/)
 - [sounddevice documentation](https://python-sounddevice.readthedocs.io/)
 - [librosa documentation](https://librosa.org/doc/latest/index.html)
@@ -346,7 +345,6 @@ plt.close()
 
 ## 演習
 基本的にはプログラム (Python) を使って取り組むことを想定しています．
-音声 file の読み書きには `soundfile`，再生には `sounddevice`，STFT・メルスペクトログラム・リサンプリングには `librosa` を用いてください．
 
 ### 基礎レベル
 
