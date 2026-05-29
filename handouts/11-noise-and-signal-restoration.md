@@ -1,4 +1,4 @@
-# 第10回 ノイズと信号復元
+# 第11回 ノイズと信号復元
 
 - 加法性ノイズを含む信号を作り，時間波形とスペクトルで確認する。
 - 信号とノイズのスペクトルの違いを観察する。
@@ -13,13 +13,13 @@
 
 ## 演習
 ### 基礎レベル（7問）
-1. `scripts/`，`outputs/session10/`，`outputs/figures/` を作成し，`scripts/session10_noise_restoration.py` で 5 Hz と 40 Hz の sine 波を足した clean signal を作る。
+1. `scripts/`，`outputs/session11/`，`outputs/figures/` を作成し，`scripts/session11_noise_restoration.py` で 5 Hz と 40 Hz の sine 波を足した clean signal を作る。
 2. 平均 0 の Gaussian noise を加え，noisy signal を作る。clean，noise，noisy を同じ図に描く。
 3. clean，noise，noisy の振幅スペクトルを描き，どの周波数帯に成分があるか確認する。
 4. moving average filter を実装し，window length 3，9，21 で復元結果を比較する。
 5. clean と復元信号の平均二乗誤差を計算し，window length ごとに表にする。
 6. 合成データで得られる clean と noise のパワースペクトルを使い，周波数領域の Wiener filter を実装する。
-7. noisy，moving average，Wiener filter の結果を比較し，`outputs/session10/session10_report.md` に図と誤差をまとめる。
+7. noisy，moving average，Wiener filter の結果を比較し，`outputs/session11/session11_report.md` に図と誤差をまとめる。
 
 ### 発展レベル（7問）
 1. ノイズの標準偏差を 0.1，0.5，1.0 に変え，復元の難しさがどう変わるか確認する。

@@ -31,5 +31,5 @@
 - report に、単一の推論例だけでなく全体評価がある。
 
 ## 詰まったときに見る資料
-- [`09-lti-systems-and-convolution.md`](09-lti-systems-and-convolution.md)
-- [`11-audio-signals.md`](11-audio-signals.md)
+- [`09-audio-signals.md`](09-audio-signals.md)
+- [`10-lti-systems-and-convolution.md`](10-lti-systems-and-convolution.md)

@@ -1,4 +1,4 @@
-# 第09回 線形時不変システムと畳み込み
+# 第10回 線形時不変システムと畳み込み
 
 - 線形時不変システムの線形性と時不変性を数値実験で確認する。
 - 畳み込みを手計算に近い形と NumPy の関数で確認する。
@@ -13,7 +13,7 @@
 
 ## 演習
 ### 基礎レベル（7問）
-1. `scripts/`，`outputs/session09/`，`outputs/figures/` を作成し，`scripts/session09_lti_convolution.py` で短い信号 `x = [1, 2, 0, 1]` と impulse response `h = [1, -1, 0.5]` を定義する。
+1. `scripts/`，`outputs/session10/`，`outputs/figures/` を作成し，`scripts/session10_lti_convolution.py` で短い信号 `x = [1, 2, 0, 1]` と impulse response `h = [1, -1, 0.5]` を定義する。
 2. 畳み込みを for 文で実装し，`np.convolve(x, h)` と一致するか確認する。
 3. `h = [1/3, 1/3, 1/3]` の移動平均フィルタを sine 波とノイズの和に適用し，前後の波形を描く。
 4. 線形性 `T(a*x1 + b*x2) = a*T(x1) + b*T(x2)` を，移動平均フィルタで数値的に確認する。
@@ -28,7 +28,7 @@
 4. 複数の移動平均長を比較し，filter length が長くなると周波数応答がどう変わるか図にする。
 5. impulse 入力を入れたとき，出力が impulse response そのものになることを確認する。
 6. 周波数応答の振幅と位相を別々に描く。
-7. 自分で `apply_fir_filter(x, h, mode="same")` を定義し，第10回のノイズ除去で再利用できる形にする。
+7. 自分で `apply_fir_filter(x, h, mode="same")` を定義し，第11回のノイズ除去で再利用できる形にする。
 
 ## 詰まったときに見る資料
 - [`../textbook/markdown/ch15-basics-of-lti-systems.md`](../textbook/markdown/ch15-basics-of-lti-systems.md)
