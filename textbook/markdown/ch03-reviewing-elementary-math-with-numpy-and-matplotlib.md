@@ -109,12 +109,12 @@ print(b)
 
 ```python
 print('Shape:', b.shape)
-print('Rank:', b.ndim)
+print('Dimensions:', b.ndim)
 ```
 
 ```text
 Shape: (3, 3)
-Rank: 2
+Dimensions: 2
 ```
 
 ここで、`size` という属性も見てみましょう。
@@ -652,7 +652,7 @@ plt.show()
 
 曲線がなめらかになりました。
 
-関数 $y = ax^2 + b^2 + c$ の $x$ を $x - \alpha$ に置き換えると、グラフを右に $\alpha$ だけ平行移動させることができます
+関数 $y = ax^2 + bx + c$ の $x$ を $x - \alpha$ に置き換えると、グラフを右に $\alpha$ だけ平行移動させることができます
 （$\alpha < 0$ の場合は左に平行移動します）。
 
 `plt.plot` を連続で実行することで、平行移動前後の2つのグラフを1つの図にまとめて描画してみましょう。
@@ -672,7 +672,7 @@ plt.show()
 ![Notebook figure 03-06](../figures/generated/03-reviewing-elementary-math-with-numpy-and-matplotlib/figure-06.png)
 
 関数の $x$ を $x - \alpha$ に置き換えるとグラフを右に平行移動させることができましたが、
-次式のように $y$ を $x - \beta$ に置き換えるとグラフを上に $\beta$ だけ平行移動させることができます
+次式のように $y$ を $y - \beta$ に置き換えるとグラフを上に $\beta$ だけ平行移動させることができます
 （$\beta<0$ の場合は下に平行移動）。
 
 $$
@@ -1000,7 +1000,7 @@ a + b:
 このような場合は、`b` は**一番上の次元にサイズが 1 の次元が追加された形** `(1, 3, 1)` として扱われます。
 そして 2 つの配列の各次元ごとのサイズの最大値をとった形 `(2, 3, 3)` にブロードキャストされ、足し算が行われます。
 
-このように、もし 2 つの配列のランクが異なる場合は、次元数が小さい方の配列が大きい方と同じ次元数になるまでその形の先頭に新たな次元が追加されます。
+このように、もし 2 つの配列の次元数（軸の数）が異なる場合は、次元数が小さい方の配列が大きい方と同じ次元数になるまでその形の先頭に新たな次元が追加されます。
 サイズが 1 の次元がいくつ追加されても、要素の数は変わらないことに注意してください。
 要素数（`size` 属性で取得できる値）は、各次元のサイズの掛け算になるので、1 を何度かけても値は変わらないことから、これが成り立つことが分かります。
 
@@ -1064,7 +1064,7 @@ NumPy のブロードキャストは慣れるまで直感に反するように�
 しかし、使いこなすと同じ計算が Python のループを使って行うよりも高速に行えるため、ブロードキャストを理解することは非常に重要です。
 一つ具体例を見てみます。
 
-$5 \times 5$ 行列 `a` に、3 次元ベクトル `b` を足します。
+$5 \times 5$ 行列 `a` に、5要素のベクトル `b` を足します。
 まず、`a`、`b` および結果を格納する配列 `c` を定義します。
 
 ```python
@@ -1082,200 +1082,102 @@ b = np.array([1, 2, 3, 4, 5])
 c = np.empty((5, 5))
 ```
 
-`%%timeit` という Jupyter Notebook で使用できるそのセルの実行時間を計測するためのマジックを使って、`a` の各行（1 次元目）に `b` の値を足していく計算を Python のループを使って 1 行ずつ処理していくコードの実行時間を測ってみます。
+標準ライブラリの `timeit` を使うと，`.py` からも同じ処理の実行時間を測れます。
+次の例は直前で定義した `a` と `b` を使います。時間は環境ごとに変わるので，数値を固定の正解として扱いません。
 
 ```python
-%%timeit
-for i in range(a.shape[0]):
-    c[i, :] = a[i, :] + b
+from timeit import timeit
+
+def add_loop():
+    result = np.empty_like(a)
+    for i in range(a.shape[0]):
+        result[i, :] = a[i, :] + b
+    return result
+
+def add_broadcast():
+    return a + b
+
+print(np.array_equal(add_loop(), add_broadcast()))
+print(add_broadcast())
+print("loop seconds:", timeit(add_loop, number=1000))
+print("broadcast seconds:", timeit(add_broadcast, number=1000))
 ```
 
-```text
-10.3 µs ± 2.03 µs per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
-```
+両者の計算結果が一致することを先に確認し，1000回の合計実行時間を比べます。
+小さな配列では関数呼び出し等の負担も含むため，速度差の倍率だけで一般化しないでください。
 
-```python
-c
-```
-
-```text
-array([[ 1.,  3.,  5.,  5.,  5.],
-       [ 4.,  6.,  8.,  8.,  8.],
-       [ 7.,  9., 11., 11., 11.],
-       [ 4.,  6.,  8.,  8.,  9.],
-       [ 1.,  3.,  5.,  5.,  5.]])
-```
-
-次に、NumPy のブロードキャストを活用した方法で同じ計算を行ってみます。
-
-```python
-%%timeit
-c = a + b
-```
-
-```text
-1.16 µs ± 35.7 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
-```
-
-```python
-c
-```
-
-```text
-array([[ 1.,  3.,  5.,  5.,  5.],
-       [ 4.,  6.,  8.,  8.,  8.],
-       [ 7.,  9., 11., 11., 11.],
-       [ 4.,  6.,  8.,  8.,  9.],
-       [ 1.,  3.,  5.,  5.,  5.]])
-```
-
-計算結果は当然同じになります。
-しかし、実行時間が数倍短くなっています。
-
-このように、ブロードキャストを理解して活用することで、記述が簡単になるだけでなく、実行速度という点においても有利になります。
 
 ## 基本的な統計量の求め方
 
-本節では、多次元配列に含まれる値の平均・分散・標準偏差・最大値・最小値といった統計値を計算する方法を紹介します。
-$8 \times 10$ の行列を作成し、この中に含まれる値全体に渡るこれらの統計値を計算してみましょう。
+以下の固定した $8\times10$ 配列で，出力と入力の対応を確認します。
+分散と標準偏差は，配列中の値を対象として要素数で割る `ddof=0` の定義です。
 
 ```python
-x = np.random.randint(0, 10, (8, 10))
+import numpy as np
 
-x
-```
-
-```text
-array([[2, 3, 9, 3, 2, 6, 1, 6, 4, 7],
-       [4, 9, 7, 6, 8, 5, 3, 6, 1, 6],
-       [3, 4, 4, 8, 9, 0, 9, 3, 7, 1],
-       [8, 5, 3, 1, 9, 6, 5, 9, 3, 8],
-       [6, 7, 9, 4, 5, 6, 9, 7, 2, 7],
-       [3, 6, 4, 8, 8, 1, 7, 9, 3, 5],
-       [6, 2, 8, 6, 1, 9, 3, 7, 4, 8],
-       [6, 2, 5, 8, 8, 2, 9, 4, 0, 4]])
-```
-
-```python
-# 平均値
-x.mean()
-```
-
-```text
-5.2625
-```
-
-```python
-# 分散
-x.var()
-```
-
-```text
-6.918593749999999
-```
-
-```python
-# 標準偏差
-x.std()
-```
-
-```text
-2.6303219859933495
-```
-
-```python
-# 最大値
-x.max()
-```
-
-```text
-3.0
-```
-
-```python
-# 最小値
-x.min()
-```
-
-```text
-1.0
-```
-
-ここで、`x` は 2 次元配列なので、各次元に沿ったこれらの統計値の計算も行えます。
-例えば、最後の次元内だけで平均をとると、8 個の平均値が得られるはずです。
-平均を計算したい軸（何次元目に沿って計算するか）を `axis` という引数に指定します。
-
-```python
-x.mean(axis=1)
-```
-
-```text
----------------------------------------------------------------------------
-AxisError                                 Traceback (most recent call last)
-Cell 123 line 1
-----> 1 x.mean(axis=1)
-
-File ~/initial-training/venv/lib/python3.9/site-packages/numpy/core/_methods.py:106, in _mean(a, axis, dtype, out, keepdims, where)
-    102 arr = asanyarray(a)
-    104 is_float16_result = False
---> 106 rcount = _count_reduce_items(arr, axis, keepdims=keepdims, where=where)
-    107 if rcount == 0 if where is True else umr_any(rcount == 0, axis=None):
-    108     warnings.warn("Mean of empty slice.", RuntimeWarning, stacklevel=2)
-
-File ~/initial-training/venv/lib/python3.9/site-packages/numpy/core/_methods.py:77, in _count_reduce_items(arr, axis, keepdims, where)
-     75     items = 1
-     76     for ax in axis:
----> 77         items *= arr.shape[mu.normalize_axis_index(ax, arr.ndim)]
-     78     items = nt.intp(items)
-     79 else:
-     80     # TODO: Optimize case when `where` is broadcast along a non-reduction
-     81     # axis and full sum is more excessive than needed.
-     82 
-     83     # guarded to protect circular imports
-
-AxisError: axis 1 is out of bounds for array of dimension 1
-```
-
-これは、以下のように 1 次元目の値の平均を計算していったものを並べているのと同じことです。
-（ゼロベースインデックスで考えています。`x` の形は `(8, 10)` なので、0 次元目のサイズが 8、1 次元目のサイズが 10 です。）
-
-```python
-np.array([
-    x[0, :].mean(),
-    x[1, :].mean(),
-    x[2, :].mean(),
-    x[3, :].mean(),
-    x[4, :].mean(),
-    x[5, :].mean(),
-    x[6, :].mean(),
-    x[7, :].mean(),
+x = np.array([
+    [2, 3, 9, 3, 2, 6, 1, 6, 4, 7],
+    [4, 9, 7, 6, 8, 5, 3, 6, 1, 6],
+    [3, 4, 4, 8, 9, 0, 9, 3, 7, 1],
+    [8, 5, 3, 1, 9, 6, 5, 9, 3, 8],
+    [6, 7, 9, 4, 5, 6, 9, 7, 2, 7],
+    [3, 6, 4, 8, 8, 1, 7, 9, 3, 5],
+    [6, 2, 8, 6, 1, 9, 3, 7, 4, 8],
+    [6, 2, 5, 8, 8, 2, 9, 4, 0, 4],
 ])
+print("shape:", x.shape)
+print("mean:", x.mean())
+print("variance:", round(x.var(ddof=0), 8))
+print("std:", round(x.std(ddof=0), 8))
+print("max, min:", x.max(), x.min())
+print("row means:", x.mean(axis=1))
+print(np.allclose(x.mean(axis=1), [row.mean() for row in x]))
 ```
 
 ```text
-array([5. , 4.3, 6.2, 5.2, 6.2, 4.2, 5.3, 3.5])
+shape: (8, 10)
+mean: 5.2625
+variance: 6.91859375
+std: 2.63032199
+max, min: 9 0
+row means: [4.3 5.5 4.8 5.7 6.2 5.4 5.4 4.8]
+True
 ```
 
-数式を NumPy による配列の計算に落とし込むことに慣れていくには少し時間がかかりますが、慣れると少ない量のコードで記述できるだけでなく、高速に計算が行なえるため、大きな恩恵があります。
+`axis=1` は列方向の10要素をまとめるので，各行の平均8個が残ります。
+`axis=0` なら行方向の8要素をまとめ，各列の平均10個が残ります。
+`axis` を省略すると80要素全体をまとめます。元のshapeと，平均後に残る軸を対応づけてください。
+この2次元配列に対する `axis=1` は正常な指定です。存在しない軸を指定した場合は `AxisError` になります。
+
 
 ## 注釈
 
-### 注釈 1 {#03-reviewing-elementary-math-with-numpy-and-matplotlib-note1}
+<a id="03-reviewing-elementary-math-with-numpy-and-matplotlib-note1"></a>
+
+### 注釈 1
 
 ライブラリとは、汎用性の高い複数の関数やクラスなどを再利用可能な形でひとまとまりにしたもので、Python の世界では**パッケージ**とも呼ばれます。また、Python で関数やクラスの定義、文などが書かれたファイルのことを**モジュール**と呼び、パッケージはモジュールが集まったものです。
 
-### 注釈 2 {#03-reviewing-elementary-math-with-numpy-and-matplotlib-note2}
+<a id="03-reviewing-elementary-math-with-numpy-and-matplotlib-note2"></a>
+
+### 注釈 2
 
 NumPy には matrix というクラスも存在しますが、本チュートリアルでは基本的に多次元配列を表す ndarray をベクトルや行列を表すために用います。
 
-### 注釈 3 {#03-reviewing-elementary-math-with-numpy-and-matplotlib-note3}
+<a id="03-reviewing-elementary-math-with-numpy-and-matplotlib-note3"></a>
 
-これは、その多次元配列が表すテンソルの**階数（rank、以下ランク）**と対応します。
+### 注釈 3
 
-### 注釈 4 {#03-reviewing-elementary-math-with-numpy-and-matplotlib-note4}
+ここでいう次元数は配列の軸の数で，`ndim` で確認します。線形代数における行列の階数（rank）とは異なります。
+
+<a id="03-reviewing-elementary-math-with-numpy-and-matplotlib-note4"></a>
+
+### 注釈 4
 
 「次元のサイズ」と言った場合はその次元の大きさを意味し、配列の `size` 属性とは異なるものを指しています。
 
-### 注釈 5 {#03-reviewing-elementary-math-with-numpy-and-matplotlib-note5}
+<a id="03-reviewing-elementary-math-with-numpy-and-matplotlib-note5"></a>
+
+### 注釈 5
 
 末尾次元（trailing dimension）とは、その配列の形を表すタプルの一番最後の値のことを指します。

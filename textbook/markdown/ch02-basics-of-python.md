@@ -6,7 +6,7 @@
 
 Pythonにはバージョンとして 2 系と 3 系の 2 つの系統があり、互換性のない部分もあります。
 本研修では、3 系である **Python 3.12** 系を標準とします。
-上流の最新 stable は 2026年4月時点で Python 3.14.4 ですが、この repo は共有環境との整合のため 3.12 系で揃えます。
+このrepoでは共有環境との整合のため3.12系でそろえます。
 
 ## Python の特徴
 
@@ -28,36 +28,24 @@ Pythonにはバージョンとして 2 系と 3 系の 2 つの系統があり�
 のような魅力があります。
 
 ## Python の実行
-みなさんは，[Google Colaboratory](https://colab.research.google.com/)を利用して Python を書いたことがあると思います．
-Google Colab は，Pythonをさっと書いて実行結果を確認する目的では大変便利です．
-一方，コードが長く複雑になってくると，Google Colab 上でプログラミングするのは難しくなってきます．
-そこで，本研修では，みなさんのPC上で Python を実行するやり方に慣れてもらおうと思います．
 
-まず，以下のコマンドを入力し，Python を実行するための仮想環境を構築します．
-```
-$ mkdir -p ~/workspace/python-basics
-$ cd ~/workspace/python-basics
-$ python3 -m venv .venv
-```
-Python の実行環境とは，Python のプログラムを実行するために必要となるソフトウェアの組み合わせを指します．
-また，仮想環境とは，簡単に言ってしまえば本研修のための専用環境のことです．
-普通 Python の実行環境は一台のPCにつき1つのみですが，
-仮想環境は一台のPC上にいくつも作ることができます．
+演習の基本は，提出repoの `scripts/session02_python_basics.py` をVS Codeで編集し，ターミナルから実行する方法です。
+第1回で用意した教材repoの `.venv` を使います。新しい仮想環境は作りません。
+教材repoを第1回の標準位置に置いた場合，提出repoのルートで次を実行します。
 
-仮想環境を有効にするには以下のコマンドを入力します．
+```bash
+source ~/workspace/signal-ml-training/.venv/bin/activate
+python scripts/session02_python_basics.py
 ```
-$ source .venv/bin/activate
-```
-仮想環境が有効になった状態で`python`と入力すると，
-Python プログラムを1行ごとに入力・実行できる対話型のインタープリタが起動します．
-インタープリタを終了するには以下のように入力します．
-```
->>> exit()
-```
-また，仮想環境を無効にするには以下のコマンドを入力します．
-```
-$ deactivate
-```
+
+本章の短いコード例は，同じ節で定義した変数を引き継ぐ例です。学ぶ節の定義と処理を `.py` にまとめて試してください。
+`text` ブロックは出力例なのでファイルへ貼り付けません。例外を示す例は，正常に動く演習とは別に実行します。
+値の表示には `print()` を使います。`print(repr(value))` は引用符や改行記号も分かる表現を表示する書き方です。
+
+対話実行（任意）では，ターミナルで `python` を起動して式を1つずつ入力します。終了には `exit()` を入力します。
+REPL（対話型インタープリタ）やNotebookでは式の値が自動表示される場合がありますが，`.py` では値だけの式を書いても表示されません。
+資料の `$` はシェル，`>>>` はREPLの入力待ちを示す記号であり，入力する文字ではありません。本章のコピペ用コードでは省略します。
+
 
 ### 文法とアルゴリズム
 
@@ -84,7 +72,7 @@ $ deactivate
 
 ### 代入と値の確認
 
-それでは、以下のセルのように，`a` という名前の変数に`1` を**代入**してみましょう。
+それでは、以下のコードのように，`a` という名前の変数に`1` を**代入**してみましょう。
 
 ```python
 a = 1
@@ -92,12 +80,12 @@ a = 1
 
 代入は `=` の記号を用います。
 数学的には `=` は等しいという意味を持ちますが、Python では**「左辺の変数に、右辺の値を代入する」**という意味になります。
-また，これ以降，Python のプログラムは上のようにコードセルを用いて記述します．
+また，これ以降，Python のプログラムは上のようにコードブロックを用いて記述します．
 
-対話型インタープリタ上では、変数名だけを記述した行を入力すると、値を確認することができます。
+`.py` ファイルでは，次のように明示的に表示します。`repr()` は値の表現を文字列で返します。
 
 ```python
-a
+print(repr(a))
 ```
 
 ```text
@@ -116,7 +104,7 @@ print(a)
 1
 ```
 
-変数名だけをセルに記入して実行する場合と`print()`を利用する場合の違いについては、後述します。
+文字列では `print(repr(value))` と `print(value)` の表示に違いがあり，後述します。
 
 変数につける名前は、コードを書く人が自由に決めることができます。
 ただし、わかりやすい名前をつけることがとても大切です。
@@ -130,9 +118,9 @@ Python では、`#` の後からその行の終わりまでに存在する全て
 この `#` の後ろに続く部分を**コメント (comment)**と呼び、すでに書かれたコードをコメントにすることを**コメントアウト (comment out)**と言います。
 コメントは、コード中に変数の意味や処理の意味をコードを読む人に伝えるためによく使われます。
 
-Jupyter Notebook のコードセルに書かれたコードを行ごとコメントアウトしたい場合は、その行を選択した状態で `Ctrl + /` を入力することで自動的に行の先頭に `#` 記号を挿入することができます。複数行を選択していれば、選択された複数の行が同時にコメントアウトされます。また、コメントアウトされている行を選択した状態で同じキー入力を送ると、コメントアウトが解除されます。これを**アンコメント (uncomment)**と呼ぶこともあります。
+VS Codeで開いたPythonファイルのコードを行ごとコメントアウトしたい場合は、その行を選択した状態で `Ctrl + /` を入力することで自動的に行の先頭に `#` 記号を挿入することができます。複数行を選択していれば、選択された複数の行が同時にコメントアウトされます。また、コメントアウトされている行を選択した状態で同じキー入力を送ると、コメントアウトが解除されます。これを**アンコメント (uncomment)**と呼ぶこともあります。
 
-下のセルを実行してみましょう。
+下のコードを実行してみましょう。
 
 ```python
 # この行及び下の行はコメントアウトされているため実行時に無視されます
@@ -169,27 +157,27 @@ c = 'Chainer'
 型の確認は `type()` という組み込み関数を使用します。
 
 ```python
-type(a)
+print(repr(type(a)))
 ```
 
 ```text
-int
+<class 'int'>
 ```
 
 ```python
-type(b)
+print(repr(type(b)))
 ```
 
 ```text
-float
+<class 'float'>
 ```
 
 ```python
-type(c)
+print(repr(type(c)))
 ```
 
 ```text
-str
+<class 'str'>
 ```
 
 `a` は `int` という整数の型をもつ変数であり、`b` は `float` という実数の型をもつ変数です。
@@ -203,55 +191,55 @@ Python では、`.` を含まない連続した数字を `int`、直前・直後
 実数の `0` は `0.0` とも `.0` とも `0.` とも書くことができます。
 
 ```python
-type(0)
+print(repr(type(0)))
 ```
 
 ```text
-int
+<class 'int'>
 ```
 
 ```python
-type(0.)
+print(repr(type(0.)))
 ```
 
 ```text
-float
+<class 'float'>
 ```
 
 ```python
-type(.0)
+print(repr(type(.0)))
 ```
 
 ```text
-float
+<class 'float'>
 ```
 
 例えば、実数の `5` は以下のように書くことができます。
 
 ```python
-type(5.0)
+print(repr(type(5.0)))
 ```
 
 ```text
-float
+<class 'float'>
 ```
 
 ```python
-type(5.)
+print(repr(type(5.)))
 ```
 
 ```text
-float
+<class 'float'>
 ```
 
 一方、`.5` と書くと、これは `0.5` の略記と解釈されることに注意してください。
 
 ```python
-type(.5)
+print(repr(type(.5)))
 ```
 
 ```text
-float
+<class 'float'>
 ```
 
 ```python
@@ -298,7 +286,7 @@ a, b, c = 1, 1.2, 'Chainer'
 
 ```python
 # 整数と整数で加算 -> 結果は整数
-1+1
+print(repr(1+1))
 ```
 
 ```text
@@ -311,7 +299,7 @@ a, b, c = 1, 1.2, 'Chainer'
 この空白は Python のコーディング規約である [PEP8](https://www.python.org/dev/peps/pep-0008/#should-a-line-break-before-or-after-a-binary-operator) でも推奨されています。
 
 ```python
-1 + 1
+print(repr(1 + 1))
 ```
 
 ```text
@@ -321,7 +309,7 @@ a, b, c = 1, 1.2, 'Chainer'
 値が代入されている変数との演算も下記のように行うことができます。
 
 ```python
-a + 2
+print(repr(a + 2))
 ```
 
 ```text
@@ -333,7 +321,7 @@ a + 2
 
 ```python
 # 整数と実数で加算 -> 結果は実数
-a + b
+print(repr(a + b))
 ```
 
 ```text
@@ -344,7 +332,7 @@ a + b
 
 ```python
 # 整数と整数で減算 -> 結果は整数
-2 - 1
+print(repr(2 - 1))
 ```
 
 ```text
@@ -353,7 +341,7 @@ a + b
 
 ```python
 # 実数と整数で減算 -> 結果は実数
-3.5 - 2
+print(repr(3.5 - 2))
 ```
 
 ```text
@@ -362,7 +350,7 @@ a + b
 
 ```python
 # 整数と整数で乗算 -> 結果は整数
-3 * 5
+print(repr(3 * 5))
 ```
 
 ```text
@@ -371,7 +359,7 @@ a + b
 
 ```python
 # 実数と整数で乗算 -> 結果は実数
-2.5 * 2
+print(repr(2.5 * 2))
 ```
 
 ```text
@@ -380,7 +368,7 @@ a + b
 
 ```python
 # 整数と整数で除算 -> 結果は実数
-3 / 2
+print(repr(3 / 2))
 ```
 
 ```text
@@ -389,7 +377,7 @@ a + b
 
 ```python
 # 整数と整数で除算 -> 結果は実数
-4 / 2
+print(repr(4 / 2))
 ```
 
 ```text
@@ -405,7 +393,7 @@ Python 3 では、 `/` 記号を用いて除算を行う場合、除数（割る
 
 ```python
 # 整数と整数で切り捨て除算 -> 結果は整数
-3 // 2
+print(repr(3 // 2))
 ```
 
 ```text
@@ -414,7 +402,7 @@ Python 3 では、 `/` 記号を用いて除算を行う場合、除数（割る
 
 ```python
 # 整数と整数で切り捨て除算 -> 結果は整数
-4 // 2
+print(repr(4 // 2))
 ```
 
 ```text
@@ -448,7 +436,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'
 
 ```python
 # str と int で乗算
-c * 3
+print(repr(c * 3))
 ```
 
 ```text
@@ -463,7 +451,7 @@ c * 3
 name1 = 'Chainer'
 name2 = 'チュートリアル'
 
-name1 + name2
+print(repr(name1 + name2))
 ```
 
 ```text
@@ -477,7 +465,7 @@ name1 + name2
 何かを `int` にキャストしたい場合は `int()` という組み込み関数を使い、`str` にキャストしたい場合は `str()` という組み込み関数を使います。では、`1` という整数を `str` にキャストして、 `'番目'` という文字列と足し算を行ってみましょう。
 
 ```python
-1
+print(repr(1))
 ```
 
 ```text
@@ -485,15 +473,15 @@ name1 + name2
 ```
 
 ```python
-type(1)
+print(repr(type(1)))
 ```
 
 ```text
-int
+<class 'int'>
 ```
 
 ```python
-str(1)
+print(repr(str(1)))
 ```
 
 ```text
@@ -501,15 +489,15 @@ str(1)
 ```
 
 ```python
-type(str(1))
+print(repr(type(str(1))))
 ```
 
 ```text
-str
+<class 'str'>
 ```
 
 ```python
-str(1) + '番目'
+print(repr(str(1) + '番目'))
 ```
 
 ```text
@@ -525,7 +513,7 @@ str(1) + '番目'
 # 累積代入文を使わない場合
 count = 0
 count = count + 1
-count
+print(repr(count))
 ```
 
 ```text
@@ -536,7 +524,7 @@ count
 # 累積代入文を使う場合
 count = 0
 count += 1
-count
+print(repr(count))
 ```
 
 ```text
@@ -558,7 +546,7 @@ Python には、他にも幾つかの算術演算子が用意されています�
 
 ```python
 # 累乗
-2 ** 3
+print(repr(2 ** 3))
 ```
 
 ```text
@@ -569,7 +557,7 @@ Python には、他にも幾つかの算術演算子が用意されています�
 
 ```python
 # 剰余
-9 % 2
+print(repr(9 % 2))
 ```
 
 ```text
@@ -596,7 +584,7 @@ Python には、他にも幾つかの算術演算子が用意されています�
 いくつかの比較演算子の計算例を示します。
 
 ```python
-1 < 2
+print(repr(1 < 2))
 ```
 
 ```text
@@ -605,15 +593,15 @@ True
 
 ```python
 # 型の確認
-type(1 < 2)
+print(repr(type(1 < 2)))
 ```
 
 ```text
-bool
+<class 'bool'>
 ```
 
 ```python
-2 == 5
+print(repr(2 == 5))
 ```
 
 ```text
@@ -621,7 +609,7 @@ False
 ```
 
 ```python
-1 != 2
+print(repr(1 != 2))
 ```
 
 ```text
@@ -629,7 +617,7 @@ True
 ```
 
 ```python
-3 >= 3
+print(repr(3 >= 3))
 ```
 
 ```text
@@ -637,7 +625,7 @@ True
 ```
 
 ```python
-'test' == 'test'
+print(repr('test' == 'test'))
 ```
 
 ```text
@@ -669,7 +657,7 @@ print('Hello\tWorld')
 Hello	World
 ```
 
-最初に Jupyter Notebook 上で変数の値を確認する際に、`print()` を使う場合と使わない場合の違いについて触れましたが、エスケープシーケンスを評価したい場合には、`print()` を使う必要があります。
+文字列の引用符やエスケープ表記を確認するには `print(repr(value))` を使い，改行やタブを表示に反映するには `print(value)` を使います。
 
 ```python
 d = 'Hello\nWorld'
@@ -677,7 +665,7 @@ d = 'Hello\nWorld'
 
 ```python
 # エスケープシーケンスが評価されない
-d
+print(repr(d))
 ```
 
 ```text
@@ -703,7 +691,7 @@ World
 ```python
 name = 'Chainer'
 
-name
+print(repr(name))
 ```
 
 ```text
@@ -712,7 +700,7 @@ name
 
 ```python
 # すべてを小文字に変換
-name.lower()
+print(repr(name.lower()))
 ```
 
 ```text
@@ -721,7 +709,7 @@ name.lower()
 
 ```python
 # すべてを大文字に変換
-name.upper()
+print(repr(name.upper()))
 ```
 
 ```text
@@ -737,7 +725,7 @@ f 文字列は，`f`というキーワードではじまり，その後に通常
 ```python
 name = 'Chainer'
 
-f'{name} チュートリアルへようこそ'
+print(repr(f'{name} チュートリアルへようこそ'))
 ```
 
 ```text
@@ -748,7 +736,7 @@ f'{name} チュートリアルへようこそ'
 name1 = 'Chainer'
 name2 = 'チュートリアル'
 
-f'{name1} {name2}へようこそ'
+print(repr(f'{name1} {name2}へようこそ'))
 ```
 
 ```text
@@ -760,7 +748,7 @@ f 文字列を用いると `int` 型 や `float` 型の変数を、`str` 型へ�
 ```python
 version = 3.7
 
-f'Python {version}'
+print(repr(f'Python {version}'))
 ```
 
 ```text
@@ -778,7 +766,7 @@ f'Python {version}'
 これは、以下のようにして調べることができます。
 
 ```python
-0.5.as_integer_ratio()
+print(repr(0.5.as_integer_ratio()))
 ```
 
 ```text
@@ -788,7 +776,7 @@ f'Python {version}'
 0.25 であれば、$\frac{1}{4}$ となります。
 
 ```python
-0.25.as_integer_ratio()
+print(repr(0.25.as_integer_ratio()))
 ```
 
 ```text
@@ -825,11 +813,11 @@ print(numbers)
 
 ```python
 # 型の確認
-type(numbers)
+print(repr(type(numbers)))
 ```
 
 ```text
-list
+<class 'list'>
 ```
 
 `numbers` には 4 つの数値が入っており、**要素数** は 4 です。
@@ -838,7 +826,7 @@ list
 
 ```python
 # 要素数の確認
-len(numbers)
+print(repr(len(numbers)))
 ```
 
 ```text
@@ -852,7 +840,7 @@ len(numbers)
 
 ```python
 # 先頭の要素にアクセス
-numbers[0]
+print(repr(numbers[0]))
 ```
 
 ```text
@@ -861,7 +849,7 @@ numbers[0]
 
 ```python
 # 先頭から3番目の要素にアクセス
-numbers[2]
+print(repr(numbers[2]))
 ```
 
 ```text
@@ -875,7 +863,7 @@ numbers[1] = 10
 
 ```python
 # 値の確認
-numbers
+print(repr(numbers))
 ```
 
 ```text
@@ -887,7 +875,7 @@ numbers
 
 ```python
 # 末尾の要素にアクセス
-numbers[-1]
+print(repr(numbers[-1]))
 ```
 
 ```text
@@ -896,7 +884,7 @@ numbers[-1]
 
 ```python
 # 末尾から3番目の要素にアクセス
-numbers[-3]
+print(repr(numbers[-3]))
 ```
 
 ```text
@@ -910,7 +898,7 @@ numbers[-3]
 例えば、先頭から 2 つの要素を取り出したい場合、以下のように指定します。
 
 ```python
-numbers[0:2]
+print(repr(numbers[0:2]))
 ```
 
 ```text
@@ -923,7 +911,7 @@ numbers[0:2]
 また、指定する開始番号が `0` である場合、以下のような略記がよく用いられます。
 
 ```python
-numbers[:2]
+print(repr(numbers[:2]))
 ```
 
 ```text
@@ -937,7 +925,7 @@ numbers[:2]
 例えば、2 個目の要素から最後までを取り出すには以下のようにします。
 
 ```python
-numbers[1:]
+print(repr(numbers[1:]))
 ```
 
 ```text
@@ -952,7 +940,7 @@ numbers[1:]
 また、開始位置も終了位置も省略した場合は、すべての要素が選択されます。
 
 ```python
-numbers[:]
+print(repr(numbers[:]))
 ```
 
 ```text
@@ -969,7 +957,7 @@ numbers[:]
 ```python
 # 文字列を格納したリスト
 array = ['hello', 'world']
-array
+print(repr(array))
 ```
 
 ```text
@@ -979,7 +967,7 @@ array
 ```python
 # 複数の型が混在したリスト
 array = [1, 1.2, 'Chainer']
-array
+print(repr(array))
 ```
 
 ```text
@@ -991,7 +979,7 @@ array
 
 ```python
 array = [[1, 1.2, 'Chainer', True], [3.2, 'Tutorial']]
-array
+print(repr(array))
 ```
 
 ```text
@@ -1010,7 +998,7 @@ array.append(2.5)
 
 ```python
 # 値の確認
-array
+print(repr(array))
 ```
 
 ```text
@@ -1027,7 +1015,7 @@ array = []
 array.append('Chainer')
 array.append('チュートリアル')
 
-array
+print(repr(array))
 ```
 
 ```text
@@ -1043,7 +1031,7 @@ array
 ```python
 # タプルを定義
 array = (4, 5, 6, 7)
-array
+print(repr(array))
 ```
 
 ```text
@@ -1052,18 +1040,18 @@ array
 
 ```python
 # 型の確認
-type(array)
+print(repr(type(array)))
 ```
 
 ```text
-tuple
+<class 'tuple'>
 ```
 
 タプルの定義する際に `( )` を使用したため、要素へのアクセスも `( )` を使うように感じるかもしれませんが、実際にはリストと同様 `[ ]` を使用します。
 
 ```python
 # 先頭の要素へアクセス
-array[0]
+print(repr(array[0]))
 ```
 
 ```text
@@ -1072,7 +1060,7 @@ array[0]
 
 ```python
 # リストと同様、スライスも使用可能
-array[:3]
+print(repr(array[:3]))
 ```
 
 ```text
@@ -1119,16 +1107,16 @@ Python の `dict` 型は、**キー (key)** とそれに対応する**値 (value
 ```python
 # 辞書を定義
 scores = {'Math': 90, 'Science': 75, 'English': 80 }
-scores
+print(repr(scores))
 ```
 
 ```text
-{'English': 80, 'Math': 90, 'Science': 75}
+{'Math': 90, 'Science': 75, 'English': 80}
 ```
 
 ```python
 # key が Math の value にアクセス
-scores['Math']
+print(repr(scores['Math']))
 ```
 
 ```text
@@ -1138,7 +1126,7 @@ scores['Math']
 ```python
 # key に日本語を使用することも可能
 scores = {'数学': 90, '理科': 75, '英語': 80}
-scores
+print(repr(scores))
 ```
 
 ```text
@@ -1146,7 +1134,7 @@ scores
 ```
 
 ```python
-scores['数学']
+print(repr(scores['数学']))
 ```
 
 ```text
@@ -1162,7 +1150,7 @@ scores['数学']
 
 ```python
 # キーのリスト
-scores.keys()
+print(repr(scores.keys()))
 ```
 
 ```text
@@ -1171,7 +1159,7 @@ dict_keys(['数学', '理科', '英語'])
 
 ```python
 # 値のリスト
-scores.values()
+print(repr(scores.values()))
 ```
 
 ```text
@@ -1180,7 +1168,7 @@ dict_values([90, 75, 80])
 
 ```python
 # (キー, 値)というタプルを要素とするリスト
-scores.items()
+print(repr(scores.items()))
 ```
 
 ```text
@@ -1196,11 +1184,11 @@ scores['国語'] = 85
 ```
 
 ```python
-scores
+print(repr(scores))
 ```
 
 ```text
-{'国語': 85, '数学': 90, '理科': 75, '英語': 80}
+{'数学': 90, '理科': 75, '英語': 80, '国語': 85}
 ```
 
 また、既に存在するキーを指定した場合には、値が上書きされます。
@@ -1210,24 +1198,18 @@ scores['数学'] = 95
 ```
 
 ```python
-scores
+print(repr(scores))
 ```
 
 ```text
-{'国語': 85, '数学': 95, '理科': 75, '英語': 80}
+{'数学': 95, '理科': 75, '英語': 80, '国語': 85}
 ```
 
 ## Python プログラムのコマンドライン実行
-だんだんとプログラムが長くなってくると，プログラムを1行1行インタプリタに入力していくのは大変です．
-Python には，テキストファイルに記述された Python プログラムを一度に実行する機能があるので，これを利用しましょう．
 
-一度，Python インタプリタを`exit()`により終了し，以下のコマンドを入力しましょう．
-```
-$ mkdir -p ~/workspace/python-basics/ch02
-$ cd ~/workspace/python-basics/ch02
-```
-
-その後，`sample.py`という名前のテキストファイルを作成して，以下のプログラムを書き込みましょう．
+ここでは複数行の処理を1本のファイルにまとめます。
+提出repoのルートを作業場所とし，既存の共有環境を有効にした状態で `scripts/ch02_sample.py` を作成します。
+REPLを使っていた場合は `exit()` で終了してからターミナルへ戻ります。
 
 ```python
 array = [50, 80, 40]
@@ -1239,13 +1221,12 @@ s /= 3
 print(s)
 ```
 
-この Python プログラムでは，`array` というリストの要素の平均値を求めています．
-このプログラムを実行するには，`python`コマンドの後ろに，プログラムを記述したファイルの名前を入力します．
-すなわち，以下のコマンドを入力します．
+このプログラムはリストの要素の平均を求めます。次のコマンドでファイル全体を実行すると，平均値が表示されます。
+
+```bash
+python scripts/ch02_sample.py
 ```
-$ python sample.py
-```
-すると，すべての行が実行され，`s` の値が画面に表示されます．
+
 
 ## 制御構文
 
@@ -1300,14 +1281,14 @@ for i in range(5):
 
 ```python
 # 繰り返し処理が終わった後の値の確認
-i
+print(repr(i))
 ```
 
 ```text
 4
 ```
 
-Jupyter Notebook では変数名をコードセルの最後の行に書いて実行するとその変数に代入されている値を確認できましたが、for 文の中のブロックでは明示的に `print()` を使う必要があります。
+`.py` では，for文の内外とも表示したい値に `print()` を使います。Notebookでもfor文のブロック内の値は自動表示されません。
 `print()` を用いないと、以下のように何も表示されません。
 
 ```python
@@ -1352,7 +1333,7 @@ for i in range(3):
 リスト内の要素の数は、組み込み関数である `len()` を用いて取得できるため、これを使用した汎用性の高いプログラムに書き換えましょう。
 
 ```python
-len(names)
+print(repr(len(names)))
 ```
 
 ```text
@@ -1542,7 +1523,7 @@ while True:
 `not True` は `False` を返し、`not False` は `True` を返します。
 
 ```python
-not True
+print(repr(not True))
 ```
 
 ```text
@@ -1550,7 +1531,7 @@ False
 ```
 
 ```python
-not False
+print(repr(not False))
 ```
 
 ```text
@@ -1558,7 +1539,7 @@ True
 ```
 
 ```python
-not 1 == 2
+print(repr(not 1 == 2))
 ```
 
 ```text
@@ -1751,7 +1732,7 @@ def add(a, b):
 ```python
 result = add(1, 3)
 
-result
+print(repr(result))
 ```
 
 ```text
@@ -1765,7 +1746,7 @@ result = add(1, 3)
 
 result_doubled = result * 2
 
-result_doubled
+print(repr(result_doubled))
 ```
 
 ```text
@@ -1778,7 +1759,7 @@ result_doubled
 これを用いると、例えば「2 と 3 を足した結果と、1 と 3 を足した結果を、掛け合わせる」という計算が、以下のように書けます。
 
 ```python
-add(2, 3) * add(1, 3)
+print(repr(add(2, 3) * add(1, 3)))
 ```
 
 ```text
@@ -1799,7 +1780,7 @@ def change():
     
 change()
 
-a
+print(repr(a))
 ```
 
 ```text
@@ -1847,7 +1828,7 @@ def change():
 change()
 
 # 結果の確認 <- a の値が上書きされている
-a
+print(repr(a))
 ```
 
 ```text
@@ -1988,7 +1969,7 @@ class Link:
 ```python
 l = Link()
 
-l.a
+print(repr(l.a))
 ```
 
 ```text
@@ -1996,7 +1977,7 @@ l.a
 ```
 
 ```python
-l.b
+print(repr(l.b))
 ```
 
 ```text
@@ -2028,7 +2009,7 @@ class Chain(Link):
 # Chain クラスをインスタンス化
 c = Chain()
 
-c.a
+print(repr(c.a))
 ```
 
 ```text
@@ -2036,7 +2017,7 @@ c.a
 ```
 
 ```python
-c.b
+print(repr(c.b))
 ```
 
 ```text
@@ -2048,7 +2029,7 @@ c.b
 
 ```python
 # sum メソッドを実行
-c.sum()
+print(repr(c.sum()))
 ```
 
 ```text
@@ -2128,7 +2109,7 @@ c = Chain()
 ```
 
 ```python
-c.sum()
+print(repr(c.sum()))
 ```
 
 ```text
@@ -2136,7 +2117,7 @@ c.sum()
 ```
 
 今回はエラーが起きませんでした。
-`Link` クラスの `__init__()`  メソッドの冒頭で、まず親クラスの `__init__()`  メソッドを実行し、`a`、`b` という属性を定義しているためです。
+`Chain` クラスの `__init__()` の冒頭で，`super().__init__()` により親の `Link` を初期化し，`a`，`b` という属性を定義しているためです。
 
 あるクラスを継承して作られたクラスを、さらに継承して別のクラスを定義することもできます。
 
@@ -2154,7 +2135,7 @@ class MyNetwork(Chain):
 ```python
 net = MyNetwork()
 
-net.mul()
+print(repr(net.mul()))
 ```
 
 ```text

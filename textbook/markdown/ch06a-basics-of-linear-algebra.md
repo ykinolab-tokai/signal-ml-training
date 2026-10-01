@@ -1088,10 +1088,14 @@ $$
 
 ## 注釈
 
-### 注釈 1 {#06a-basics-of-linear-algebra-note1}
+<a id="06a-basics-of-linear-algebra-note1"></a>
+
+### 注釈 1
 
 $N \times M$ 行列、などと言われたときに、$N$ と $M$ のどちらが行で、どちらが列だろう？と迷ったときは、「行列」という言葉を再度思い浮かべて、「行→列」つまり先にくる $N$ が行数で、$M$ が列数だ、と思い出すのがおすすめです。
 
-### 注釈 2 {#06a-basics-of-linear-algebra-note2}
+<a id="06a-basics-of-linear-algebra-note2"></a>
+
+### 注釈 2
 
 文献によっては単位行列ではなく、すべての成分が1の行列のことをunit matrixと呼ぶこともあります。

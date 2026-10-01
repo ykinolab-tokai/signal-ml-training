@@ -1,36 +1,51 @@
 # 第11回 ノイズと信号復元
 
+## この回の目標
+
 - 加法性ノイズを含む信号を作り，時間波形とスペクトルで確認する。
 - 信号とノイズのスペクトルの違いを観察する。
-- 移動平均フィルタと Wiener filter による復元を比較する。
+- 移動平均フィルタと Wienerフィルタによる復元を比較する。
 - 復元前後の誤差を数値で評価する。
 
 ## 解説
 - 加法性ノイズは，観測信号を `観測 = 真の信号 + ノイズ` と見る単純なモデルである。実データでは真の信号は分からないが，合成実験では復元方法を評価しやすい。
 - ノイズは時間波形だけでなくスペクトルで見ると特徴が分かりやすい。信号とノイズが異なる周波数帯にある場合，フィルタで分けられることがある。
 - 移動平均フィルタは高周波成分を抑える単純な復元方法である。ただし，信号の急な変化も弱める可能性がある。
-- Wiener filter は，信号とノイズのパワー比に基づいて周波数成分を調整する考え方である。ここでは合成データで信号とノイズのスペクトルを既知として扱う。
+- Wienerフィルタは，真の信号と雑音が非相関であると仮定し，平均二乗誤差（MSE）を小さくする線形推定を行う。周波数ごとの信号・雑音パワーを $P_s[k],P_n[k]$ とすると，利得は $G[k]=P_s[k]/(P_s[k]+P_n[k])$ で，観測のDFTに掛けて逆変換する。
+- ここでは既知の合成信号から $P_s=|\mathrm{FFT}(clean)|^2$，$P_n=N\sigma^2$（白色雑音の期待パワー）を使う。単一の雑音標本と真の信号の標本相関が厳密に0になるとは限らない。実データで真の信号を利用できるという意味ではない。
+- MSEは `np.mean((estimate-clean)**2)` とする。`clean=[0,1]`，`estimate=[0.2,0.8]` ならMSEは0.04である。
 
 ## 演習
-### 基礎レベル（7問）
-1. `scripts/`，`outputs/session11/`，`outputs/figures/` を作成し，`scripts/session11_noise_restoration.py` で 5 Hz と 40 Hz の sine 波を足した clean signal を作る。
-2. 平均 0 の Gaussian noise を加え，noisy signal を作る。clean，noise，noisy を同じ図に描く。
-3. clean，noise，noisy の振幅スペクトルを描き，どの周波数帯に成分があるか確認する。
-4. moving average filter を実装し，window length 3，9，21 で復元結果を比較する。
-5. clean と復元信号の平均二乗誤差を計算し，window length ごとに表にする。
-6. 合成データで得られる clean と noise のパワースペクトルを使い，周波数領域の Wiener filter を実装する。
-7. noisy，moving average，Wiener filter の結果を比較し，`outputs/session11/session11_report.md` に図と誤差をまとめる。
 
-### 発展レベル（7問）
-1. ノイズの標準偏差を 0.1，0.5，1.0 に変え，復元の難しさがどう変わるか確認する。
-2. 高周波ノイズだけでなく低周波ノイズを加え，移動平均が効きにくい例を作る。
-3. Wiener filter で信号パワーまたはノイズパワーの推定を意図的にずらし，復元結果への影響を見る。
-4. 時間領域の移動平均と周波数領域の低域通過フィルタを比較する。
-5. 復元結果の MSE だけでなく，最大絶対誤差も計算する。
-6. clean signal を知らない場合に，ノイズの性質をどう推定できるか，今回の合成実験に基づいて案を書く。
-7. 過度に強いフィルタで信号まで失われる例を作り，スペクトルと時間波形の両方で説明する。
+作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+
+`scripts/session11_noise_restoration.py` と `outputs/session11/session11_report.md` を作る。
+
+### 基礎レベル
+1. 上の2点のMSEを手計算する。次に $F_s=1000$ Hz，1秒，`t=np.arange(1000)/1000` で真の信号 `clean=sin(2*pi*5*t)+0.5*sin(2*pi*40*t)` を作る。seed=0，平均0，標準偏差 `sigma=0.5`（分散0.25）のガウス雑音 `noise` を加え，観測 `noisy` を作る。
+2. 窓長3，9，21の移動平均を `np.convolve(noisy, np.ones(L)/L, mode="same")` で比較する。範囲外は0として扱い，全1000点でMSEを求める。窓を長くすると40 Hz成分も弱まることを実行前に予想し，図とスペクトルで確認する。
+3. Wiener利得を実装する前に，`P_s/P_n` が9，1，1/9のときの利得を手計算する。次の最小例を基礎1の変数へ続け，利得の範囲と出力shapeを確認する。
+
+   ```python
+   S = np.fft.fft(clean)
+   P_s = np.abs(S) ** 2
+   P_n = len(clean) * sigma ** 2
+   gain = P_s / (P_s + P_n)
+   restored = np.fft.ifft(gain * np.fft.fft(noisy)).real
+   ```
+
+4. 無処理・移動平均・WienerフィルタのMSEを表にし，波形とスペクトルを `outputs/figures/session11_comparison.png` へ保存する。真の信号を使った理想化された評価であることと，過平滑化の例を説明する。
+
+### 発展レベル（1項目を選択）
+1. 同じ標準正規雑音を0.1，0.5，1.0倍して比較し，雑音強度の影響だけを調べる。
+2. `P_n` の推定値を0.25倍または4倍にし，利得・MSE・保存波形の変化を比較する。
+3. 白色雑音を2 Hzの正弦波へ置き換え，移動平均と白色雑音を仮定した利得の弱点を説明する。
+
+## 確認ポイント
+- 真の信号，雑音，観測，復元信号の対応が明確で，seed・標準偏差・評価範囲を記録した。
+- 利得の手計算から実装へ進み，信号と雑音の非相関・白色雑音の仮定を区別した。
+- MSEの改善だけでなく，信号成分が失われる場合も説明した。
 
 ## 詰まったときに見る資料
-- [`../textbook/markdown/ch13-basics-of-signal-processing.md`](../textbook/markdown/ch13-basics-of-signal-processing.md)
-- [`../textbook/markdown/ch14-basics-of-spectrum-analysis.md`](../textbook/markdown/ch14-basics-of-spectrum-analysis.md)
-- [`../textbook/markdown/ch15-basics-of-lti-systems.md`](../textbook/markdown/ch15-basics-of-lti-systems.md)
+- [スペクトル解析](../textbook/markdown/ch14-basics-of-spectrum-analysis.md)
+- [LTIシステムとフィルタ](../textbook/markdown/ch15-basics-of-lti-systems.md)

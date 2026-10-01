@@ -1,9 +1,11 @@
 # 第01回 環境構築とワークフロー
 
+## この回の目標
+
 - ターミナルで現在地，ファイルパス，ディレクトリ構造を確認する。
 - Python 仮想環境を作成し，実行に使われる Python を確認する。
 - VS Code で repo を開き，ターミナルとエディタを行き来しながら作業する。
-- Git で作業状態を確認し，変更を記録する最小手順を身につける。
+- Git で作業状態を確認する最小手順を身につける。
 
 ## 解説
 
@@ -151,6 +153,11 @@ Windows 側の VS Code と WSL extension が入っているか確認する。
 
 ### 環境構築 (Mac)
 
+この手順は Apple Silicon（M シリーズ）の Mac を対象にする。
+この repo で固定している PyTorch 2.7.1 には Intel Mac 用の wheel がないため，
+Intel Mac ではこの手順のまま環境をそろえることはできない。
+Intel Mac を使う場合は，授業用に別の対応環境を用意する必要がある。
+
 Mac では，まず，ソフトウェアをインストールするための
 package manager として，Homebrew を導入する．
 Terminal を開き，
@@ -169,12 +176,12 @@ Homebrew 公式ページに掲載されている以下のコマンドを実行�
 brew --version
 ```
 
-Homebrew が使えるようになったら，VS Code，Python 3.12，Git，GitHub CLI をそろえる。
+Homebrew が使えるようになったら，VS Code，Git，GitHub CLI をそろえる。
+Python 3.12 は，後述する `uv` でインストールして管理する。
 Mac に Git が入っている場合でも，`git --version` で確認してから進める。
 
 ```bash
 brew install --cask visual-studio-code
-brew install python
 brew install git gh
 ```
 
@@ -260,11 +267,12 @@ GitHub CLI の認証が必要になる。
 gh auth login
 ```
 
-`gh auth login` の途中では，次のように選ぶ。
+`gh auth login` の途中では，次の方針で選ぶ。
+表示される質問や順序は，`gh` のバージョンや既存の認証・SSH 鍵の設定によって変わる。
 
 - `What account do you want to log into?`: `GitHub.com`
 - `What is your preferred protocol for Git operations?`: `SSH`
-- `Authenticate Git with your GitHub credentials?`: `Yes`
+- SSH 公開鍵の登録を求められたら，使用する鍵を選ぶ。鍵がない場合は，案内に従って作成する。
 - browser を使う認証を選び，表示された code を GitHub の画面に入力する
 
 SSH を選ぶと，`gh` は既存の SSH 鍵を探す。
@@ -329,6 +337,14 @@ Python環境の管理には `uv` を用いる．
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+インストール末尾に表示される PATH の案内に従い，
+ターミナルを開き直すか，案内された `source` コマンドを実行する。
+次のコマンドでバージョンが表示されることを確認してから先へ進む。
+
+```bash
+uv --version
+```
+
 repo ルートで次を実行すると，
 `pyproject.toml` と `uv.lock` に従い
 Python 3.12 環境と `.venv` が用意される。
@@ -348,45 +364,118 @@ which python
 
 ### VS Code からこのリポジトリを開く
 
-次を実行して，VS Code からこのリポジトリを開くことができる。
+この repo を VS Code で開くには，
+Ubuntu（WSL）または Mac のターミナルで次を実行する。
 
 ```bash
 cd ~/workspace/signal-ml-training
 code .
 ```
 
+VS Code の Explorer に `pyproject.toml` と `uv.lock` が見えていることを確認する。
+
 WSL の場合は，VS Code の左下やウィンドウ名に
 `WSL: Ubuntu-24.04` のように表示されていることを確認する。
+このウィンドウのターミナルも Ubuntu 側で動作する。
 
-VS Code で Python のプログラムを実行するには，
+ターミナルからプログラムを実行する場合は，
+前節で準備した `uv` を使って repo の環境で実行できる。
+VS Code のターミナルでも，通常の Ubuntu や Mac のターミナルでも同じ操作でよい。
+次の例は，「最初の動作確認」のサンプルファイルを保存した後に実行する。
+
+```bash
+cd ~/workspace/signal-ml-training
+uv run python exercises/exc01_01.py
+```
+
+`uv run` は repo の環境を確認・同期してから実行するため，
+事前に `source .venv/bin/activate` を実行する必要はない。
+一方，`python exercises/exc01_01.py` と直接実行する場合は，
+そのターミナルで `.venv` が有効になっていることを先に確認する。
+詳しくは [uv のプロジェクト操作](https://docs.astral.sh/uv/guides/projects/) を参照する。
+
+### VS Code の実行・デバッグ機能で `.venv` を使う（任意）
+
+以下は，VS Code の実行ボタンやデバッグ機能から，
+repo の `.venv` にある Python を使いたい場合の任意の設定である。
+repo を VS Code で開いて編集するだけの場合や，ターミナルで `uv run` を使う場合には，
+この設定は必要ない。「最初の動作確認」へ進んでよい。
+授業用の Python 環境は，どの実行方法でも「Python 環境の構築」で説明した `uv` で管理する。
+
+この設定を行う場合は，まず repo のルートで次を実行し，
+`pyproject.toml` と `uv.lock` に従って `.venv` を準備する。
+
+```bash
+cd ~/workspace/signal-ml-training
+uv sync
+```
+
+VS Code の Python 実行・デバッグ機能を使うには，
 Microsoft の Python 拡張機能が必要である。
 入っていない場合は，VS Code の拡張機能画面で `Python` を検索し，
 Microsoft が提供しているものをインストールする。
+WSL の場合は，拡張機能画面で Ubuntu 側でも有効になっていることを確認し，
+`Install in WSL: Ubuntu-24.04` と表示される場合はそのボタンでインストールする。
 
-このリポジトリでは，リポジトリ内の `.venv` を
-Python の実行環境として使う。
-VS Code で Command Palette を開き，
-`Python: Select Interpreter` を実行して，
-`.venv/bin/python` を選ぶ。
+次に，この repo で使う Python を明示的に選ぶ。
 
-選択後，VS Code のターミナルで次を実行する。
+1. Windows では `Ctrl+Shift+P`，Mac では `Cmd+Shift+P` で Command Palette を開く。
+2. `Python: Select Interpreter` を実行する。
+3. この repo 内の `.venv/bin/python` に対応する Python 3.12 を選ぶ。
+
+選択するパスの例は，WSL では
+`/home/yourname/workspace/signal-ml-training/.venv/bin/python`，
+Mac では `/Users/yourname/workspace/signal-ml-training/.venv/bin/python` である。
+`yourname` は自分の user name に読み替える。
+候補に `.venv` が見つからない場合は，repo のルートで `uv sync` が成功したことを確認し，
+Command Palette の `Developer: Reload Window` でウィンドウを再読み込みしてから選び直す。
+
+選択後，既存のターミナルをゴミ箱ボタンで終了し，
+メニューの `Terminal` → `New Terminal` から新しいターミナルを開く。
+次を実行して，そのターミナルの現在地と Python を確認する。
 
 ```bash
+cd ~/workspace/signal-ml-training
+pwd
 which python
 python --version
 ```
 
-`which python` がこのリポジトリ内の `.venv/bin/python` を指していれば，
-VS Code から実行する Python も
-先ほど作成した仮想環境を使っている。
+`pwd` が repo のルート，`which python` がこの repo 内の `.venv/bin/python`，
+`python --version` が 3.12 系を示すことを確認する。
+新しいターミナルで仮想環境が自動的に有効にならない場合は，
+repo のルートで `source .venv/bin/activate` を実行し，もう一度確認する。
+
+VS Code の実行ボタンで使われる Python も確認するため，
+次の 2 行を repo 直下の `interpreter_check.py` として保存する。
+
+```python
+import sys
+print(sys.executable)
+```
+
+このファイルをエディタで開いた状態で，右上の `Run Python File in Terminal` を押す。
+同じ操作は，エディタ内を右クリックし，`Run` → `Python File in Terminal` からも選べる。
+表示されるパスがこのリポジトリ内の `.venv/bin/python` であることを確認する。
+異なる場合は `Python: Select Interpreter` でこの repo の `.venv` を選び直す。
+
+`Run Python File in Terminal` は，VS Code で選択した Python を使ってファイルを実行する。
+デバッグ機能も，実行環境を個別に指定していなければ，この選択を使う。
+教材を更新して依存パッケージが変わった場合は，実行前に repo のルートで `uv sync` を行う。
+詳しくは [VS Code の Python 実行手順](https://code.visualstudio.com/docs/python/run) を参照する。
 
 ### 最初の動作確認
 
 環境構築後は，Pythonを実行できることまで確認する。
+まず repo のルートに移動し，スクリプトの保存先を作る。
+
+```bash
+cd ~/workspace/signal-ml-training
+mkdir -p exercises
+```
+
 次の Python スクリプトを
-`signal-ml-training/exercises/exc01_01.py` として
-作成し，
-実行の結果 `singal-ml-training/outputs/setup_check/sin.png` が作られれば正しく環境構築できている。
+repo 直下の `exercises/exc01_01.py` として保存する。
 
 ```python
 from pathlib import Path
@@ -410,8 +499,31 @@ plt.close()
 print("setup check completed")
 ```
 
+repo のルートで仮想環境を有効にして，保存したスクリプトを実行する。
+
+```bash
+cd ~/workspace/signal-ml-training
+source .venv/bin/activate
+python exercises/exc01_01.py
+```
+
+`setup check completed` と表示され，repo 直下に
+`outputs/setup_check/sin.png` が作られることを確認する。
+この画像を開いて正弦波が描かれていれば，動作確認は完了である。
+
 ## 演習
-今回は環境構築を主とするため，演習はない．
+今回は環境構築を主とするため，追加の演習はない。上の動作確認を完了する。
+
+第1回の `exercises/exc01_01.py` と `outputs/setup_check/` は，教材repoの環境を確認するため教材repo内に置く。
+第2回以降の解答は，学生ごとの非公開の提出repo（submission repo）へ保存する。
+教材repoと提出repoの役割・実行環境の使い方は [共通の作業場所](README.md#作業場所と保存先) を参照する。
+
+## 確認ポイント
+- Ubuntu 24.04 LTS（Windowsの場合）とPython 3.12の環境を確認した。
+- 教材repoで `uv --version`，`python --version`，`which python` を確認し，`.venv` のPythonを使っている。
+- `exercises/exc01_01.py` を教材repo直下から実行し，完了メッセージと `outputs/setup_check/sin.png` の正弦波を確認した。
+- `git status` で教材repoの変更状態を説明できる。
+- VS Codeの実行・デバッグ設定を選んだ場合だけ，`sys.executable` も確認した。設定を省略しても本回は完了できる。
 
 ## 詰まったときに見る資料
 - [`../README.md`](../README.md)
