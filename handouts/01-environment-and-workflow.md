@@ -3,7 +3,7 @@
 - ターミナルで現在地，ファイルパス，ディレクトリ構造を確認する。
 - Python 仮想環境を作成し，実行に使われる Python を確認する。
 - VS Code で repo を開き，ターミナルとエディタを行き来しながら作業する。
-- Git で作業状態を確認し，変更を記録する最小手順を身につける。
+- Git で作業状態を確認する最小手順を身につける。
 
 ## 解説
 
@@ -151,6 +151,11 @@ Windows 側の VS Code と WSL extension が入っているか確認する。
 
 ### 環境構築 (Mac)
 
+この手順は Apple Silicon（M シリーズ）の Mac を対象にする。
+この repo で固定している PyTorch 2.7.1 には Intel Mac 用の wheel がないため，
+Intel Mac ではこの手順のまま環境をそろえることはできない。
+Intel Mac を使う場合は，授業用に別の対応環境を用意する必要がある。
+
 Mac では，まず，ソフトウェアをインストールするための
 package manager として，Homebrew を導入する．
 Terminal を開き，
@@ -169,12 +174,12 @@ Homebrew 公式ページに掲載されている以下のコマンドを実行�
 brew --version
 ```
 
-Homebrew が使えるようになったら，VS Code，Python 3.12，Git，GitHub CLI をそろえる。
+Homebrew が使えるようになったら，VS Code，Git，GitHub CLI をそろえる。
+Python 3.12 は，後述する `uv` でインストールして管理する。
 Mac に Git が入っている場合でも，`git --version` で確認してから進める。
 
 ```bash
 brew install --cask visual-studio-code
-brew install python
 brew install git gh
 ```
 
@@ -260,11 +265,12 @@ GitHub CLI の認証が必要になる。
 gh auth login
 ```
 
-`gh auth login` の途中では，次のように選ぶ。
+`gh auth login` の途中では，次の方針で選ぶ。
+表示される質問や順序は，`gh` のバージョンや既存の認証・SSH 鍵の設定によって変わる。
 
 - `What account do you want to log into?`: `GitHub.com`
 - `What is your preferred protocol for Git operations?`: `SSH`
-- `Authenticate Git with your GitHub credentials?`: `Yes`
+- SSH 公開鍵の登録を求められたら，使用する鍵を選ぶ。鍵がない場合は，案内に従って作成する。
 - browser を使う認証を選び，表示された code を GitHub の画面に入力する
 
 SSH を選ぶと，`gh` は既存の SSH 鍵を探す。
@@ -329,6 +335,14 @@ Python環境の管理には `uv` を用いる．
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+インストール末尾に表示される PATH の案内に従い，
+ターミナルを開き直すか，案内された `source` コマンドを実行する。
+次のコマンドでバージョンが表示されることを確認してから先へ進む。
+
+```bash
+uv --version
+```
+
 repo ルートで次を実行すると，
 `pyproject.toml` と `uv.lock` に従い
 Python 3.12 環境と `.venv` が用意される。
@@ -369,7 +383,7 @@ VS Code で Command Palette を開き，
 `Python: Select Interpreter` を実行して，
 `.venv/bin/python` を選ぶ。
 
-選択後，VS Code のターミナルで次を実行する。
+選択後，VS Code の既存のターミナルを閉じ，新しいターミナルを開いて次を実行する。
 
 ```bash
 which python
@@ -377,16 +391,31 @@ python --version
 ```
 
 `which python` がこのリポジトリ内の `.venv/bin/python` を指していれば，
-VS Code から実行する Python も
-先ほど作成した仮想環境を使っている。
+そのターミナルは先ほど作成した仮想環境を使っている。
+
+VS Code の実行ボタンで使われる Python も確認するため，
+新しい Python ファイルに次の 2 行を保存し，
+`Run Python File in Terminal` で実行する。
+
+```python
+import sys
+print(sys.executable)
+```
+
+表示されるパスがこのリポジトリ内の `.venv/bin/python` であることを確認する。
 
 ### 最初の動作確認
 
 環境構築後は，Pythonを実行できることまで確認する。
+まず repo のルートに移動し，スクリプトの保存先を作る。
+
+```bash
+cd ~/workspace/signal-ml-training
+mkdir -p exercises
+```
+
 次の Python スクリプトを
-`signal-ml-training/exercises/exc01_01.py` として
-作成し，
-実行の結果 `singal-ml-training/outputs/setup_check/sin.png` が作られれば正しく環境構築できている。
+repo 直下の `exercises/exc01_01.py` として保存する。
 
 ```python
 from pathlib import Path
@@ -409,6 +438,18 @@ plt.close()
 
 print("setup check completed")
 ```
+
+repo のルートで仮想環境を有効にして，保存したスクリプトを実行する。
+
+```bash
+cd ~/workspace/signal-ml-training
+source .venv/bin/activate
+python exercises/exc01_01.py
+```
+
+`setup check completed` と表示され，repo 直下に
+`outputs/setup_check/sin.png` が作られることを確認する。
+この画像を開いて正弦波が描かれていれば，動作確認は完了である。
 
 ## 演習
 今回は環境構築を主とするため，演習はない．
