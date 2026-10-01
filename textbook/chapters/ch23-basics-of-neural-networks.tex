@@ -1,16 +1,18 @@
 \chapter{ニューラルネットワークの基礎}
 
 
+本章は旧教科書の補助資料です。ファイル名のch23は授業の第23回を意味しません。第13回の信号処理ミニプロジェクトの前提には含めず，ニューラルネットワークを学ぶ際に参照します。
+
 \section{事前に読んでおく必要がある章}
 
 
 \begin{itemize}
-\item 2 章 \href{https://tutorials.chainer.org/ja/02_Basics_of_Python.html}{Python 入門}
-\item 4 章 \href{https://tutorials.chainer.org/ja/04_Basics_of_Differential.html}{微分の基礎}
-\item 5 章 \href{https://tutorials.chainer.org/ja/05_Basics_of_Linear_Algebra.html}{線形代数の基礎}
-\item 6 章 \href{https://tutorials.chainer.org/ja/06_Basics_of_Probability_Statistics.html}{確率・統計の基礎}
-\item 7 章 \href{https://tutorials.chainer.org/ja/07_Regression_Analysis.html}{単回帰分析と重回帰分析}
-\item 8 章 \href{https://tutorials.chainer.org/ja/08_Introduction_to_NumPy.html}{NumPy 入門}
+\item \href{markdown/ch02-basics-of-python.md}{Python 入門}
+\item \href{markdown/ch04-basics-of-differential.md}{微分の基礎}
+\item \href{markdown/ch06a-basics-of-linear-algebra.md}{線形代数の基礎}
+\item \href{markdown/ch06b-basics-of-probability-statistics.md}{確率・統計の基礎}
+\item \href{markdown/ch21-regression-analysis.md}{単回帰分析と重回帰分析}
+\item \href{markdown/ch03-reviewing-elementary-math-with-numpy-and-matplotlib.md}{NumPy 入門}
 \end{itemize}
 
 
@@ -56,7 +58,7 @@
 
 ここで、層と層の間にあるノード間の結合は、一つ一つが重みを持っており、上のような\textbf{全結合型ニューラルネットワークの場合は、それらの重みをまとめて、一つの行列で表現します。}
 
-この際、\href{https://tutorials.chainer.org/ja/07_Regression_Analysis.html}{単回帰分析と重回帰分析} の章で解説した重回帰分析の例と同じように、バイアスをその重み行列に含めて扱うため、入力層の最後に常に $1$ を持つノードが追加されていることに注意してください。
+この際、\href{markdown/ch21-regression-analysis.md}{単回帰分析と重回帰分析} の章で解説した重回帰分析の例と同じように、バイアスをその重み行列に含めて扱うため、入力層の最後に常に $1$ を持つノードが追加されていることに注意してください。
 
 このため、図では入力層のノード数が $M + 1 = 3 + 1 = 4$ 個となっています。
 
@@ -493,7 +495,7 @@ y = {\bf W}_{21} {\bf h}_1 + {\bf b}_2 = 3 \times 11 + 2 \times 0 + 0 \times 1  
 \end{enumerate}
 
 
-という手順は、\href{https://tutorials.chainer.org/ja/07_Regression_Analysis.html}{単回帰分析と重回帰分析}の章でも、繰り返し出てきました。
+という手順は、\href{markdown/ch21-regression-analysis.md}{単回帰分析と重回帰分析}の章でも、繰り返し出てきました。
 
 そして、\textbf{この手順は機械学習の他の多くの手法でもよく登場します。}
 
