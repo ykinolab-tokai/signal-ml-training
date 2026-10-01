@@ -362,47 +362,92 @@ which python
 
 ### VS Code からこのリポジトリを開く
 
-次を実行して，VS Code からこのリポジトリを開くことができる。
+VS Code でも，`uv` がこの repo 内に用意した `.venv` の Python 3.12 を使う。
+前節で `uv --version` が表示されることを確認したら，
+Ubuntu（WSL）または Mac のターミナルで次を実行する。
+`uv sync` が成功してから `code .` に進む。
 
 ```bash
 cd ~/workspace/signal-ml-training
+uv sync
 code .
 ```
 
+`uv sync` は，repo の `pyproject.toml` と `uv.lock` に従って
+`.venv` 内の Python 環境と必要なパッケージをそろえる。
+VS Code の Explorer に `pyproject.toml` と `uv.lock` が見えていることを確認する。
+
 WSL の場合は，VS Code の左下やウィンドウ名に
 `WSL: Ubuntu-24.04` のように表示されていることを確認する。
+Python の実行先も Ubuntu 側になるため，以降のターミナル操作は
+この WSL 接続中の VS Code で行う。
 
 VS Code で Python のプログラムを実行するには，
 Microsoft の Python 拡張機能が必要である。
 入っていない場合は，VS Code の拡張機能画面で `Python` を検索し，
 Microsoft が提供しているものをインストールする。
+WSL の場合は，拡張機能画面で Ubuntu 側でも有効になっていることを確認し，
+`Install in WSL: Ubuntu-24.04` と表示される場合はそのボタンでインストールする。
 
-このリポジトリでは，リポジトリ内の `.venv` を
-Python の実行環境として使う。
-VS Code で Command Palette を開き，
-`Python: Select Interpreter` を実行して，
-`.venv/bin/python` を選ぶ。
+次に，この repo で使う Python を明示的に選ぶ。
 
-選択後，VS Code の既存のターミナルを閉じ，新しいターミナルを開いて次を実行する。
+1. Windows では `Ctrl+Shift+P`，Mac では `Cmd+Shift+P` で Command Palette を開く。
+2. `Python: Select Interpreter` を実行する。
+3. この repo 内の `.venv/bin/python` に対応する Python 3.12 を選ぶ。
+
+選択するパスの例は，WSL では
+`/home/yourname/workspace/signal-ml-training/.venv/bin/python`，
+Mac では `/Users/yourname/workspace/signal-ml-training/.venv/bin/python` である。
+`yourname` は自分の user name に読み替える。
+候補に `.venv` が見つからない場合は，repo のルートで `uv sync` が成功したことを確認し，
+Command Palette の `Developer: Reload Window` でウィンドウを再読み込みしてから選び直す。
+
+選択後，既存のターミナルをゴミ箱ボタンで終了し，
+メニューの `Terminal` → `New Terminal` から新しいターミナルを開く。
+次を実行して，そのターミナルの現在地と Python を確認する。
 
 ```bash
+cd ~/workspace/signal-ml-training
+pwd
 which python
 python --version
 ```
 
-`which python` がこのリポジトリ内の `.venv/bin/python` を指していれば，
-そのターミナルは先ほど作成した仮想環境を使っている。
+`pwd` が repo のルート，`which python` がこの repo 内の `.venv/bin/python`，
+`python --version` が 3.12 系を示すことを確認する。
+新しいターミナルで仮想環境が自動的に有効にならない場合は，
+repo のルートで `source .venv/bin/activate` を実行し，もう一度確認する。
 
 VS Code の実行ボタンで使われる Python も確認するため，
-新しい Python ファイルに次の 2 行を保存し，
-`Run Python File in Terminal` で実行する。
+次の 2 行を repo 直下の `interpreter_check.py` として保存する。
 
 ```python
 import sys
 print(sys.executable)
 ```
 
+このファイルをエディタで開いた状態で，右上の `Run Python File in Terminal` を押す。
+同じ操作は，エディタ内を右クリックし，`Run` → `Python File in Terminal` からも選べる。
 表示されるパスがこのリポジトリ内の `.venv/bin/python` であることを確認する。
+異なる場合は `Python: Select Interpreter` でこの repo の `.venv` を選び直す。
+
+`Run Python File in Terminal` は，VS Code で選択した Python を使ってファイルを実行する。
+教材を更新して依存パッケージが変わった場合は，実行前に repo のルートで `uv sync` を行う。
+
+ターミナルからは `uv run python ...` でも実行できる。
+`uv run` は repo の環境を確認・同期してから実行するため，
+事前に `source .venv/bin/activate` を実行する必要はない。
+次節でサンプルファイルを保存した後なら，次のように実行する。
+
+```bash
+cd ~/workspace/signal-ml-training
+uv run python exercises/exc01_01.py
+```
+
+一方，`python exercises/exc01_01.py` と直接実行する場合は，
+そのターミナルで `.venv` が有効になっていることを先に確認する。
+実行方法の詳細は [VS Code の Python 実行手順](https://code.visualstudio.com/docs/python/run) と
+[uv のプロジェクト操作](https://docs.astral.sh/uv/guides/projects/) を参照する。
 
 ### 最初の動作確認
 
