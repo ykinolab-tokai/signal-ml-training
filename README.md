@@ -53,6 +53,8 @@
 
 ## 配布資料とテンプレート
 
+ゼミでは，授業時間の都合上，要点のみの最小限の説明とその理解を確認する演習のみを扱い，それらはhandoutsで管理する．詳細な説明や補足説明等を含めた完全な資料はtextbookとして用意し，必要に応じて確認できるようにする
+
 - 学生に直接配布する資料は、すべて Markdown ファイルとして [`handouts/`](handouts/) に配置します。
 - 第 25〜27 回の発展テーマ枠は、年度ごとに画像・音響・共通基盤のうち 1 テーマだけを選び、3 回に分けて扱います。各回の入口 handout は `handouts/25-...md` から `handouts/27-...md` に置き、候補テーマ別 handout は [`handouts/advanced/`](handouts/advanced/) に置きます。
 - 雛形は [`templates/session-template.md`](templates/session-template.md) に置きます。
