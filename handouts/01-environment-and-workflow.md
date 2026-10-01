@@ -362,27 +362,53 @@ which python
 
 ### VS Code からこのリポジトリを開く
 
-VS Code でも，`uv` がこの repo 内に用意した `.venv` の Python 3.12 を使う。
-前節で `uv --version` が表示されることを確認したら，
+この repo を VS Code で開くには，
 Ubuntu（WSL）または Mac のターミナルで次を実行する。
-`uv sync` が成功してから `code .` に進む。
 
 ```bash
 cd ~/workspace/signal-ml-training
-uv sync
 code .
 ```
 
-`uv sync` は，repo の `pyproject.toml` と `uv.lock` に従って
-`.venv` 内の Python 環境と必要なパッケージをそろえる。
 VS Code の Explorer に `pyproject.toml` と `uv.lock` が見えていることを確認する。
 
 WSL の場合は，VS Code の左下やウィンドウ名に
 `WSL: Ubuntu-24.04` のように表示されていることを確認する。
-Python の実行先も Ubuntu 側になるため，以降のターミナル操作は
-この WSL 接続中の VS Code で行う。
+このウィンドウのターミナルも Ubuntu 側で動作する。
 
-VS Code で Python のプログラムを実行するには，
+ターミナルからプログラムを実行する場合は，
+前節で準備した `uv` を使って repo の環境で実行できる。
+VS Code のターミナルでも，通常の Ubuntu や Mac のターミナルでも同じ操作でよい。
+次の例は，「最初の動作確認」のサンプルファイルを保存した後に実行する。
+
+```bash
+cd ~/workspace/signal-ml-training
+uv run python exercises/exc01_01.py
+```
+
+`uv run` は repo の環境を確認・同期してから実行するため，
+事前に `source .venv/bin/activate` を実行する必要はない。
+一方，`python exercises/exc01_01.py` と直接実行する場合は，
+そのターミナルで `.venv` が有効になっていることを先に確認する。
+詳しくは [uv のプロジェクト操作](https://docs.astral.sh/uv/guides/projects/) を参照する。
+
+### VS Code の実行・デバッグ機能で `.venv` を使う（任意）
+
+以下は，VS Code の実行ボタンやデバッグ機能から，
+repo の `.venv` にある Python を使いたい場合の任意の設定である。
+repo を VS Code で開いて編集するだけの場合や，ターミナルで `uv run` を使う場合には，
+この設定は必要ない。「最初の動作確認」へ進んでよい。
+授業用の Python 環境は，どの実行方法でも「Python 環境の構築」で説明した `uv` で管理する。
+
+この設定を行う場合は，まず repo のルートで次を実行し，
+`pyproject.toml` と `uv.lock` に従って `.venv` を準備する。
+
+```bash
+cd ~/workspace/signal-ml-training
+uv sync
+```
+
+VS Code の Python 実行・デバッグ機能を使うには，
 Microsoft の Python 拡張機能が必要である。
 入っていない場合は，VS Code の拡張機能画面で `Python` を検索し，
 Microsoft が提供しているものをインストールする。
@@ -432,22 +458,9 @@ print(sys.executable)
 異なる場合は `Python: Select Interpreter` でこの repo の `.venv` を選び直す。
 
 `Run Python File in Terminal` は，VS Code で選択した Python を使ってファイルを実行する。
+デバッグ機能も，実行環境を個別に指定していなければ，この選択を使う。
 教材を更新して依存パッケージが変わった場合は，実行前に repo のルートで `uv sync` を行う。
-
-ターミナルからは `uv run python ...` でも実行できる。
-`uv run` は repo の環境を確認・同期してから実行するため，
-事前に `source .venv/bin/activate` を実行する必要はない。
-次節でサンプルファイルを保存した後なら，次のように実行する。
-
-```bash
-cd ~/workspace/signal-ml-training
-uv run python exercises/exc01_01.py
-```
-
-一方，`python exercises/exc01_01.py` と直接実行する場合は，
-そのターミナルで `.venv` が有効になっていることを先に確認する。
-実行方法の詳細は [VS Code の Python 実行手順](https://code.visualstudio.com/docs/python/run) と
-[uv のプロジェクト操作](https://docs.astral.sh/uv/guides/projects/) を参照する。
+詳しくは [VS Code の Python 実行手順](https://code.visualstudio.com/docs/python/run) を参照する。
 
 ### 最初の動作確認
 
