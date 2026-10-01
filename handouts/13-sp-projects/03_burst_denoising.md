@@ -1,79 +1,64 @@
-# プロジェクト3：Burst画像の多フレームDenoising
+# プロジェクト3：burst画像のノイズ除去
 
-# タスク説明
+## 目的と入力
 
-同じシーンを短時間に連続撮影すると，シーンの内容はほぼ同じである一方，各画像に含まれるノイズはそれぞれ異なる．
-この性質を利用して，連写された複数枚の画像（burst画像）の合成により画像中のノイズを低減するタスクを
-**burst denoising** と呼ぶ．
+位置ずれのない連写画像を平均して，独立な雑音を減らす。
+第13回の画像コースでは，以下の生成例と「基礎レベル」を用いる。
+入力には教材repoの `data/cat.png` を使い，提出repoの `data/cat.png` へコピーしておく。
+追加のデータやライブラリは使わない。
 
-このプロジェクトでは，位置ずれのない $K$ 枚のburst画像 $y_1,\ldots,y_K$ から，ノイズのない原画像 $x$ を推定する．
-ここで，$k$ 番目のburst画像 $y_k$ は，原画像 $x$ にノイズ $\epsilon_k$ を加算した後に画素値を $[0,1]$ にclipすることで生成されると仮定する．
-すなわち，$y_k$ の画素値は次式で与えられる．
+```python
+from pathlib import Path
 
-$$
-y_k[n_1,n_2,c]
-=\operatorname{clip}\left(
- x[n_1,n_2,c]+\epsilon_k[n_1,n_2,c],0,1
-\right)
-$$
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
 
-本プロジェクトでは，まず算術平均による合成をベースラインとして実装する．
-その後，弱点を分析し，性能を改善する．
+with Image.open("data/cat.png") as image:
+    image = image.convert("RGB")
+    image.thumbnail((256, 256))
+    clean = np.asarray(image, dtype=np.float64) / 255.0
 
-# 評価方法
+rng = np.random.default_rng(0)
+noise = rng.normal(0.0, np.sqrt(0.1), size=(9, *clean.shape))
+burst = np.clip(clean[None, ...] + noise, 0.0, 1.0)
+figure_dir = Path("outputs/figures")
+figure_dir.mkdir(parents=True, exist_ok=True)
+print(clean.shape, burst.shape)
+```
 
-ノイズのない原画像を $x$ , 復元画像を $\hat{x}$ とし， $x$ と $\hat{x}$ 間のPeak Signal-to-Noise Ratio (PSNR)，
-および Structural Similarity Index (SSIM) によりノイズ除去性能を評価する．
-画素値が $[0,1]$ のとき，PSNRは次式で定義される．
+雑音は平均0，分散0.1の正規分布から画素・チャネル・フレームごとに独立に生成する。
+最初に9枚まとめて生成し，枚数の比較にはその先頭を使う。
+各観測画像を `[0,1]` にclipするため，境界付近には偏りが生じる。
+clipしない独立な加法雑音なら平均後の雑音分散は $1/K$ になるが，この入力のMSEが厳密に $1/K$ になるとは限らない。
 
-$$
-\mathrm{PSNR}
-=10\log_{10}\frac{1}{\mathrm{MSE}}
-$$
+## 基準手法と評価
 
-ここで，MSEは，RGB全チャネルを含む平均二乗誤差である．すなわち，画像の高さを $H$ ，幅を $W$ とすると，MSEは次式で定義される．
-
-$$
-\mathrm{MSE}
-=\frac{1}{3HW}
-\sum_{n_1=0}^{H-1}
-\sum_{n_2=0}^{W-1}
-\sum_{c=0}^{2}
-\left(x[n_1,n_2,c]-\hat{x}[n_1,n_2,c]\right)^2
-$$
-
-# ベースライン
-
-ベースラインは，次式で与えられるburstの算術平均とする
+先頭 $K$ 枚の画素ごとの算術平均を復元画像とする。
 
 $$
-\hat{x}_{\mathrm{B1}}
-=\operatorname{clip}\left(
-\frac{1}{K}\sum_{k=1}^{K}y_k
-,0,1\right)
+\hat{x}_K=\frac{1}{K}\sum_{k=1}^{K} y_k
 $$
 
-# 課題
+全RGB画素に対して平均二乗誤差を計算する。
+画素値の範囲は `[0,1]` なので，PSNRは次の式を用いる。
+MSEが0ならPSNRは無限大として扱う。
+
+$$
+\mathrm{MSE}=\operatorname{mean}((x-\hat{x})^2),\qquad
+\mathrm{PSNR}=10\log_{10}(1/\mathrm{MSE})
+$$
 
 ## 基礎レベル
 
-1. 以下の画像を縦横1/2倍した画像を原画像 $x$ とする．画素値の範囲を $[0, 1]$ とし，原画像に平均 $0$ ，分散 $0.1$ のガウスノイズを独立に加えることで，仮想的なburst画像を15枚生成しなさい．
+1. 上のコードに続けて，`burst[:K].mean(axis=0)` で $K=1,3,9$ の復元画像を作る。平均する軸と出力のshapeを説明する。$K=1$ は未処理の観測画像，$K=3$ は基準手法，$K=9$ は比較条件である。
+2. 各条件のMSEとPSNRを計算する。正解，$K=1,3,9$ の画像を同じ表示範囲で並べ，`outputs/figures/session13_comparison.png` に保存する。
+3. [第13回](../13-image-baseline-mini-implementation.md)で指定したレポートに，数値，枚数を増やした影響，clipによって残る誤差を記す。
 
-    - https://www.ite.or.jp/contents/chart/uhdtv/u10_Ship_2K.tif
+## 発展レベル（任意）
 
-2. ベースラインを実装し，合成枚数 $K=3, 5, 7, 9, 11, 13, 15$ におけるPSNR, SSIM をそれぞれ算出しなさい．
+- 同じ9枚に対する中央値 `np.median(burst, axis=0)` と平均を比較する。
+- 雑音の標準偏差を変えて，再度同じ条件で平均と中央値を比較する。
 
-3. 合成手法の改良を考え実装しなさい．
-
-    - 平均する際，最大値・最小値を除外する
-    - 平均ではなく中央値にしてみる
-    - フィルタ処理を追加してみる，など
-
-4. 最終的なベースラインと改良手法を同一条件で比較し，結果を考察しなさい．
-
-## 発展レベル
-
-5. 原画像に加えるノイズの種類を変更し，ベースラインと改良手法の性能を比較しなさい．
-
-    - ごま塩ノイズ
-    - ラプラス分布に従うノイズ
+SSIMなど別の評価尺度は，定義・利用ライブラリを別途学んだ後の発展候補とする。
+今回の完了条件はMSEとPSNRである。

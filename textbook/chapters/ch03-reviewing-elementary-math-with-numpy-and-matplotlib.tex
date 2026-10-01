@@ -147,12 +147,12 @@ print(b)
 
 \begin{lstlisting}[style=codecell,language=Python]
 print('Shape:', b.shape)
-print('Rank:', b.ndim)
+print('Dimensions:', b.ndim)
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
 Shape: (3, 3)
-Rank: 2
+Dimensions: 2
 \end{lstlisting}
 
 ここで、\texttt{size} という属性も見てみましょう。
@@ -774,7 +774,7 @@ plt.show()
 曲線がなめらかになりました。
 
 
-関数 $y = ax^2 + b^2 + c$ の $x$ を $x - \alpha$ に置き換えると、グラフを右に $\alpha$ だけ平行移動させることができます
+関数 $y = ax^2 + bx + c$ の $x$ を $x - \alpha$ に置き換えると、グラフを右に $\alpha$ だけ平行移動させることができます
 
 （$\alpha < 0$ の場合は左に平行移動します）。
 
@@ -798,7 +798,7 @@ plt.show()
 
 関数の $x$ を $x - \alpha$ に置き換えるとグラフを右に平行移動させることができましたが、
 
-次式のように $y$ を $x - \beta$ に置き換えるとグラフを上に $\beta$ だけ平行移動させることができます
+次式のように $y$ を $y - \beta$ に置き換えるとグラフを上に $\beta$ だけ平行移動させることができます
 
 （$\beta<0$ の場合は下に平行移動）。
 
@@ -1232,7 +1232,7 @@ a + b:
 そして 2 つの配列の各次元ごとのサイズの最大値をとった形 \texttt{(2, 3, 3)} にブロードキャストされ、足し算が行われます。
 
 
-このように、もし 2 つの配列のランクが異なる場合は、次元数が小さい方の配列が大きい方と同じ次元数になるまでその形の先頭に新たな次元が追加されます。
+このように、もし 2 つの配列の次元数（軸の数）が異なる場合は、次元数が小さい方の配列が大きい方と同じ次元数になるまでその形の先頭に新たな次元が追加されます。
 
 サイズが 1 の次元がいくつ追加されても、要素の数は変わらないことに注意してください。
 
@@ -1306,7 +1306,7 @@ NumPy のブロードキャストは慣れるまで直感に反するように�
 一つ具体例を見てみます。
 
 
-$5 \times 5$ 行列 \texttt{a} に、3 次元ベクトル \texttt{b} を足します。
+$5 \times 5$ 行列 \texttt{a} に、5要素のベクトル \texttt{b} を足します。
 
 まず、\texttt{a}、\texttt{b} および結果を格納する配列 \texttt{c} を定義します。
 
@@ -1326,195 +1326,71 @@ b = np.array([1, 2, 3, 4, 5])
 c = np.empty((5, 5))
 \end{lstlisting}
 
-\texttt{\%\%timeit} という Jupyter Notebook で使用できるそのセルの実行時間を計測するためのマジックを使って、\texttt{a} の各行（1 次元目）に \texttt{b} の値を足していく計算を Python のループを使って 1 行ずつ処理していくコードの実行時間を測ってみます。
-
-
-\begin{lstlisting}[style=codecell,language=Python]
-%%timeit
-for i in range(a.shape[0]):
-    c[i, :] = a[i, :] + b
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-10.3 µs ± 2.03 µs per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
-\end{lstlisting}
+標準ライブラリの \texttt{timeit} を使うと，\texttt{.py} からも同じ処理の実行時間を測れます。
+次の例は直前で定義した \texttt{a} と \texttt{b} を使います。時間は環境ごとに変わるので，数値を固定の正解として扱いません。
 
 \begin{lstlisting}[style=codecell,language=Python]
-c
+from timeit import timeit
+
+def add_loop():
+    result = np.empty_like(a)
+    for i in range(a.shape[0]):
+        result[i, :] = a[i, :] + b
+    return result
+
+def add_broadcast():
+    return a + b
+
+print(np.array_equal(add_loop(), add_broadcast()))
+print(add_broadcast())
+print("loop seconds:", timeit(add_loop, number=1000))
+print("broadcast seconds:", timeit(add_broadcast, number=1000))
 \end{lstlisting}
 
-\begin{lstlisting}[style=outputcell]
-array([[ 1.,  3.,  5.,  5.,  5.],
-       [ 4.,  6.,  8.,  8.,  8.],
-       [ 7.,  9., 11., 11., 11.],
-       [ 4.,  6.,  8.,  8.,  9.],
-       [ 1.,  3.,  5.,  5.,  5.]])
-\end{lstlisting}
-
-次に、NumPy のブロードキャストを活用した方法で同じ計算を行ってみます。
-
-
-\begin{lstlisting}[style=codecell,language=Python]
-%%timeit
-c = a + b
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-1.16 µs ± 35.7 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
-\end{lstlisting}
-
-\begin{lstlisting}[style=codecell,language=Python]
-c
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-array([[ 1.,  3.,  5.,  5.,  5.],
-       [ 4.,  6.,  8.,  8.,  8.],
-       [ 7.,  9., 11., 11., 11.],
-       [ 4.,  6.,  8.,  8.,  9.],
-       [ 1.,  3.,  5.,  5.,  5.]])
-\end{lstlisting}
-
-計算結果は当然同じになります。
-
-しかし、実行時間が数倍短くなっています。
-
-
-このように、ブロードキャストを理解して活用することで、記述が簡単になるだけでなく、実行速度という点においても有利になります。
-
+両者の計算結果が一致することを先に確認し，1000回の合計実行時間を比べます。
+小さな配列では関数呼び出し等の負担も含むため，速度差の倍率だけで一般化しないでください。
 
 \section{基本的な統計量の求め方}
 
-
-本節では、多次元配列に含まれる値の平均・分散・標準偏差・最大値・最小値といった統計値を計算する方法を紹介します。
-
-$8 \times 10$ の行列を作成し、この中に含まれる値全体に渡るこれらの統計値を計算してみましょう。
-
+以下の固定した $8\times10$ 配列で，出力と入力の対応を確認します。
+分散と標準偏差は，配列中の値を対象として要素数で割る \texttt{ddof=0} の定義です。
 
 \begin{lstlisting}[style=codecell,language=Python]
-x = np.random.randint(0, 10, (8, 10))
+import numpy as np
 
-x
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-array([[2, 3, 9, 3, 2, 6, 1, 6, 4, 7],
-       [4, 9, 7, 6, 8, 5, 3, 6, 1, 6],
-       [3, 4, 4, 8, 9, 0, 9, 3, 7, 1],
-       [8, 5, 3, 1, 9, 6, 5, 9, 3, 8],
-       [6, 7, 9, 4, 5, 6, 9, 7, 2, 7],
-       [3, 6, 4, 8, 8, 1, 7, 9, 3, 5],
-       [6, 2, 8, 6, 1, 9, 3, 7, 4, 8],
-       [6, 2, 5, 8, 8, 2, 9, 4, 0, 4]])
-\end{lstlisting}
-
-\begin{lstlisting}[style=codecell,language=Python]
-# 平均値
-x.mean()
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-5.2625
-\end{lstlisting}
-
-\begin{lstlisting}[style=codecell,language=Python]
-# 分散
-x.var()
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-6.918593749999999
-\end{lstlisting}
-
-\begin{lstlisting}[style=codecell,language=Python]
-# 標準偏差
-x.std()
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-2.6303219859933495
-\end{lstlisting}
-
-\begin{lstlisting}[style=codecell,language=Python]
-# 最大値
-x.max()
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-3.0
-\end{lstlisting}
-
-\begin{lstlisting}[style=codecell,language=Python]
-# 最小値
-x.min()
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
-1.0
-\end{lstlisting}
-
-ここで、\texttt{x} は 2 次元配列なので、各次元に沿ったこれらの統計値の計算も行えます。
-
-例えば、最後の次元内だけで平均をとると、8 個の平均値が得られるはずです。
-
-平均を計算したい軸（何次元目に沿って計算するか）を \texttt{axis} という引数に指定します。
-
-
-\begin{lstlisting}[style=codecell,language=Python]
-x.mean(axis=1)
-\end{lstlisting}
-
-\begin{lstlisting}[style=outputcell]
----------------------------------------------------------------------------
-AxisError                                 Traceback (most recent call last)
-Cell 123 line 1
-----> 1 x.mean(axis=1)
-
-File ~/initial-training/venv/lib/python3.9/site-packages/numpy/core/_methods.py:106, in _mean(a, axis, dtype, out, keepdims, where)
-    102 arr = asanyarray(a)
-    104 is_float16_result = False
---> 106 rcount = _count_reduce_items(arr, axis, keepdims=keepdims, where=where)
-    107 if rcount == 0 if where is True else umr_any(rcount == 0, axis=None):
-    108     warnings.warn("Mean of empty slice.", RuntimeWarning, stacklevel=2)
-
-File ~/initial-training/venv/lib/python3.9/site-packages/numpy/core/_methods.py:77, in _count_reduce_items(arr, axis, keepdims, where)
-     75     items = 1
-     76     for ax in axis:
----> 77         items *= arr.shape[mu.normalize_axis_index(ax, arr.ndim)]
-     78     items = nt.intp(items)
-     79 else:
-     80     # TODO: Optimize case when `where` is broadcast along a non-reduction
-     81     # axis and full sum is more excessive than needed.
-     82 
-     83     # guarded to protect circular imports
-
-AxisError: axis 1 is out of bounds for array of dimension 1
-\end{lstlisting}
-
-これは、以下のように 1 次元目の値の平均を計算していったものを並べているのと同じことです。
-
-（ゼロベースインデックスで考えています。\texttt{x} の形は \texttt{(8, 10)} なので、0 次元目のサイズが 8、1 次元目のサイズが 10 です。）
-
-
-\begin{lstlisting}[style=codecell,language=Python]
-np.array([
-    x[0, :].mean(),
-    x[1, :].mean(),
-    x[2, :].mean(),
-    x[3, :].mean(),
-    x[4, :].mean(),
-    x[5, :].mean(),
-    x[6, :].mean(),
-    x[7, :].mean(),
+x = np.array([
+    [2, 3, 9, 3, 2, 6, 1, 6, 4, 7],
+    [4, 9, 7, 6, 8, 5, 3, 6, 1, 6],
+    [3, 4, 4, 8, 9, 0, 9, 3, 7, 1],
+    [8, 5, 3, 1, 9, 6, 5, 9, 3, 8],
+    [6, 7, 9, 4, 5, 6, 9, 7, 2, 7],
+    [3, 6, 4, 8, 8, 1, 7, 9, 3, 5],
+    [6, 2, 8, 6, 1, 9, 3, 7, 4, 8],
+    [6, 2, 5, 8, 8, 2, 9, 4, 0, 4],
 ])
+print("shape:", x.shape)
+print("mean:", x.mean())
+print("variance:", round(x.var(ddof=0), 8))
+print("std:", round(x.std(ddof=0), 8))
+print("max, min:", x.max(), x.min())
+print("row means:", x.mean(axis=1))
+print(np.allclose(x.mean(axis=1), [row.mean() for row in x]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-array([5. , 4.3, 6.2, 5.2, 6.2, 4.2, 5.3, 3.5])
+shape: (8, 10)
+mean: 5.2625
+variance: 6.91859375
+std: 2.63032199
+max, min: 9 0
+row means: [4.3 5.5 4.8 5.7 6.2 5.4 5.4 4.8]
+True
 \end{lstlisting}
 
-数式を NumPy による配列の計算に落とし込むことに慣れていくには少し時間がかかりますが、慣れると少ない量のコードで記述できるだけでなく、高速に計算が行なえるため、大きな恩恵があります。
-
+\texttt{axis=1} は列方向の10要素をまとめるので，各行の平均8個が残ります。
+\texttt{axis=0} なら行方向の8要素をまとめ，各列の平均10個が残ります。
+\texttt{axis} を省略すると80要素全体をまとめます。元のshapeと，平均後に残る軸を対応づけてください。
+この2次元配列に対する \texttt{axis=1} は正常な指定です。存在しない軸を指定した場合は \texttt{AxisError} になります。
 
 \section{注釈}
 
@@ -1537,7 +1413,7 @@ NumPy には matrix というクラスも存在しますが、本チュートリ
 \label{03-reviewing-elementary-math-with-numpy-and-matplotlib-note3}
 
 
-これは、その多次元配列が表すテンソルの\textbf{階数（rank、以下ランク）}と対応します。
+ここでいう次元数は配列の軸の数で，\texttt{ndim} で確認します。線形代数における行列の階数（rank）とは異なります。
 
 
 \subsection{注釈 4}

@@ -21,7 +21,7 @@ Matplotlib の基本が分かっても，独学では次の段階で詰まりや
 \item \texttt{plt.figure()} や \texttt{plt.subplots()} で図の構成を制御できる
 \item \texttt{xlabel}, \texttt{ylabel}, \texttt{title}, \texttt{legend} を使って図を読める形にできる
 \item \texttt{savefig} を使って提出物や再現用の図を保存できる
-\item seaborn を併用して分布や相関を効率的に確認できる
+\item Pandasの散布図行列で複数変数の関係を確認できる
 \end{itemize}
 
 
@@ -41,10 +41,23 @@ output_dir = Path("outputs/ch08")
 output_dir.mkdir(parents=True, exist_ok=True)
 \end{lstlisting}
 
-この章では California Housing のサンプルデータを使います．
+以下のデータはseed=0で作る可視化練習用の架空データです。実在の地域・住宅価格の分析には使いません。CSVも自分で生成するため，外部ダウンロードは不要です。各コードを同じPythonファイルに順に追記し，共有環境で実行します。掲載図は旧データで描いた図の種類・配置の参考であり，下の生成データで再現される数値や形とは異なります。自分の結果はoutputs/ch08に保存されます。
 
 \begin{lstlisting}[style=codecell,language=Python]
-df = pd.read_csv("sample_data/california_housing_train.csv")
+rng = np.random.default_rng(0)
+n = 1000
+income = rng.uniform(1.0, 10.0, n)
+households = rng.integers(50, 1000, n)
+df = pd.DataFrame({
+    "median_income": income,
+    "median_house_value": np.clip(50000 * income + rng.normal(0, 50000, n), 0, None),
+    "households": households,
+    "population": households * rng.integers(1, 6, n),
+    "total_bedrooms": households * rng.uniform(1.0, 3.0, n),
+})
+csv_path = output_dir / "demo_housing.csv"
+df.to_csv(csv_path, index=False)
+df = pd.read_csv(csv_path)
 print(df.shape)
 print(df.columns.tolist())
 \end{lstlisting}
@@ -192,7 +205,7 @@ plt.close()
 \begin{lstlisting}[style=codecell,language=Python]
 plt.figure(figsize=(5, 4))
 plt.boxplot((df["total_bedrooms"], df["population"]),
-            labels=["total_bedrooms", "population"])
+            tick_labels=["total_bedrooms", "population"])
 plt.tight_layout()
 plt.savefig(output_dir / "box_multiple.png", dpi=150)
 plt.close()
@@ -299,48 +312,17 @@ plt.close(fig)
 \texttt{plt.figure()} ベースより少し記述が増えますが，複数図を明示的に管理しやすくなります．
 
 
-\section{seaborn の使いどころ}
+\section{複数変数の関係をまとめて見る}
 
-seaborn は Matplotlib を土台にした高水準可視化ライブラリです．
-分布や相関を素早く見るときに便利ですが，内部では Matplotlib を使っているので，
-軸や図の基本概念は同じです．
-
-\begin{lstlisting}[style=codecell,language=Python]
-import seaborn as sns
-\end{lstlisting}
-
-\subsection{ヒストグラムと KDE}
-
-古い資料では \texttt{sns.distplot()} がよく紹介されますが，現在は非推奨です．
-代わりに \texttt{sns.histplot()} を使う方が安全です．
-
-\begin{lstlisting}[style=codecell,language=Python]
-plt.figure(figsize=(6, 4))
-sns.histplot(df["population"], bins=30, kde=True)
-plt.tight_layout()
-plt.savefig(output_dir / "sns_histplot_population.png", dpi=150)
-plt.close()
-\end{lstlisting}
-
-\NotebookFigure{figures/generated/08-applied-matplotlib/figure-09.png}{分布確認に使う seaborn 図の例}{figures/scripts/ch08_applied_matplotlib.py}
-
-\subsection{複数変数の相関を俯瞰する}
-
-\texttt{sns.pairplot()} は複数列の関係を一気に見たいときに便利です．
-ただし列数が多いと非常に重くなるので，必要な列だけ絞って使うべきです．
+Pandasの散布図行列を使います。対角にはヒストグラム，対角以外には2変数の散布図を描きます。追加パッケージは不要です。
 
 \begin{lstlisting}[style=codecell,language=Python]
 cols = ["median_income", "median_house_value", "population", "households"]
-grid = sns.pairplot(df[cols].sample(1000, random_state=0))
-grid.savefig(output_dir / "pairplot_selected_columns.png", dpi=150)
+pd.plotting.scatter_matrix(df[cols], figsize=(10, 10), diagonal="hist", alpha=0.3)
+plt.tight_layout()
+plt.savefig(output_dir / "scatter_matrix.png", dpi=150)
 plt.close("all")
 \end{lstlisting}
-
-\NotebookFigure{figures/generated/08-applied-matplotlib/figure-10.png}{複数変数の関係を俯瞰する pairplot の例}{figures/scripts/ch08_applied_matplotlib.py}
-
-pairplot は便利ですが，毎回フルデータで回す必要はありません．
-サンプリングして全体傾向だけ見た方が実用的な場面も多いです．
-
 
 \section{この章で押さえるべき点}
 
@@ -349,7 +331,7 @@ pairplot は便利ですが，毎回フルデータで回す必要はありま�
 \item グラフの種類を覚えるだけでなく，「何を確認したいからこの図を選ぶのか」を説明できることが重要である
 \item \texttt{xlabel}, \texttt{ylabel}, \texttt{legend}, \texttt{tight\_layout}, \texttt{savefig} は基本セットである
 \item 複数図を扱うときは \texttt{subplots} を使うと管理しやすい
-\item seaborn は便利だが，Matplotlib の基本概念を理解した上で使うべきである
+\item 散布図行列でも，各軸がどの変数を表すかを確認する
 \end{itemize}
 
 可視化は「見た目をきれいにする作業」ではなく，データの構造を読み取るための観測手段です．

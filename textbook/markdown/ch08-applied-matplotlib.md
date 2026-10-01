@@ -10,9 +10,11 @@
 - `plt.figure()` や `plt.subplots()` で図の構成を制御できる
 - `xlabel`, `ylabel`, `title`, `legend` を使って図を読める形にできる
 - `savefig` を使って提出物や再現用の図を保存できる
-- seaborn を併用して分布や相関を効率的に確認できる
+- Pandasの散布図行列で複数変数の関係を確認できる
 
 ## 読み込みと保存先の準備
+
+以下のデータはseed=0で作る可視化練習用の架空データです。実在の地域・住宅価格の分析には使いません。CSVも自分で生成するため，外部ダウンロードは不要です。各コードを同じPythonファイルに順に追記し，共有環境で実行します。掲載図は旧データで描いた図の種類・配置の参考であり，下の生成データで再現される数値や形とは異なります。自分の結果はoutputs/ch08に保存されます。
 
 ```python
 from pathlib import Path
@@ -26,7 +28,20 @@ output_dir.mkdir(parents=True, exist_ok=True)
 ```
 
 ```python
-df = pd.read_csv("sample_data/california_housing_train.csv")
+rng = np.random.default_rng(0)
+n = 1000
+income = rng.uniform(1.0, 10.0, n)
+households = rng.integers(50, 1000, n)
+df = pd.DataFrame({
+    "median_income": income,
+    "median_house_value": np.clip(50000 * income + rng.normal(0, 50000, n), 0, None),
+    "households": households,
+    "population": households * rng.integers(1, 6, n),
+    "total_bedrooms": households * rng.uniform(1.0, 3.0, n),
+})
+csv_path = output_dir / "demo_housing.csv"
+df.to_csv(csv_path, index=False)
+df = pd.read_csv(csv_path)
 print(df.shape)
 print(df.columns.tolist())
 ```
@@ -116,7 +131,7 @@ plt.close()
 ```python
 plt.figure(figsize=(5, 4))
 plt.boxplot((df["total_bedrooms"], df["population"]),
-            labels=["total_bedrooms", "population"])
+            tick_labels=["total_bedrooms", "population"])
 plt.tight_layout()
 plt.savefig(output_dir / "box_multiple.png", dpi=150)
 plt.close()
@@ -200,35 +215,17 @@ fig.savefig(output_dir / "subplots_example.png", dpi=150)
 plt.close(fig)
 ```
 
-## seaborn の使いどころ
+## 複数変数の関係をまとめて見る
 
-seaborn は Matplotlib を土台にした高水準可視化ライブラリです．
-
-```python
-import seaborn as sns
-```
-
-古い資料では `sns.distplot()` が出てきますが，現在は非推奨です．
-代わりに `sns.histplot()` を使う方が安全です．
-
-```python
-plt.figure(figsize=(6, 4))
-sns.histplot(df["population"], bins=30, kde=True)
-plt.tight_layout()
-plt.savefig(output_dir / "sns_histplot_population.png", dpi=150)
-plt.close()
-```
-
-![分布確認に使う seaborn 図の例](../figures/generated/08-applied-matplotlib/figure-09.png)
+Pandasの散布図行列を使います。対角にはヒストグラム，対角以外には2変数の散布図を描きます。追加パッケージは不要です。
 
 ```python
 cols = ["median_income", "median_house_value", "population", "households"]
-grid = sns.pairplot(df[cols].sample(1000, random_state=0))
-grid.savefig(output_dir / "pairplot_selected_columns.png", dpi=150)
+pd.plotting.scatter_matrix(df[cols], figsize=(10, 10), diagonal="hist", alpha=0.3)
+plt.tight_layout()
+plt.savefig(output_dir / "scatter_matrix.png", dpi=150)
 plt.close("all")
 ```
-
-![複数変数の関係を俯瞰する pairplot の例](../figures/generated/08-applied-matplotlib/figure-10.png)
 
 ## この章で押さえるべき点
 
@@ -236,4 +233,4 @@ plt.close("all")
 - グラフの種類を覚えるだけでなく，何を確認したいからその図を選ぶのかを説明できることが重要である
 - `xlabel`, `ylabel`, `legend`, `tight_layout`, `savefig` は基本セットである
 - 複数図を扱うときは `subplots` を使うと管理しやすい
-- seaborn は便利だが，Matplotlib の基本概念を理解した上で使うべきである
+- 散布図行列でも，各軸がどの変数を表すかを確認する

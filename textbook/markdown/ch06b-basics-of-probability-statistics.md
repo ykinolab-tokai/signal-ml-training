@@ -544,30 +544,44 @@ $$
 
 ## 注釈
 
-### 注釈 1 {#06b-basics-of-probability-statistics-note1}
+<a id="06b-basics-of-probability-statistics-note1"></a>
+
+### 注釈 1
 
 ここでは概念の説明を簡単にするため、この例のように離散的な値をとる確率変数を考え、特に明示しない限り連続値の確率変数は考えないことにします。
 
-### 注釈 2 {#06b-basics-of-probability-statistics-note2}
+<a id="06b-basics-of-probability-statistics-note2"></a>
+
+### 注釈 2
 
 $x$ は $1, 2, 3, 4, 5, 6$ のいずれか。すなわち $x \in \{1, 2, 3, 4, 5, 6\}$ です。
 
-### 注釈 3 {#06b-basics-of-probability-statistics-note3}
+<a id="06b-basics-of-probability-statistics-note3"></a>
+
+### 注釈 3
 
 $y$ は 2 つ目のコインがとりうる状態で、この場合、「表」と「裏」という値のいずれか。
 
-### 注釈 4 {#06b-basics-of-probability-statistics-note4}
+<a id="06b-basics-of-probability-statistics-note4"></a>
+
+### 注釈 4
 
 $x$ は 1 つ目のコインがとりうる状態で、この場合、「表」と「裏」という値のいずれか。
 
-### 注釈 5 {#06b-basics-of-probability-statistics-note5}
+<a id="06b-basics-of-probability-statistics-note5"></a>
+
+### 注釈 5
 
 以降、このことを「データの分布を推定する」と言うことがあります。また、観測されたデータのみから各データの発生確率（頻度とも捉えられる）を求めたものは**経験分布（empirical distribution）**とも呼ばれ、本節で説明しているのは正確にはこの経験分布を確率モデルで近似する方法です。
 
-### 注釈 6 {#06b-basics-of-probability-statistics-note6}
+<a id="06b-basics-of-probability-statistics-note6"></a>
+
+### 注釈 6
 
 この関数には、ベルヌーイ分布という名前がついています。
 
-### 注釈 7 {#06b-basics-of-probability-statistics-note7}
+<a id="06b-basics-of-probability-statistics-note7"></a>
+
+### 注釈 7
 
 先頭の $12$ は $p(\theta)$ $0$ から $1$ まで積分した値が $1$ となるように決めています。これにより、$p(\theta)$ が $0 \leq \theta \leq 1$ の上の確率分布となります。

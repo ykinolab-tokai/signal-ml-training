@@ -1,13 +1,15 @@
 # ニューラルネットワークの基礎
 
+本章は旧教科書の補助資料です。ファイル名のch23は授業の第23回を意味しません。第13回の信号処理ミニプロジェクトの前提には含めず，ニューラルネットワークを学ぶ際に参照します。
+
 ## 事前に読んでおく必要がある章
 
-- 2 章 [Python 入門](https://tutorials.chainer.org/ja/02_Basics_of_Python.html)
-- 4 章 [微分の基礎](https://tutorials.chainer.org/ja/04_Basics_of_Differential.html)
-- 5 章 [線形代数の基礎](https://tutorials.chainer.org/ja/05_Basics_of_Linear_Algebra.html)
-- 6 章 [確率・統計の基礎](https://tutorials.chainer.org/ja/06_Basics_of_Probability_Statistics.html)
-- 7 章 [単回帰分析と重回帰分析](https://tutorials.chainer.org/ja/07_Regression_Analysis.html)
-- 8 章 [NumPy 入門](https://tutorials.chainer.org/ja/08_Introduction_to_NumPy.html)
+- [Python 入門](ch02-basics-of-python.md)
+- [微分の基礎](ch04-basics-of-differential.md)
+- [線形代数の基礎](ch06a-basics-of-linear-algebra.md)
+- [確率・統計の基礎](ch06b-basics-of-probability-statistics.md)
+- [単回帰分析と重回帰分析](ch21-regression-analysis.md)
+- [NumPy 入門](ch03-reviewing-elementary-math-with-numpy-and-matplotlib.md)
 
 ## ニューラルネットワークとは
 
@@ -34,7 +36,7 @@
 上の例では、入力変数 $x_1$ に年数、$x_2$ にアルコールの度数、$x_3$ に色合い、といったあるワインを表す定量的な情報が与えられています。
 そのため、入力層のノードの数は入力変数の数 $M$ （上の図では、$M = 3$）によって決定されます。
 ここで、層と層の間にあるノード間の結合は、一つ一つが重みを持っており、上のような**全結合型ニューラルネットワークの場合は、それらの重みをまとめて、一つの行列で表現します。**
-この際、[単回帰分析と重回帰分析](https://tutorials.chainer.org/ja/07_Regression_Analysis.html) の章で解説した重回帰分析の例と同じように、バイアスをその重み行列に含めて扱うため、入力層の最後に常に $1$ を持つノードが追加されていることに注意してください。
+この際、[単回帰分析と重回帰分析](ch21-regression-analysis.md) の章で解説した重回帰分析の例と同じように、バイアスをその重み行列に含めて扱うため、入力層の最後に常に $1$ を持つノードが追加されていることに注意してください。
 このため、図では入力層のノード数が $M + 1 = 3 + 1 = 4$ 個となっています。
 
 また、今回は**ワインの情報を入力して、それが「赤ワイン」か「白ワイン」かを予測する**という場合を表しているので、カテゴリ数が 2 の分類問題と言えます。
@@ -354,7 +356,7 @@ $$
 2. 目的関数を定め
 3. 目的関数を最適化するパラメータを求める
 
-という手順は、[単回帰分析と重回帰分析](https://tutorials.chainer.org/ja/07_Regression_Analysis.html)の章でも、繰り返し出てきました。
+という手順は、[単回帰分析と重回帰分析](ch21-regression-analysis.md)の章でも、繰り返し出てきました。
 そして、**この手順は機械学習の他の多くの手法でもよく登場します。**
 本章で扱うニューラルネットワークでも、この手順に従います。
 
@@ -907,35 +909,49 @@ $$
 
 ## 注釈
 
-### 注釈 1 {#23-basics-of-neural-networks-note1}
+<a id="23-basics-of-neural-networks-note1"></a>
+
+### 注釈 1
 
 通常、数学では線形変換とは ${\bf W}$ を掛ける操作のことを指し、${\bf b}$ を足す操作は含まれません。${\bf b}$ の加算を含む操作は厳密には「アファイン変換（もしくは アフィン変換）」と呼ばれるものです。しかし、ディープラーニングの文脈ではこの変換も線形変換と呼ばれることが多いです。
 
-### 注釈 2 {#23-basics-of-neural-networks-note2}
+<a id="23-basics-of-neural-networks-note2"></a>
+
+### 注釈 2
 
 ここで、入力層のノードが $h_{01}, h_{02}, h_{03}$ という文字で表されていますが、この $h$ は**隠れ層**を意味する英語の **hidden layer** の頭文字である h から来ています。
 入力層は隠れ層ではありませんが、同じ文字を使うことで表記を一般化し、簡便にしています。
 
-### 注釈 3 {#23-basics-of-neural-networks-note3}
+<a id="23-basics-of-neural-networks-note3"></a>
+
+### 注釈 3
 
 また、分類問題を解きたい場合は、クラス数と同じだけのノードを出力層に用意しておき、各ノードがあるクラスに入力が属する確率を表すようにします。
 このため、**全出力ノードの値の合計が 1 になるよう正規化**します。
 これには、**要素ごと**に適用される活性化関数ではなく、**層ごと**に活性値を計算する別の関数を用いる必要があります。
     そのような目的に使用される代表的な関数には、ソフトマックス関数があります。
 
-### 注釈 4 {#23-basics-of-neural-networks-note4}
+<a id="23-basics-of-neural-networks-note4"></a>
+
+### 注釈 4
 
 厳密には目的関数に微分不可能な点が存在する可能性はあります。例えば ReLU は $x = 0$ で微分不可能なため、ReLU を含んだニューラルネットワークには微分不可能な点が存在することになります。このような場合、**劣微分（subderivative, subdifferential）**という考え方を導入し、全ての点で勾配が決定できるようにすることなどが行われます。
 
-### 注釈 5 {#23-basics-of-neural-networks-note5}
+<a id="23-basics-of-neural-networks-note5"></a>
+
+### 注釈 5
 
 この局所解が大域的最適解と一致する条件については、現在活発に研究が行われています。参考：["A Convergence Theory for Deep Learning via Over-Parameterization"](https://arxiv.org/abs/1811.03962)
 
-### 注釈 6 {#23-basics-of-neural-networks-note6}
+<a id="23-basics-of-neural-networks-note6"></a>
+
+### 注釈 6
 
 $\{\}$ という記号は、集合を表し、中に要素を並べて書きます。
 
-### 注釈 7 {#23-basics-of-neural-networks-note7}
+<a id="23-basics-of-neural-networks-note7"></a>
+
+### 注釈 7
 
 ここで、試しに Chainer を使って同じ勾配の計算を行い、NumPy を使ったコードと結果が一致するかどうかチェックしてみましょう。
 

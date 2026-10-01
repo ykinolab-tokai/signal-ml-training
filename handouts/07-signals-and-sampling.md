@@ -1,5 +1,7 @@
 # 第07回 信号とサンプリング
 
+## この回の目標
+
 - 連続時間信号と離散時間信号の違いを図で確認する。
 - サンプリング周波数とサンプリング定理を実験で確認する。
 - 信号に対する加算，スケーリング，遅延，反転を実装する。
@@ -77,7 +79,10 @@ x = np.sin(2 * np.pi * F * t)        # x[n] = sin(2π f0 (n Ts))
 
 plt.plot(t, x)
 plt.xlabel("Time [s]"); plt.ylabel("x[n]")
-plt.show()
+from pathlib import Path
+Path("outputs/figures").mkdir(parents=True, exist_ok=True)
+plt.savefig("outputs/figures/session07_sampling.png")
+plt.close()
 ```
 
 ---
@@ -136,7 +141,7 @@ $$
 y(t) = x(at), \quad y[n] = x[an]
 $$
 
-- $a > 0$：伸縮倍率
+- $a > 0$：参照する時間座標の倍率。波形の時間方向の伸縮倍率は $1/a$ である。
 - ただし，$an$ が整数でない場合は $x[an] = 0$ とする
 
 
@@ -155,13 +160,19 @@ $$
 
 - **加算**：$y(t) = x_1(t) + x_2(t), \quad y[n] = x_1[n] + x_2[n]$
 - **乗算**：$y(t) = x_1(t) \cdot x_2(t), \quad y[n] = x_1[n] \cdot x_2[n]$
-- **内積**：$\langle x_1, x_2 \rangle = \int_\mathbb{R} \overline{x_1(t)} x_2(t) \mathrm{d}t, \quad \langle x_1, x_2 \rangle = \sum_{-\infty}^{\infty} \overline{x_1[n]} x_2[n] = \boldsymbol{x}_1^* \boldsymbol{x}_2$
+- **内積**：$\langle x_1, x_2 \rangle = \int_\mathbb{R} \overline{x_1(t)} x_2(t) \mathrm{d}t, \quad \langle x_1, x_2 \rangle = \sum_{n=-\infty}^{\infty} \overline{x_1[n]} x_2[n] = \boldsymbol{x}_1^* \boldsymbol{x}_2$
 
     - ここで，$\overline{z}$ は複素数 $z$ の複素共役を表す．
     - また，$\boldsymbol{x}^*$ はベクトル $\boldsymbol{x}$ の複素共役転置（各要素の複素共役をとって転置）を表す．
     - 複素数値信号の場合，内積は $x_1$ の複素共役をとることに注意．
 
 ---
+
+上の無限区間の内積は，積分・級数が収束する信号について定義する。
+非零の周期信号へそのまま適用して有限の値になるとは限らない。
+この回の数値計算では，長さ $N$ のベクトルとして
+$\langle x_1,x_2\rangle_N=\sum_{n=0}^{N-1}\overline{x_1[n]}x_2[n]$ を使う。
+`np.vdot(x1, x2)` は第1引数の複素共役を取る。
 
 ### 4. 量子化
 
@@ -179,50 +190,34 @@ $$
 
 ```python
 def quantize(x, n_bits, x_min=-1.0, x_max=1.0):
-    """振幅を [x_min, x_max] の範囲で n_bits 段階に量子化"""
+    """範囲内の振幅を 2**n_bits 個の代表値へ量子化する。"""
     L = 2 ** n_bits
     step = (x_max - x_min) / (L - 1)
     return np.round((x - x_min) / step) * step + x_min
 ```
 
 ## 演習
+
+作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+
+`scripts/session07_sampling.py` と `outputs/session07/session07_report.md` に計算・予測・図の説明を保存する。
+
 ### 基礎レベル
+1. $F_s=44100$ Hzの標本化周期と5秒間の標本数を手計算する。コードの時刻は `np.arange(N)/Fs` とし，終点を重複させない。
+2. 1 Hzと7 Hzの余弦波を1秒間，それぞれ $F_s=1000$ Hzと8 Hzで標本化する。密な波形を `plot`，8点を `stem` で描いて `outputs/figures/session07_aliasing.png` に保存する。8 Hzでは2つの配列が一致する理由を周波数の折返しから説明する。
+3. $x(t)=\sin(20\pi t)$ を $F_s=1000$ Hzで1秒間標本化する。元の解析式から $x(t-0.05)$ と $x(-t)$ を計算し，元波形と比較する。有限配列の末尾を先頭へ戻す `np.roll` と，ここでの時間シフトの違いを説明する。
+4. 5 Hzの正弦波1秒間を同じ $F_s$ で生成し，上の `quantize` で3 bitに量子化する。入力は $[-1,1]$ 内とする。量子化前後の図とMSEを保存し，標本数は変わらず振幅の代表値が8個になることを確認する。
 
-1. サンプリング周波数 $F_s = 44100$ Hz のとき，サンプリング周期 $T_s$ を計算しなさい．
-また，このとき，5秒間に何個のサンプルが取得されるか答えなさい．
+### 発展レベル（1項目を選択）
+1. **16点の内積。** $n=0,\ldots,15$ に限定し，$x[n]=4\sin(\pi n/8)-2\cos(3\pi n/8)$ と $e_1[n]=\sin(\pi n/8)$，$e_2[n]=\sin(3\pi n/8)$ の非正規化内積を計算する。結果32と0を，直交性から説明する。
+2. 量子化のbit数を2，4，8，16と変え，同じ入力からMSEを比較する。
+3. $x_d(t)=4\sin(2\pi dt)/(\pi d)$ の奇数次成分を1，3，5，39次まで順に加え，$F_s=1000$ Hz，2秒の波形を比較する。
 
-1. $x(t) = \sin(2\pi t)$ をサンプリング周波数 $F_s = 1000$ Hz および $F_s = 10$ Hz で1秒間サンプリングした信号を重ねてプロットしなさい．ただし， $1000$ Hz でサンプリングした信号には `plot` 関数を， $10$ Hz でサンプリングした信号には `stem` 関数を用いること．
+## 確認ポイント
+- 標本数と時間軸の単位が一致し，折返しで区別できない信号を説明できる。
+- 時間シフト・反転の入力座標と，量子化で変わるものを区別できる。
+- 内積を選択した場合は，16点の有限和を使っている。
 
-1. $x(t) = \sin(20\pi t)$ をサンプリング周波数 $F_s = 1000$ Hz で 1 秒間サンプリングして離散時間信号 $x[n]$ を生成し，横軸を時刻 [s]，縦軸を振幅としてプロットしなさい．
-
-1. $x(t) = \sin(20\pi t)$ を $F_s = 1000$ Hzで1秒間サンプリングした信号に対し，以下の演算を施した信号を生成し，元の信号と重ねてプロットしなさい．凡例 (legend) と軸ラベルを必ず付けること．
-
-    - 0.05秒だけ右にシフトした信号
-    - 時間反転した信号
-    - 振幅を-2倍にした信号
-    - 上に0.5だけ平行移動した信号
-
-1. $x(t) = \sin(10\pi t)$ を $F_s = 1000$ Hz で1秒間サンプリングした信号に対し，上記の `quantize` 関数で 3 ビットに量子化した結果を，量子化前の信号と重ねてプロットしなさい．
-
-1. $x[n] = 4\sin(\frac{\pi}{8} n) - 2\cos(\frac{3\pi}{8} n)$ と以下の信号との内積を計算しなさい．
-
-    - $e_1[n] = \sin(\frac{\pi}{8}n)$
-    - $e_2[n] = \sin(\frac{3\pi}{8}n)$
-
-1. $x_1(t) = \cos(2\pi t)$ と $x_2(t) = \cos(14\pi t)$ をそれぞれ1秒間サンプリングすることを考えます．サンプリング周波数 $F_s = 1000$ Hz でサンプリングした信号を `plot` 関数で，サンプリング周波数 $F_s = 8$ Hz でサンプリングした信号を `stem` 関数でプロットしなさい．
-
-1. $x_d(t) = \frac{4}{\pi d} \sin(2\pi dt)$ とします．
-以下の信号を$F_s = 1000$ Hz で2秒間サンプリングした信号をプロットしなさい．
-
-    - $x_1(t)$
-    - $x_1(t) + x_3(t)$
-    - $x_1(t) + x_3(t) + x_5(t)$
-    - $\sum_{i=1}^{20} x_{2i-1}(t)$
-
-1. 正弦波 $x(t) = \sin(2\pi \cdot 5 \cdot t)$ を $f_s = 1000$ Hz でサンプリングし，ビット深度 $B = 2, 4, 8, 16$ で量子化したときの量子化誤差 $e[n] = \hat{x}[n] - x[n]$ の二乗平均（MSE: mean squared error）を計算しなさい．
-
-    $$
-    \mathrm{MSE} = \frac{1}{N} \sum_{n=0}^{N-1} (e[n])^2
-    $$
-
-    また，ビット深度を増やすと MSE がどう変化するかを，横軸ビット深度，縦軸 MSE のグラフでプロットしなさい．
+## 詰まったときに見る資料
+- [信号処理の基礎](../textbook/markdown/ch13-basics-of-signal-processing.md)
+- [NumPy vdot](https://numpy.org/doc/stable/reference/generated/numpy.vdot.html)
