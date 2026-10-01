@@ -1,5 +1,7 @@
 # 第01回 環境構築とワークフロー
 
+## この回の目標
+
 - ターミナルで現在地，ファイルパス，ディレクトリ構造を確認する。
 - Python 仮想環境を作成し，実行に使われる Python を確認する。
 - VS Code で repo を開き，ターミナルとエディタを行き来しながら作業する。
@@ -510,7 +512,18 @@ python exercises/exc01_01.py
 この画像を開いて正弦波が描かれていれば，動作確認は完了である。
 
 ## 演習
-今回は環境構築を主とするため，演習はない．
+今回は環境構築を主とするため，追加の演習はない。上の動作確認を完了する。
+
+第1回の `exercises/exc01_01.py` と `outputs/setup_check/` は，教材repoの環境を確認するため教材repo内に置く。
+第2回以降の解答は，学生ごとの非公開の提出repo（submission repo）へ保存する。
+教材repoと提出repoの役割・実行環境の使い方は [共通の作業場所](README.md#作業場所と保存先) を参照する。
+
+## 確認ポイント
+- Ubuntu 24.04 LTS（Windowsの場合）とPython 3.12の環境を確認した。
+- 教材repoで `uv --version`，`python --version`，`which python` を確認し，`.venv` のPythonを使っている。
+- `exercises/exc01_01.py` を教材repo直下から実行し，完了メッセージと `outputs/setup_check/sin.png` の正弦波を確認した。
+- `git status` で教材repoの変更状態を説明できる。
+- VS Codeの実行・デバッグ設定を選んだ場合だけ，`sys.executable` も確認した。設定を省略しても本回は完了できる。
 
 ## 詰まったときに見る資料
 - [`../README.md`](../README.md)
