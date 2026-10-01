@@ -25,7 +25,7 @@
 | 8 | Fourier 変換 | DFT, 振幅スペクトルと位相スペクトル，窓関数 | [08 Fourier 変換](handouts/08-fourier-transform.md) |
 | 9 | 音響信号 | 音の再生，収録，読み込み，書き込み，STFT，メルスペクトログラム | [09 音響信号](handouts/09-audio-signals.md) |
 | 10 | 線形時不変システムと畳み込み | 線形時不変システム，畳み込み，畳み込み定理，フィルタと周波数応答 | [10 線形時不変システムと畳み込み](handouts/10-lti-systems-and-convolution.md) |
-| 11 | ノイズと信号復元 | 加法性ノイズ，信号とノイズのスペクトル，フィーナーフィルタ | [11 ノイズと信号復元](handouts/11-noise-and-signal-restoration.md) |
+| 11 | ノイズと信号復元 | 加法性ノイズ，信号とノイズのスペクトル，Wienerフィルタ | [11 ノイズと信号復元](handouts/11-noise-and-signal-restoration.md) |
 | 12 | 画像信号 | 2次元信号，画像の読み込み，表示，幾何変換，2次元DFT，2次元フィルタ | [12 画像信号](handouts/12-image-signals.md) |
 | 13 | ミニプロジェクト | 画像: ノイズ除去，鮮鋭化，トーンマッピング，色変換，音: ノイズ除去，簡易イコライザ作成，音声のピッチ推定 | [13 画像 baseline ミニ実装](handouts/13-image-baseline-mini-implementation.md) |
 | 14 | 統合確認 | 口頭技術確認、code walkthrough、repo 整理、PR / code review 体験 | [14 口頭確認と repo 整理](handouts/14-oral-check-and-repo-wrapup.md) |
