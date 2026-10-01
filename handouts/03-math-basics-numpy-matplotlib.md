@@ -1,5 +1,7 @@
 # 第03回 数学基礎と NumPy, Matplotlib
 
+## この回の目標
+
 - 初等関数を NumPy で計算し，Matplotlib でグラフにする。
 - グラフの平行移動を式と図の両方で確認する。
 - NumPy 配列の shape，dtype，スライスを確認する。
@@ -12,26 +14,38 @@
 - Matplotlib の図は画面表示だけで終えず，`savefig` で保存する。保存された図と script を対応づけることで，結果を再現しやすくなる。
 
 ## 演習
-### 基礎レベル（7問）
-1. `scripts/`，`outputs/session03/`，`outputs/figures/`，`outputs/data/` を作成し，`scripts/session03_math_numpy_matplotlib.py` で `np.linspace(-5, 5, 501)` の `x` を作る。
-2. `y = x`，`y = x**2`，`y = np.sin(x)`，`y = np.exp(-x**2)` を計算し，それぞれの先頭5要素，shape，dtype を表示する。
-3. 4 つの関数を1枚の図に描き，凡例，軸ラベル，grid を付けて `outputs/figures/session03_elementary_functions.png` に保存する。
-4. `f(x) = x**2`，`g(x) = (x - 2)**2 + 1`，`h(x) = (x + 1)**2 - 2` を描き，平行移動の方向を確認する。
-5. `np.array([[1, 2, 3], [4, 5, 6]])` を作り，shape，dtype，1行目，2列目，右下の値を取り出す。
-6. Python list に対する `+` と NumPy 配列に対する `+` の違いを，短い例で確認する。
-7. `outputs/session03/session03_report.md` に，作成した図の file 名，配列の shape，平行移動の読み取りを書く。
 
-### 発展レベル（7問）
-1. `np.log(x)` と `np.sqrt(x)` を扱うとき，定義域の外で何が起きるか確認し，warning や `nan` の意味を書く。
-2. `np.linspace` の点数を 21，101，1001 に変え，`sin(x)` の図の滑らかさがどう変わるか比較する。
-3. `a = np.arange(12).reshape(3, 4)` を作り，行方向の平均，列方向の平均，全体平均を計算する。
-4. broadcasting を使って，`a` の各列から列平均を引く。結果の各列平均が 0 に近いことを確認する。
-5. 同じ関数を複数の subplot に分けて描き，1枚の図として保存する。
-6. `np.savetxt` を使って，`x` と `sin(x)` の対応表を `outputs/data/session03_sin_table.csv` に保存する。
-7. 第4回で数値微分に使えるように，`f(x)` を受け取って `x` と `y` を返す関数を1つ定義する。
+作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+
+`scripts/session03_math_numpy_matplotlib.py` と `outputs/session03/session03_report.md` を作る。
+
+次の準備コードをファイルの先頭に置き，演習のコードを続ける。
+
+```python
+from pathlib import Path
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+Path("outputs/figures").mkdir(parents=True, exist_ok=True)
+```
+
+### 基礎レベル
+1. `a = np.arange(12).reshape(3, 4)` の `shape`，`dtype`，`ndim`，`a[1, :]`，`a[:, 1]`，`a[::2, 1:3]` の値とshapeを予想してから確認する。`axis=0` は行を集約して列ごとの値を，`axis=1` は列を集約して行ごとの値を返すことを確かめる。
+2. `x = np.linspace(-5, 5, 501)` で `f(x)=x**2` と `g(x)=(x-2)**2+1` を描く。移動方向を先に予想し，凡例・軸ラベル付きの図を `outputs/figures/session03_translation.png` へ保存する。
+3. `centered = a - a.mean(axis=0)` を読み，引く配列のshapeと各行への適用を説明する。各列の平均が0になることを確認する。この処理を列ごとの中心化と呼び，後のPCAの前処理につながることを確認する。
+4. `a_list = [1, 2, 3]` の `a_list + a_list` と，`np.array(a_list) + np.array(a_list)` を比較する。図・配列のshape・axisの予測結果・中心化の説明をレポートにまとめる。
+
+### 発展レベル（1項目を選択）
+1. `sin(x)` の描画点数を21，101，1001に変え，図の滑らかさと配列のshapeを比較する。
+2. `np.log` と `np.sqrt` の定義域を確認する。負の値を入力したときのwarningと `nan` は意図的な失敗例として区別する。
+3. `x` と `sin(x)` の2列を `np.savetxt` で `outputs/data/session03_sin_table.csv` に保存し，再読込でshapeと値を確認する。
+
+## 確認ポイント
+- スライスとaxisごとの出力shapeを，実行前の予測と比較している。
+- 平行移動の向きと列平均を引く操作を，式・図・数値に対応づけて説明できる。
+- スクリプト，図，レポートが指定場所にある。
 
 ## 詰まったときに見る資料
 - [`../textbook/markdown/ch03-reviewing-elementary-math-with-numpy-and-matplotlib.md`](../textbook/markdown/ch03-reviewing-elementary-math-with-numpy-and-matplotlib.md)
 - [`../textbook/markdown/ch08-applied-matplotlib.md`](../textbook/markdown/ch08-applied-matplotlib.md)
-- [NumPy quickstart](https://numpy.org/doc/stable/user/quickstart.html)
-- [Matplotlib tutorials](https://matplotlib.org/stable/tutorials/index.html)
