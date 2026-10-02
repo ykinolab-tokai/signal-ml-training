@@ -13,6 +13,29 @@
 - `np.linalg.svd(X_centered, full_matrices=False)` では、行列の向きと shape を意識すると何が射影方向か追いやすい。今回の 2 次元データでは `Vt[0]` が第1主成分方向になる。
 - 再構成は「1 次元表現 `Z` から元の空間へ戻した近似」であり、元データとの差を見ると、何を捨てて何を残したかが分かる。
 
+### 入力データと計算の順序
+
+次の6点を行に並べた行列を使う。各行が1サンプル、各列が1特徴量である。
+
+```python
+import numpy as np
+
+X = np.array([
+    [2.0, 0.0], [0.0, 2.0], [3.0, 1.0],
+    [1.0, 3.0], [-2.0, 0.0], [0.0, -2.0],
+], dtype=np.float64)
+```
+
+列ごとの平均 `X_mean = X.mean(axis=0, keepdims=True)` を引いて `X_centered` を作る。
+SVDは `X_centered = U @ np.diag(S) @ Vt` という分解であり、`S` は大きい順の特異値、`Vt` の各行は特徴量空間の方向を表す。
+`full_matrices=False` の場合、今回の形状は順に `(6, 2)`, `(2,)`, `(2, 2)` となる。
+第1主成分方向を行列 `pc1 = Vt[0:1]` として取り出し、`Z = X_centered @ pc1.T` で射影する。
+元の座標への再構成は `X_recon = Z @ pc1 + X_mean` である。
+特異ベクトルの符号は反転しても同じ方向を表すため、符号だけの違いを誤りと判断しない。
+中心化なしの比較では `X` 自体をSVD・射影し、再構成に平均を足さない。
+
+図の保存前に `Path("outputs/figures").mkdir(parents=True, exist_ok=True)` で保存先を作る（`from pathlib import Path`）。
+
 ## 演習
 ### 基礎レベル
 1. `session18_pca_demo.py` を作成し、指定された 2 次元データ `X` に対して平均中心化、SVD、1 次元 PCA 射影、再構成を実装する。
