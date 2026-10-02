@@ -13,6 +13,39 @@
 - `requires_grad` を切り替えると、forward は同じでも backward で更新されるパラメータが変わる。だから output shape が同じでも、学習の自由度と過学習リスクは同じではない。
 - trainable parameter 数は「どれだけ更新を許しているか」の粗い指標になる。条件比較では、更新対象、parameter 数、想定するデータ量の 3 つをセットで見ると判断しやすい。
 
+### 固定する入力とモデル
+
+以下を実行して、比較に使うモデルと入力を用意する。
+
+```python
+import copy
+import torch
+from torch import nn
+
+torch.manual_seed(9)
+backbone = nn.Sequential(nn.Linear(8, 16), nn.ReLU(), nn.Linear(16, 8), nn.ReLU())
+head = nn.Linear(8, 2)
+base_model = nn.Sequential(backbone, head)
+x = torch.randn(4, 8)
+```
+
+`backbone` は特徴抽出部、`head` は特徴からクラスごとのスコア（logits）を求める部分である。
+今回は学習済み重みをダウンロードせず、乱数初期化したモデルで「どの層を更新対象にするか」だけを確認する。
+実際の転移学習で得られる精度や学習済み表現の有効性は、この演習からは判断できない。
+
+各条件のモデルを `copy.deepcopy(base_model)` で作る。最初に全パラメータを `requires_grad_(False)` で凍結してから、次の層だけを `True` に戻す。
+
+| 条件 | 学習対象の層 | 学習対象パラメータ数 |
+| --- | --- | --- |
+| `linear_probe` | `model[1]`（head） | 18 |
+| `partial_ft` | `model[0][2]`（backbone最後のLinear）と `model[1]` | 154 |
+| `full_ft` | 全層 | 298 |
+
+学習対象数は `sum(p.numel() for p in model.parameters() if p.requires_grad)` で数える。
+3条件に同じ `x` を渡すと出力はすべて `(4, 2)` であり、更新前の値も一致する。
+`requires_grad=False` は値の計算を省く指定ではなく、そのパラメータの勾配を求めない指定である。
+学習まで行う場合のoptimizerには `[p for p in model.parameters() if p.requires_grad]` を渡す。
+
 ## 演習
 ### 基礎レベル
 1. `session23_transfer_learning_demo.py` を作成し、backbone と head からなる小さな `nn.Sequential` model を実装する。
@@ -31,5 +64,5 @@
 - 発展課題では、条件選択の理由がデータ量や更新自由度に結びついている。
 
 ## 詰まったときに見る資料
-- [`09-audio-signals.md`](09-audio-signals.md)
-- [`11-noise-and-signal-restoration.md`](11-noise-and-signal-restoration.md)
+- [`19-autodiff-and-optimization.md`](19-autodiff-and-optimization.md): Module・勾配・更新
+- PyTorch docs: [requires_gradとパラメータの凍結](https://docs.pytorch.org/docs/stable/notes/autograd.html#setting-requires-grad)
