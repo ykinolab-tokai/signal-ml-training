@@ -58,6 +58,7 @@
 初めてこのゼミに参加する学生には，演習全問の実施を求めません。2回目の参加となるB4・M1・M2の学生は，昨年度取り組まなかった，または解けなかった演習に取り組みます。
 
 - 学生に直接配布する資料は、すべて Markdown ファイルとして [`handouts/`](handouts/) に配置します。
+- HTML版は `python3 scripts/build_handouts.py` で生成できます。各回は `build/handouts/` 内の対応するHTMLファイル1つで配布でき、CSSなどの別添は不要です。全資料の確認には `build/handouts/index.html`、一括配布には `build/handouts.zip` を使います。詳細は [HTML生成の説明](scripts/README.md) を参照してください。
 - 第 25〜27 回の発展テーマ枠は、年度ごとに画像・音響・共通基盤のうち 1 テーマだけを選び、3 回に分けて扱います。各回の入口 handout は `handouts/25-...md` から `handouts/27-...md` に置き、候補テーマ別 handout は [`handouts/advanced/`](handouts/advanced/) に置きます。
 - 雛形は [`templates/session-template.md`](templates/session-template.md) に置きます。
 - README から各資料へのリンクは相対リンクで統一します。GitHub 上でも clone 後でも追いやすい構成を保つためです。
