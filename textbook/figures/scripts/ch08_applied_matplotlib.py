@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Replay code cells for chapter 08 and save figure outputs.
 
-This script was generated from the notebook before notebook deletion.
-It requires the original runtime dependencies such as NumPy and matplotlib.
+This legacy replay uses deterministic synthetic housing data.
+It needs only the shared NumPy, pandas, and Matplotlib dependencies.
+Replayed figures replace the historical reference figures when explicitly run.
 """
 
 from __future__ import annotations
@@ -16,20 +17,20 @@ import matplotlib.pyplot as plt
 
 
 CODE_CELLS = [
-"# %matplotlib inline\n# import matplotlib.pyplot as plt",
-"import pandas as pd\n\ndf = pd.read_csv('sample_data/california_housing_train.csv')\n\ndf.head(5)",
-"plt.scatter(df['median_income'], df['median_house_value'])",
-"plt.scatter(df['population'], df['median_house_value'])",
-"plt.hist(df['median_house_value'])",
-"# bins \u5f15\u6570\u306b\u5024\u3092\u6307\u5b9a\u3059\u308b\u3053\u3068\u3067\u3001\u30d3\u30f3\u306e\u6570\u3092\u6307\u5b9a\u3067\u304d\u307e\u3059\nplt.hist(df['median_house_value'], bins=50)",
-"plt.boxplot(df['median_house_value'])",
-"# \u8907\u6570\u6307\u5b9a\u3059\u308b\u5834\u5408\u306f\u3001\u30bf\u30d7\u30eb\u3092\u7528\u3044\u307e\u3059\nplt.boxplot((df['total_bedrooms'], df['population']))",
-"import numpy as np\n\n# [0,10]\u306e\u9593\u3092100\u5206\u5272\u3057\u3066\u6570\u5024\u3092\u8fd4\u3059\nx = np.linspace(0, 10, 100)\n\n# x \u306e\u5024\u306b\u30e9\u30f3\u30c0\u30e0\u30ce\u30a4\u30ba\u3092\u52a0\u3048\u308b\ny = x + np.random.randn(100)",
-"plt.plot(y)",
-"plt.plot(x, y)",
-"import seaborn as sns",
-"sns.distplot(df['population'])",
-"sns.pairplot(df)"
+    '# %matplotlib inline\n# import matplotlib.pyplot as plt',
+    'import numpy as np\nimport pandas as pd\nrng = np.random.default_rng(0)\nn = 1000\nincome = rng.uniform(1.0, 10.0, n)\nhouseholds = rng.integers(50, 1000, n)\ndf = pd.DataFrame({\n    "median_income": income,\n    "median_house_value": np.clip(50000 * income + rng.normal(0, 50000, n), 0, None),\n    "households": households,\n    "population": households * rng.integers(1, 6, n),\n    "total_bedrooms": households * rng.uniform(1.0, 3.0, n),\n})\n',
+    "plt.scatter(df['median_income'], df['median_house_value'])",
+    "plt.scatter(df['population'], df['median_house_value'])",
+    "plt.hist(df['median_house_value'])",
+    "# bins 引数に値を指定することで、ビンの数を指定できます\nplt.hist(df['median_house_value'], bins=50)",
+    "plt.boxplot(df['median_house_value'])",
+    "# 複数指定する場合は、タプルを用います\nplt.boxplot((df['total_bedrooms'], df['population']))",
+    'import numpy as np\n\n# [0,10]の間を100分割して数値を返す\nx = np.linspace(0, 10, 100)\n\n# x の値にランダムノイズを加える\ny = x + np.random.default_rng(0).normal(size=100)',
+    'plt.plot(y)',
+    'plt.plot(x, y)',
+    'from pandas.plotting import scatter_matrix',
+    'plt.hist(df["population"], bins=30)',
+    'scatter_matrix(df[["median_income", "median_house_value", "population", "households"]], figsize=(10, 10), diagonal="hist")',
 ]
 FIGURE_JOBS = [
     (2, ["figure-01.png"]),
