@@ -14,6 +14,26 @@
 - `BCEWithLogitsLoss` は binary mask を扱うときによく使う。出力側は sigmoid 前の logits、正解側は 0/1 mask を用意する。
 - 予測が良いかを見るとき、画素一致率だけだと背景優勢な場合に高く見えやすい。Dice のように重なりを見る指標も併せて確認すると解釈しやすい。
 
+### 固定データと学習条件
+
+`import torch`, `from torch import nn`, `from torch.utils.data import Dataset, DataLoader` を使い、モデル作成前に `torch.manual_seed(11)` を設定する。
+`SquareSegDataset` の各サンプルは、入力・正解ともに `float32` の `(1, 32, 32)` Tensorとする。
+正解maskは0で初期化し、`mask[:, 10:22, 10:22] = 1` で中央12×12画素だけを1にする。入力は `mask.clone()` とする。
+同じ内容の10件を返し、`DataLoader(dataset, batch_size=2, shuffle=True)` で学習する。
+これは入出力とlossの接続確認用データであり、未知の画像への性能を測るデータではない。
+
+モデルは `nn.Sequential(nn.Conv2d(1, 8, 3, padding=1), nn.ReLU(), nn.Conv2d(8, 1, 1))` とする。
+`nn.BCEWithLogitsLoss()` と `torch.optim.Adam(model.parameters(), lr=1e-2)` を用い、10 epoch学習する。
+1 epochはDataLoaderを最後まで1巡することで、今回は5バッチの更新を10巡、計50 step行う。
+各バッチで第19回の順序に従って勾配を消去し、順伝播、loss、逆伝播、更新を行う。
+学習時は `model.train()`、推論時は `model.eval()` と `torch.no_grad()` を使う。
+
+推論は先頭サンプルにバッチ軸を加えて行い、logitsに `torch.sigmoid` を適用した後、`>= 0.5` で二値化する。
+予測と正解をbool配列として、全画素での一致数を画素数で割った値をpixel accuracyとする。
+Diceは $2|P\cap Y|/(|P|+|Y|)$ とする（$P,Y$ は予測・正解の陽性画素集合）。両方が空なら1と定義する。
+`outputs/figures/` を作成し、先頭サンプルの入力・正解・二値予測を同じ図に保存する。
+発展では再学習せず、中央領域を `[14:18, 14:18]` の4×4画素にした入力・正解を追加し、同じモデルで比較する。
+
 ## 演習
 ### 基礎レベル
 1. `advanced_image_segmentation_demo.py` を作成し、synthetic な画像と binary mask を返す dataset、最小の segmentation model、`BCEWithLogitsLoss` を使った学習 loop を実装する。dataset は 10 サンプルにする。
@@ -33,4 +53,4 @@
 
 ## 詰まったときに見る資料
 - [`21-image-model-basics.md`](../21-image-model-basics.md)
-- [`13-image-baseline-mini-implementation.md`](../13-image-baseline-mini-implementation.md)
+- [`19-autodiff-and-optimization.md`](../19-autodiff-and-optimization.md): 学習ループ
