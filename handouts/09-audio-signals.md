@@ -1,7 +1,9 @@
 # 第09回 音響信号
 
+## この回の目標
+
 - 音を file として読み込み，波形，サンプリング周波数，長さを確認する．
-- 音を再生・保存し，数値配列としての信号と実際の聞こえ方を対応づける．
+- 音を保存・再読込し，波形と保存形式による誤差を確認する．
 - Fourier 変換によって振幅スペクトルを可視化する．
 - STFT とメルスペクトログラムを計算し，時間周波数表現として可視化する．
 
@@ -14,13 +16,13 @@
 - [sounddevice documentation](https://python-sounddevice.readthedocs.io/)
 - [librosa documentation](https://librosa.org/doc/latest/index.html)
 
-Linux 環境であれば，次のコマンドで必要なライブラリと Python パッケージをインストールできる．
-```bash
-sudo apt update
-sudo apt install -y libportaudio2 pulseaudio-utils alsa-utils libasound2-plugins libsndfile1 ffmpeg
-pip install soundfile sounddevice librosa
-```
-Python仮想環境を作成している場合は，仮想環境を有効にしてから `pip install` を実行する．
+Pythonパッケージは第1回の教材repoで `uv sync --locked` によりそろえ，その `.venv` を使う。
+保存・再読込・周波数解析は音声デバイスなしで実施できる。
+再生・収録の節は，対応する機器が使える場合の任意の例であり，基礎演習の完了条件には含めない。
+Linuxで `sounddevice` がPortAudio不足を報告する場合は，担当者と環境を確認してから必要なシステムライブラリを用意する。
+
+以下の「音の保存」から「メルスペクトログラム」までのPythonコードは，同じ `.py` ファイルへ順に追記する。
+作業場所は提出repoのルートとし，入力・保存先は各コードの `Path` で指定する。
 
 ### 1. sounddevice を用いた音信号の再生と収録
 
@@ -141,9 +143,9 @@ output_dir.mkdir(parents=True, exist_ok=True)
 fs = 16000
 duration = 1.0
 t = np.arange(int(fs * duration)) / fs
-x = 0.5 * np.sin(2 * np.pi * 440 * t)
+x = 0.2 * np.sin(2 * np.pi * 440 * t)
 
-sf.write(output_dir / "09_sine_440hz.wav", x, fs)
+sf.write(output_dir / "09_sine_440hz.wav", x, fs, subtype="PCM_16")
 ```
 
 #### 音の読み込み
@@ -156,7 +158,7 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
-audio_path = Path("outputs/audio/09_input.wav")
+audio_path = Path("outputs/audio/09_sine_440hz.wav")  # 直前の例で保存したファイル
 
 data, sr = sf.read(audio_path, dtype="float32")
 
@@ -164,6 +166,11 @@ print("shape:", data.shape)
 print("dtype:", data.dtype)
 print("samplerate:", sr)
 print("duration [s]:", len(data) / sr)
+mono = data.mean(axis=1) if data.ndim == 2 else data
+
+import matplotlib.pyplot as plt
+figure_dir = Path("outputs/figures")
+figure_dir.mkdir(parents=True, exist_ok=True)
 ```
 
 ### 3. フーリエ変換によるスペクトルの可視化
@@ -192,6 +199,17 @@ plt.tight_layout()
 plt.savefig(figure_dir / "09_spectrum.png", dpi=150)
 plt.close()
 ```
+
+#### 周波数と音名の対応
+
+12平均律ではA4を440 Hzとし、半音上がるごとに周波数が $2^{1/12}$ 倍になる。
+A4から半音で $m$ 個離れた音の周波数は $F=440\times2^{m/12}$ [Hz] である（下の音は $m<0$）。
+音名は C, C♯, D, D♯, E, F, F♯, G, G♯, A, A♯, B の順で、Bの次のCでオクターブ番号が増える。
+C4, D4, E4, F4, G4, A4, B4 は、それぞれ $m=-9,-7,-5,-4,-2,0,2$ に対応する。
+
+スペクトルの正のピーク周波数 $F>0$ からは $m=12\log_2(F/440)$ を計算し、最も近い整数と比較する。
+ピアノ音には基音の整数倍付近に倍音のピークも現れるため、各ピークをそのまま別の音名と判断しない。
+基音候補と倍音の対応も確認して、含まれる音の候補を挙げる。
 
 ### 4. 短時間フーリエ変換
 
@@ -295,14 +313,18 @@ plt.close()
 
 音信号に含まれる高周波成分は低周波成分と比べて小さいことが多いため，
 スペクトログラムを対数スケール ( $20 \log_{10}(|X|)$ [dB] ) で可視化することが多い．
-`librosa.amplitude_to_db` は，スペクトルの振幅を対数スケールに変換する関数である．
+`librosa.amplitude_to_db` は，スペクトルの振幅を対数スケールに変換する関数である。
+上のコードでは `ref=np.max` により最大振幅を0 dBとし，`center=True`（既定）の端点ゼロ埋めを使う。
+この窓指定は周期形のHann窓であり，上で示した対称形（分母 $N-1$）とは端の扱いが異なる。
 
 #### メルスペクトログラム
 
 スペクトログラムは，線形（等間隔）な周波数軸を持つ時間周波数表現である．
 一方，人間の聴覚は，低い周波数の違いには敏感で，高い周波数の違いには鈍感という，周波数に関して非線形な性質を持つ．
 **メル尺度 (mel scale)** は，このような知覚特性を加味した周波数尺度である．
-周波数 $F$ [Hz] からのメル周波数 $M$ への変換は，次式で与えられる．
+この回ではHTK方式のメル尺度を使う。周波数 $F$ [Hz] からメル値 $M$ への変換は次式で与えられる。
+librosaの既定はSlaney方式なので，計算と表示の両方に `htk=True` を指定する。
+フィルタの面積規格化を表す `norm` とメル尺度の選択は別の設定である。
 
 $$
 M = 2595 \log_{10}\left(1 + \frac{F}{700}\right)
@@ -325,6 +347,7 @@ mel = librosa.feature.melspectrogram(
     n_fft=n_fft,
     hop_length=hop_length,
     n_mels=n_mels,
+    htk=True,
     power=2.0,
 )
 mel_db = librosa.power_to_db(mel, ref=np.max)
@@ -336,6 +359,7 @@ librosa.display.specshow(
     hop_length=hop_length,
     x_axis="time",
     y_axis="mel",
+    htk=True,
 )
 plt.colorbar(format="%+2.0f dB")
 plt.tight_layout()
@@ -344,78 +368,28 @@ plt.close()
 ```
 
 ## 演習
-基本的にはプログラム (Python) を使って取り組むことを想定しています．
+
+作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+
+`scripts/session09_audio.py` と `outputs/session09/session09_report.md` を作る。
 
 ### 基礎レベル
+1. 振幅0.2，440 Hz，1秒，$F_s=16000$ Hzの正弦波を作り，`outputs/audio/09_sine_440hz.wav` へ `subtype="PCM_16"` で保存する。同じファイルを読み直し，shape `(16000,)`，標本化周波数，時間長，元の浮動小数点配列との最大絶対誤差を確認する。量子化幅 $1/32768$ と比較する。
+2. 読み込んだ配列から上の例に沿って振幅スペクトルを保存し，440 Hz付近のピークを確認する。ステレオを扱う場合だけチャネル平均でモノラル化する。
+3. $x(t)=0.2\sin(2\pi(f_0t+kt^2/2))$，$f_0=100$ Hz，$f_1=4000$ Hz，$T=2$ 秒，$k=(f_1-f_0)/T$ のチャープを同じ $F_s$ で生成する。Hann窓，`n_fft=1024`，`hop_length=512`，`center=True` でSTFTを計算し，時間・周波数軸付きで保存する。
+4. 同じチャープとSTFT条件で80帯域のメルスペクトログラムを作る。計算・`specshow` とも `htk=True` にする。各出力shapeと軸の意味，STFTとの見え方の違いをレポートに記録する。メル軸の配置は非線形だが，`specshow(y_axis="mel")` の目盛ラベルはHzである。
 
-1. 代表的な音律である12平均律において，
-   音階（ド，ド＃，レ，レ＃，ミ，ファ，ファ＃，ソ，ソ＃，ラ，ラ＃，シ）の音の周波数は，
-   ラ（A4）の音を $440$ Hz として隣り合う音の周波数の比が $2^{1/12}$ となるよう定められている
-   （1オクターブ＝12音離れると周波数が2倍になる）．
-   ド・レ・ミ・ファ・ソ・ラ・シの音の周波数を計算しなさい．
+### 発展レベル（1項目を選択）
+1. 教材repoからコピーした `data/piano.wav` のスペクトルのピークを調べ，含まれる音の候補を挙げる。周波数と音名の対応を根拠にする。
+2. チャープの窓長を1024，256，64と変え，ホップ長をその半分にして時間・周波数分解能を比較する。
+3. **逆STFTの足場。** 長さ128の矩形窓とHann窓を，ホップ長128または64で重ねたときの窓の二乗和を描く。ゼロになる点があるか調べる。その後seed=0の1024点のガウス雑音を `center=True` でSTFTし，同じ窓・ホップ長，`length=1024` の逆STFTで最大誤差を比較する。有限信号の端点を含め，窓の二乗和が非零であることが再構成に必要な理由を説明する。
+4. 再生機器が使える場合，振幅0.2の100/200 Hzと4000/4100 Hzの音を保存して聴き比べ，HTK式でのメル値の差と対応づける。
 
-1. ファに対応する周波数を持つ正弦波を
-   サンプリング周波数 $F_s = 16000$ Hz で 3 秒間サンプリングした信号を作り，
-   保存しなさい．
-
-1. 周波数 $100$ Hz, $200$ Hz, $4000$ Hz, $4100$ Hz の正弦波を
-   サンプリング周波数 $F_s = 16000$ Hz で 5 秒間サンプリングした信号を作り，保存しなさい．
-   作成した $100$ Hz の信号と $200$ Hz の信号を聴き比べなさい．
-   また， $4000$ Hz の信号と $4100$ Hz の信号を聴き比べなさい．
-   周波数が高いときと低いときにおける $100$ Hz の差の聞こえ方の違いを観察しなさい．
-
-1. $100$ Hz と $200$ Hz をそれぞれメル周波数に変換し，それらの差 $M_1$ を計算しなさい．
-   また， $4000$ Hz と $4100$ Hz をそれぞれメル周波数に変換し，それらの差 $M_2$ を計算しなさい．
-   $4000$ Hz よりメル尺度で $M_1$ だけ大きい周波数を計算し，その周波数を持つ正弦波を 3 と同様に作り，保存しなさい．
-   $4000$ Hz の音とその音の高さの差は，$100$ Hz の音と $200$ Hz の音の高さの差と同じように感じられるか？
-
-1. $x[n] = \sin(\pi n / 8)$ に対して $N = 128$ 点の矩形窓をかけた信号 $x[n] w[n]$ を，
-   横軸を$n$ として `stem` プロットしなさい．また，窓関数 $w[n]$ を折れ線グラフとして重ねてプロットしなさい．
-   $N = 128$ 点のハン窓を用いた場合についても，窓をかけた信号と窓関数を同様にプロットしなさい．
-
-1. 信号 $x(t) = \sin(2\pi (f_0t + \frac{1}{2}kt^2))$ を考える（この信号は **チャープ信号 (chirp signal)** と呼ばれる）．
-   ただし，$T$ [s] を信号長とし， $k = (f_1 - f_0) / T$ とする．
-   $f_0 = 100$ [Hz]，$f_1 = 4000$ [Hz]，$T = 5$ [s] として，
-   $x(t)$ をサンプリング周波数 $F_s = 16000$ Hz でサンプリングし，保存しなさい．
-
-1. 6で作成したチャープ信号に対してDFT (`numpy.fft.rfft`で良い) を施し，
-   横軸を周波数 [Hz] として振幅スペクトルをプロットしなさい．
-
-1. 6で作成したチャープ信号に対してSTFTを施し，
-   横軸を時間 [s]，縦軸を周波数 [Hz] としてスペクトログラムをプロットしなさい．
-   ただし，窓は $N = 1024$ 点のハン窓，ホップ長は $H = 512$ 点とする．
-
-1. 6で作成したチャープ信号のメルスペクトログラムを，
-   横軸時間 [s]，縦軸メル周波数としてプロットしなさい．
-   ただし，窓は $N = 1024$ 点のハン窓，ホップ長は $H = 512$ 点，
-   メル周波数ビン数は $n_\mathrm{mels} = 80$ とする．
-
-### 発展レベル
-
-1. `piano.wav` は，ド・レ・ミ・ファ・ソ・ラ・シのうちの3つの音からなる和音である．
-この信号を周波数解析して，どの音が含まれているかを推測しなさい．
-
-1. 基礎レベル 6 で作成したチャープ信号を，
-   $N = 1024, 256, 64, 16$ 点のハン窓を用いて，
-   ホップ長を $H = \frac{N}{2}$ としてSTFTし，
-   スペクトログラムをそれぞれプロットしなさい．
-   また，この結果から，
-   時間分解能と周波数分解能の関係について考察しなさい．
-
-1. STFTの逆変換は `librosa.istft` で計算できる．
-   $1024$ 点のガウス雑音を作成し，
-   以下の条件でSTFTした後に逆STFTを計算しなさい．
-   再構成された信号が元の信号と一致するか確認し，
-   結果を考察しなさい．
-
-   - 条件1: $128$ 点の矩形窓，ホップ長 $128$ 点
-   - 条件2: $128$ 点のハン窓，ホップ長 $128$ 点
-   - 条件3: $128$ 点のハン窓，ホップ長 $64$ 点
-
-1. 逆STFTにより元の信号を完全に再構成するための条件を示しなさい．
+## 確認ポイント
+- 保存したファイルと読込ファイルが同じで，PCM16の丸め誤差を確認した。
+- `mono`，`sr`，`figure_dir` を定義した後にスペクトルの例を実行している。
+- メル尺度とSTFT条件を計算・描画で統一した。再生・録音は必須にしていない。
 
 ## 詰まったときに見る資料
-- [soundfile documentation](https://python-soundfile.readthedocs.io/)
-- [sounddevice documentation](https://python-sounddevice.readthedocs.io/)
-- [librosa documentation](https://librosa.org/doc/latest/index.html)
-- [NumPy FFT](https://numpy.org/doc/stable/reference/routines.fft.html)
+- [soundfileの入出力](../textbook/markdown/ch11-introduction-to-soundfile.md)
+- [librosa 0.11 melspectrogram](https://librosa.org/doc/0.11.0/generated/librosa.feature.melspectrogram.html)
