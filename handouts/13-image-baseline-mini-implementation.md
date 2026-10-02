@@ -1,35 +1,60 @@
-# 第13回 画像ミニ実装：小規模 classification baseline
+# 第13回 信号処理ミニプロジェクト
 
 - 対象: B3
 - 種別: 後期固定ブートキャンプ
 
 ## この回の目標
-- synthetic 画像データセット、Dataset、Model、training loop を 1 本につなげて実行できる。
-- 入力 tensor と出力 logits の shape を説明できる。
-- 学習後の予測結果を、loss と精度の両面から説明できる。
+
+- 第1〜12回で扱った信号処理を使い，入力生成から処理・評価・保存までを1本のスクリプトで実行する。
+- 同じ入力に対する基準手法と1つの条件変更を比較する。
+- 入出力の shape，処理条件，誤差，保存先を説明する。
 
 ## 解説
-- baseline 実装では、データ生成、前処理、model、学習ループをまず 1 本で繋げることが重要である。小さくても end-to-end で動くことが後の改良の土台になる。
-- classification では、各サンプルに 1 つの label を持たせ、model は class 数ぶんの logits を返す。shape を追うと、どこで画像が特徴ベクトルへ潰れているか見やすい。
-- loss だけを見ると「下がった」で終わりやすい。実際に全サンプルでどれだけ当たるかを見ると、model が task を解けているか判断しやすい。
+
+この回では，既習の NumPy・SciPy・Pillow などを用いた信号処理を扱う。
+基準手法（baseline）は，比較の出発点となる単純な処理を指す。
+変更する条件を1つに絞り，同じ入力・同じ評価範囲で結果を比べる。
+ニューラルネットワークの学習は第19〜21回以降に扱う。
+
+基礎演習では次のどちらか1つを選ぶ。追加のデータ配布やパッケージ導入は不要である。
+
+| 選択 | 入力と基準手法 | 比較する条件 | 手順 |
+| --- | --- | --- | --- |
+| 音信号のノイズ除去 | 第11回の既知の清浄信号と seed=0 の雑音。長さ9の移動平均 | 窓長3または21のどちらか1つ | [第11回](11-noise-and-signal-restoration.md)の基礎演習1〜2 |
+| burst画像のノイズ除去 | 同梱の猫画像から生成する9枚。先頭3枚の平均 | 先頭9枚の平均 | [プロジェクト3](13-sp-projects/03_burst_denoising.md) |
+
+音信号では端点を含む全1000サンプル，画像では全画素・全RGBチャネルでMSEを計算する。
+雑音を加える前の清浄信号・原画像を正解とする。比較ごとに雑音を生成し直さない。
+数値と波形・画像の両方を確認し，どの成分が残り，どの成分が失われたかを述べる。
 
 ## 演習
-### 基礎レベル
-1. `session13_image_baseline.py` を作成し、class 0 は中央縦線、class 1 は中央横線を持つ 32x32 RGB 画像を返す `StripeDataset` を実装する。各 class 20 枚、合計 40 枚にする。
-2. `DataLoader(batch_size=8, shuffle=True)`、小さな CNN、`CrossEntropyLoss`、`Adam(lr=1e-2)` を使って 5 epoch 学習する。
-3. epoch ごとの平均 loss を `outputs/figures/session13_loss_curve.png` に保存し、先頭サンプルの推論例を `outputs/images/session13_prediction_example.png` に保存する。
-4. `session13_image_baseline_report.md` に `## データセット仕様`, `## 学習設定と loss`, `## 推論例` を書き、入力 shape、logits shape、予測 class を説明する。
 
-### 発展レベル
-1. 学習後に全 40 サンプルで推論し、全体 accuracy と class 別の誤り傾向を確認する。
-2. report に `## 全体評価` を追加し、loss 曲線と 1 枚の推論例だけでは十分でない理由を説明する。
+### 基礎レベル（必須）
+
+作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+
+1. どちらか1つを選び，`scripts/session13_signal_project.py` を作成する。入力生成，基準手法，条件を1つ変えた処理，MSE計算を順に実行する。画像を選んだ場合はPSNRも計算する。
+2. 入力・基準手法・条件変更後の結果を同じ尺度で並べ，`outputs/figures/session13_comparison.png` に保存する。音は横軸を秒，画像は表示範囲を `[0,1]` にそろえる。正解も比較図に含める。
+3. `outputs/session13/session13_report.md` に `## 入力と生成条件`，`## 基準手法と比較条件`，`## 結果` を書く。seed，shape，サンプリング周波数または画素値の範囲，MSEの一覧，変更の影響，実行コマンドを記す。実行は提出repoのルートから `python scripts/session13_signal_project.py` とする。
+
+### 発展レベル（任意・1つ選択）
+
+1. 音を選んだ場合は第11回のWienerフィルタを同じ入力に適用し，移動平均と比較する。画像を選んだ場合は9枚の中央値と平均を比較する。
+2. 雑音の大きさを1条件だけ変え，基準手法と比較手法の順位や残る誤差がどう変わるか確かめる。
+
+ほかの候補は [VAD](13-sp-projects/01_vad.md)，[音のdeclipping](13-sp-projects/02_audio_declipping.md)，[画像位置合わせ](13-sp-projects/04_image_registration.md) を参照する。
+VADには収録・ラベル付けが必要であり，declippingと位置合わせのデータ・評価器は未同梱である。
+これらは追加準備と担当者との範囲調整を要する発展候補であり，今回の必須提出には含めない。
 
 ## 確認ポイント
-- dataset 総数が `40` である。
-- batch 入力 shape が `(8, 3, 32, 32)` である。
-- `session13_loss_curve.png` と `session13_prediction_example.png` が保存されている。
-- report に、単一の推論例だけでなく全体評価がある。
+
+- `python scripts/session13_signal_project.py` を実行すると，同じ生成条件で結果と比較図を再現できる。
+- 入力，基準手法，比較条件が明示され，評価対象の長さ・shapeが一致している。
+- MSEは正解との差から計算し，未処理のノイズを含む入力のMSEも載せている。
+- 保存した図の軸・表示範囲がそろい，数値の変化を信号処理の観点から説明できる。
 
 ## 詰まったときに見る資料
-- [`09-audio-signals.md`](09-audio-signals.md)
-- [`10-lti-systems-and-convolution.md`](10-lti-systems-and-convolution.md)
+
+- [第11回 ノイズと信号復元](11-noise-and-signal-restoration.md)
+- [第12回 画像信号](12-image-signals.md)
+- [プロジェクト3：burst画像のノイズ除去](13-sp-projects/03_burst_denoising.md)
