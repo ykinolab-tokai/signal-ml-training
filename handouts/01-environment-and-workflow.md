@@ -408,21 +408,7 @@ WSL の場合は，VS Code の左下やウィンドウ名に
 `WSL: Ubuntu-24.04` のように表示されていることを確認する。
 このウィンドウのターミナルも Ubuntu 側で動作する。
 
-ターミナルからプログラムを実行する場合は，
-前節で準備した `uv` を使って，教材用の仮想環境で実行できる。
-VS Code のターミナルでも，通常の Ubuntu や Mac のターミナルでも同じ操作でよい。
-次の例は，「最初の動作確認」のサンプルファイルを保存した後に実行する。
-
-```bash
-cd ~/workspace/signal-ml-training
-uv run python exercises/exc01_01.py
-```
-
-`uv run` は `signal-ml-training` ディレクトリ内の設定に従って仮想環境を確認・同期してから実行するため，
-事前に `source .venv/bin/activate` を実行する必要はない。
-一方，`python exercises/exc01_01.py` と直接実行する場合は，
-そのターミナルで `.venv` が有効になっていることを先に確認する。
-詳しくは [uv のプロジェクト操作](https://docs.astral.sh/uv/guides/projects/) を参照する。
+Python スクリプトの作成と実行は，後述の「最初の動作確認」で行う。
 
 ### VS Code の実行・デバッグ機能で `.venv` を使う（任意）
 
