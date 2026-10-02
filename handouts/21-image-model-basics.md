@@ -13,6 +13,30 @@
 - output shape と parameter 数が同じでも、内部計算は同じとは限らない。特に residual block では `x + F(x)` の形になるため、「入力からどれだけ変えるか」を学ぶ見方ができる。
 - 画像モデルを比較するときは、shape だけでなく「入力との差分がどう扱われるか」を見ると、block の意味を捉えやすい。
 
+### 比較するモデルの仕様
+
+`import torch` と `from torch import nn` を使い、モデル作成前に `torch.manual_seed(7)` を設定する。
+各blockを `nn.Module` のサブクラスとして定義し、`__init__` の先頭で `super().__init__()` を呼ぶ。
+その中で次の共通部分を `self.block = nn.Sequential(...)` として登録する。
+
+| 順序 | 層 |
+| --- | --- |
+| 1 | `nn.Conv2d(8, 8, kernel_size=3, stride=1, padding=1, bias=True)` |
+| 2 | `nn.BatchNorm2d(8)` |
+| 3 | `nn.ReLU()` |
+| 4 | 1と同じ設定の新しい `nn.Conv2d` |
+| 5 | `nn.BatchNorm2d(8)` |
+
+`forward(self, x)` の戻り値は、`PlainBlock` では `torch.relu(self.block(x))`、`ResidualBlock` では `torch.relu(x + self.block(x))` とする。
+`plain = PlainBlock()` と `residual = ResidualBlock()` を作る。
+両方の `self.block` の初期値をそろえるため、`residual.block.load_state_dict(plain.block.state_dict())` でコピーする。
+比較前に両モデルを `eval()` にし、`torch.no_grad()` 内で同じ `x` を入力する。
+今回のBatchNormは学習前の統計量を使うため、これは学習性能ではなく構造の比較である。
+
+入力の軸は `(バッチ, チャネル, 高さ, 幅)` である。paddingにより空間サイズを保ち、チャネル数も同じにすることで `x` を加算できる。
+パラメータ数は `sum(p.numel() for p in model.parameters())` で求める。各blockは1200個で、加算自体には学習パラメータがない。
+発展では新しい `ResidualBlock` を2個作って `nn.Sequential` でつなぎ、パラメータを共有しない。
+
 ## 演習
 ### 基礎レベル
 1. `session21_image_block_compare.py` を作成し、同じ入力 `x = torch.randn(2, 8, 32, 32)` に対して `PlainBlock` と `ResidualBlock` の forward を通す。
@@ -30,5 +54,5 @@
 - skip connection の説明が、単に「足している」ではなく、入力を保持しながら変化量を学ぶという見方に触れている。
 
 ## 詰まったときに見る資料
-- [`13-image-baseline-mini-implementation.md`](13-image-baseline-mini-implementation.md)
-- [`../textbook/markdown/ch23-basics-of-neural-networks.md`](../textbook/markdown/ch23-basics-of-neural-networks.md)
+- [`19-autodiff-and-optimization.md`](19-autodiff-and-optimization.md): Module・推論モード
+- PyTorch docs: [Conv2d](https://docs.pytorch.org/docs/stable/generated/torch.nn.Conv2d.html), [BatchNorm2d](https://docs.pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html)
