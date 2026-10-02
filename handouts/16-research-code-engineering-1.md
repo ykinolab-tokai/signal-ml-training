@@ -13,6 +13,21 @@
 - logging は「動いた証拠」ではなく、「どの条件で動いたかの記録」として使う。後からログだけを見ても実行条件が追えることが重要になる。
 - `outputs/` のような生成物ディレクトリは、コード内で自動作成しておくと再実行しやすい。手作業依存を減らすことは、小さい実験でも重要である。
 
+### CLIとログを確認する手順
+
+演習ファイルは提出リポジトリのルートに置き、そのディレクトリから実行する。
+`argparse.ArgumentParser` で `--config` と `--out` を `required=True` の引数として登録し、`Path(args.config).read_text(encoding="utf-8")` を `json.loads` で読む。
+ログを出す前に、スクリプトの入口で一度だけ `logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")` を実行する。
+設定値を `logging.info("lr=%s epochs=%s name=%s", config["lr"], config["epochs"], config["name"])` のように記録する。
+既定のログ出力先は標準エラー出力であり、`INFO` の表示にはログレベルの設定が必要である。
+
+完成したスクリプトは次の2通りで実行し、`--out` に指定したディレクトリとログを確認する。
+
+```bash
+python session16_cli_logging_demo.py --config session16_config.json --out outputs/session16_run
+python session16_cli_logging_demo.py --config session16_config.json --out outputs/session16_run_alt
+```
+
 ## 演習
 ### 基礎レベル
 1. `session16_config.json` を作成し、`lr`, `epochs`, `name` を設定として保存する。値は `0.001`, `3`, `session16-demo` とする。
