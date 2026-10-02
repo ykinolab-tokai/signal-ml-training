@@ -13,6 +13,69 @@
 - optimizer はパラメータ更新の規則、scheduler はその規則の中で学習率をどう変えるかを決める。どちらも学習ループに入るが、役割は異なる。
 - loss 曲線を見るときは、単に下がったかではなく、「どこで下がり方が変わったか」「learning rate の変更と対応しているか」を見ると解釈しやすい。
 
+### PyTorchの最小構成と固定データ
+
+第1回で用意したPython環境を使い、今回はCPU上で計算する。
+TensorはNumPy配列と同様に `shape` と `dtype` を持つ多次元配列である。
+`nn.Module` はパラメータと計算処理をまとめる基底クラスで、`nn.Linear` もその一種である。
+`model(x)` は順伝播を行い、`model.parameters()` はモデルに登録されたパラメータを返す。
+`nn.Linear(1, 1)` は各行に対して $wx+b$ を計算する。次は入力・モデルを用意する実行可能な例である。
+
+```python
+from pathlib import Path
+import matplotlib.pyplot as plt
+import torch
+from torch import nn
+
+Path("outputs/figures").mkdir(parents=True, exist_ok=True)
+torch.manual_seed(5)
+x = torch.tensor([[-2.0], [-1.0], [0.0], [1.0], [2.0]], dtype=torch.float32)
+y = 2 * x + 1
+model = nn.Linear(1, 1)
+loss_fn = nn.MSELoss()
+print(x.shape, model(x).shape)  # どちらも torch.Size([5, 1])
+```
+
+`x` と `y` の第0軸は5サンプルのバッチ、第1軸は1特徴量を表す。
+重みとバイアスは既定で `requires_grad=True` となり、`loss.backward()` によって各 `.grad` に勾配が蓄積される。
+MSEは今回の5点の二乗誤差の平均である。
+
+### 勾配確認と学習の手順
+
+学習前に `model.zero_grad()`、lossの計算、`loss.backward()` を行い、`model.weight.grad[0, 0]` を記録する。
+数値微分ではバイアスを固定し、重み `model.weight[0, 0]` だけを $w+\varepsilon$, $w-\varepsilon$ に変えて
+$(L(w+\varepsilon)-L(w-\varepsilon))/(2\varepsilon)$ を求める。
+パラメータの一時変更は `with torch.no_grad():` 内で行い、最後に元の値へ戻す。
+`eps=1e-3` とし、勾配の絶対差が `1e-2` 未満になることを目安にする。
+
+勾配確認後、次の学習ループを続けて実行できる。
+1 stepはパラメータを1回更新することで、今回は毎回5点すべてを使う。
+
+```python
+optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+loss_history, lr_history = [], []
+model.train()
+for step in range(20):
+    optimizer.zero_grad()  # 前のstepの勾配を消す
+    prediction = model(x)
+    loss = loss_fn(prediction, y)
+    loss_history.append(loss.item())  # 更新前のloss
+    lr_history.append(optimizer.param_groups[0]["lr"])  # この更新に使う学習率
+    loss.backward()
+    optimizer.step()
+    scheduler.step()  # パラメータ更新後に、次のstepの学習率を設定
+```
+
+記録した学習率は1〜10回目が `0.1`、11〜20回目が `0.01` となる。
+20回目の更新後のlossも `with torch.no_grad():` 内で計算し、最後の更新前の値とは区別する。
+schedulerなしとの比較では、モデルを作る直前に同じ乱数seedを設定し、optimizerも新しく作り直す。
+
+推論・検証では `model.eval()` と `with torch.no_grad():` を使い、`backward()` と `optimizer.step()` は行わない。
+`eval()` はBatchNormなどの動作を切り替え、`no_grad()` は勾配の記録を止めるため、役割が異なる。
+学習用データとは別の検証用データを使う場合は、検証用データでパラメータを更新しない。
+今回は学習の仕組みを見る固定5点の例であり、未知データへの性能評価は行わない。
+
 ## 演習
 ### 基礎レベル
 1. `session19_autodiff_demo.py` を作成し、`y = 2x + 1` の toy データに対して `nn.Linear(1, 1)` の MSE loss を計算する。
@@ -32,5 +95,5 @@
 - report に、loss の数値だけでなく scheduler の役割に関する説明がある。
 
 ## 詰まったときに見る資料
-- [`11-noise-and-signal-restoration.md`](11-noise-and-signal-restoration.md)
+- PyTorch公式チュートリアル: [学習ループとパラメータ更新](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html)
 - [`../textbook/markdown/ch23-basics-of-neural-networks.md`](../textbook/markdown/ch23-basics-of-neural-networks.md)
