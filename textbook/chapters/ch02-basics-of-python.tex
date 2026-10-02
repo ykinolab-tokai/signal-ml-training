@@ -11,7 +11,7 @@
 Pythonにはバージョンとして 2 系と 3 系の 2 つの系統があり、互換性のない部分もあります。
 
 本研修では、3 系である \textbf{Python 3.12} 系を標準とします。
-上流の最新 stable は 2026年4月時点で Python 3.14.4 ですが、この repo は共有環境との整合のため 3.12 系で揃えます。
+このrepoでは共有環境との整合のため3.12系でそろえます。
 
 
 \section{Python の特徴}
@@ -47,54 +47,22 @@ Pythonにはバージョンとして 2 系と 3 系の 2 つの系統があり�
 
 \section{Python の実行}
 
-みなさんは，\href{https://colab.research.google.com/}{Google Colaboratory}を利用して Python を書いたことがあると思います．
-
-Google Colab は，Pythonをさっと書いて実行結果を確認する目的では大変便利です．
-
-一方，コードが長く複雑になってくると，Google Colab 上でプログラミングするのは難しくなってきます．
-
-そこで，本研修では，みなさんのPC上で Python を実行するやり方に慣れてもらおうと思います．
-
-
-まず，以下のコマンドを入力し，Python を実行するための仮想環境を構築します．
+演習の基本は，提出repoの \texttt{scripts/session02\_python\_basics.py} をVS Codeで編集し，ターミナルから実行する方法です。
+第1回で用意した教材repoの \texttt{.venv} を使います。新しい仮想環境は作りません。
+教材repoを第1回の標準位置に置いた場合，提出repoのルートで次を実行します。
 
 \begin{lstlisting}[style=codecell]
-$ mkdir -p ~/workspace/python-basics
-$ cd ~/workspace/python-basics
-$ python3 -m venv .venv
+source ~/workspace/signal-ml-training/.venv/bin/activate
+python scripts/session02_python_basics.py
 \end{lstlisting}
 
-Python の実行環境とは，Python のプログラムを実行するために必要となるソフトウェアの組み合わせを指します．
+本章の短いコード例は，同じ節で定義した変数を引き継ぐ例です。学ぶ節の定義と処理を \texttt{.py} にまとめて試してください。
+\texttt{text} ブロックは出力例なのでファイルへ貼り付けません。例外を示す例は，正常に動く演習とは別に実行します。
+値の表示には \texttt{print()} を使います。\texttt{print(repr(value))} は引用符や改行記号も分かる表現を表示する書き方です。
 
-また，仮想環境とは，簡単に言ってしまえば本研修のための専用環境のことです．
-
-普通 Python の実行環境は一台のPCにつき1つのみですが，
-
-仮想環境は一台のPC上にいくつも作ることができます．
-
-
-仮想環境を有効にするには以下のコマンドを入力します．
-
-\begin{lstlisting}[style=codecell]
-$ source .venv/bin/activate
-\end{lstlisting}
-
-仮想環境が有効になった状態で\texttt{python}と入力すると，
-
-Python プログラムを1行ごとに入力・実行できる対話型のインタープリタが起動します．
-
-インタープリタを終了するには以下のように入力します．
-
-\begin{lstlisting}[style=codecell]
->>> exit()
-\end{lstlisting}
-
-また，仮想環境を無効にするには以下のコマンドを入力します．
-
-\begin{lstlisting}[style=codecell]
-$ deactivate
-\end{lstlisting}
-
+対話実行（任意）では，ターミナルで \texttt{python} を起動して式を1つずつ入力します。終了には \texttt{exit()} を入力します。
+REPL（対話型インタープリタ）やNotebookでは式の値が自動表示される場合がありますが，\texttt{.py} では値だけの式を書いても表示されません。
+資料の \texttt{\$} はシェル，\texttt{>>>} はREPLの入力待ちを示す記号であり，入力する文字ではありません。本章のコピペ用コードでは省略します。
 
 \subsection{文法とアルゴリズム}
 
@@ -135,7 +103,7 @@ $ deactivate
 \subsection{代入と値の確認}
 
 
-それでは、以下のセルのように，\texttt{a} という名前の変数に\texttt{1} を\textbf{代入}してみましょう。
+それでは、以下のコードのように，\texttt{a} という名前の変数に\texttt{1} を\textbf{代入}してみましょう。
 
 
 \begin{lstlisting}[style=codecell,language=Python]
@@ -146,14 +114,14 @@ a = 1
 
 数学的には \texttt{=} は等しいという意味を持ちますが、Python では\textbf{「左辺の変数に、右辺の値を代入する」}という意味になります。
 
-また，これ以降，Python のプログラムは上のようにコードセルを用いて記述します．
+また，これ以降，Python のプログラムは上のようにコードブロックを用いて記述します．
 
 
-対話型インタープリタ上では、変数名だけを記述した行を入力すると、値を確認することができます。
+\texttt{.py} ファイルでは，次のように明示的に表示します。\texttt{repr()} は値の表現を文字列で返します。
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-a
+print(repr(a))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -175,7 +143,7 @@ print(a)
 1
 \end{lstlisting}
 
-変数名だけをセルに記入して実行する場合と\texttt{print()}を利用する場合の違いについては、後述します。
+文字列では \texttt{print(repr(value))} と \texttt{print(value)} の表示に違いがあり，後述します。
 
 
 変数につける名前は、コードを書く人が自由に決めることができます。
@@ -199,10 +167,10 @@ Python では、\texttt{\#} の後からその行の終わりまでに存在す�
 コメントは、コード中に変数の意味や処理の意味をコードを読む人に伝えるためによく使われます。
 
 
-Jupyter Notebook のコードセルに書かれたコードを行ごとコメントアウトしたい場合は、その行を選択した状態で \texttt{Ctrl + /} を入力することで自動的に行の先頭に \texttt{\#} 記号を挿入することができます。複数行を選択していれば、選択された複数の行が同時にコメントアウトされます。また、コメントアウトされている行を選択した状態で同じキー入力を送ると、コメントアウトが解除されます。これを\textbf{アンコメント (uncomment)}と呼ぶこともあります。
+VS Codeで開いたPythonファイルのコードを行ごとコメントアウトしたい場合は、その行を選択した状態で \texttt{Ctrl + /} を入力することで自動的に行の先頭に \texttt{\#} 記号を挿入することができます。複数行を選択していれば、選択された複数の行が同時にコメントアウトされます。また、コメントアウトされている行を選択した状態で同じキー入力を送ると、コメントアウトが解除されます。これを\textbf{アンコメント (uncomment)}と呼ぶこともあります。
 
 
-下のセルを実行してみましょう。
+下のコードを実行してみましょう。
 
 
 \begin{lstlisting}[style=codecell,language=Python]
@@ -251,27 +219,27 @@ c = 'Chainer'
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(a)
+print(repr(type(a)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-int
+<class 'int'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(b)
+print(repr(type(b)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-float
+<class 'float'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(c)
+print(repr(type(c)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-str
+<class 'str'>
 \end{lstlisting}
 
 \texttt{a} は \texttt{int} という整数の型をもつ変数であり、\texttt{b} は \texttt{float} という実数の型をもつ変数です。
@@ -291,57 +259,57 @@ Python では、\texttt{.} を含まない連続した数字を \texttt{int}、�
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(0)
+print(repr(type(0)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-int
+<class 'int'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(0.)
+print(repr(type(0.)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-float
+<class 'float'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(.0)
+print(repr(type(.0)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-float
+<class 'float'>
 \end{lstlisting}
 
 例えば、実数の \texttt{5} は以下のように書くことができます。
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(5.0)
+print(repr(type(5.0)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-float
+<class 'float'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(5.)
+print(repr(type(5.)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-float
+<class 'float'>
 \end{lstlisting}
 
 一方、\texttt{.5} と書くと、これは \texttt{0.5} の略記と解釈されることに注意してください。
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(.5)
+print(repr(type(.5)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-float
+<class 'float'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
@@ -406,7 +374,7 @@ a, b, c = 1, 1.2, 'Chainer'
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 整数と整数で加算 -> 結果は整数
-1+1
+print(repr(1+1))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -423,7 +391,7 @@ a, b, c = 1, 1.2, 'Chainer'
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-1 + 1
+print(repr(1 + 1))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -434,7 +402,7 @@ a, b, c = 1, 1.2, 'Chainer'
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-a + 2
+print(repr(a + 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -448,7 +416,7 @@ a + 2
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 整数と実数で加算 -> 結果は実数
-a + b
+print(repr(a + b))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -460,7 +428,7 @@ a + b
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 整数と整数で減算 -> 結果は整数
-2 - 1
+print(repr(2 - 1))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -469,7 +437,7 @@ a + b
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 実数と整数で減算 -> 結果は実数
-3.5 - 2
+print(repr(3.5 - 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -478,7 +446,7 @@ a + b
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 整数と整数で乗算 -> 結果は整数
-3 * 5
+print(repr(3 * 5))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -487,7 +455,7 @@ a + b
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 実数と整数で乗算 -> 結果は実数
-2.5 * 2
+print(repr(2.5 * 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -496,7 +464,7 @@ a + b
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 整数と整数で除算 -> 結果は実数
-3 / 2
+print(repr(3 / 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -505,7 +473,7 @@ a + b
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 整数と整数で除算 -> 結果は実数
-4 / 2
+print(repr(4 / 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -526,7 +494,7 @@ Python 3 では、 \texttt{/} 記号を用いて除算を行う場合、除数�
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 整数と整数で切り捨て除算 -> 結果は整数
-3 // 2
+print(repr(3 // 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -535,7 +503,7 @@ Python 3 では、 \texttt{/} 記号を用いて除算を行う場合、除数�
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 整数と整数で切り捨て除算 -> 結果は整数
-4 // 2
+print(repr(4 // 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -575,7 +543,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'
 
 \begin{lstlisting}[style=codecell,language=Python]
 # str と int で乗算
-c * 3
+print(repr(c * 3))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -592,7 +560,7 @@ c * 3
 name1 = 'Chainer'
 name2 = 'チュートリアル'
 
-name1 + name2
+print(repr(name1 + name2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -610,7 +578,7 @@ name1 + name2
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-1
+print(repr(1))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -618,15 +586,15 @@ name1 + name2
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(1)
+print(repr(type(1)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-int
+<class 'int'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-str(1)
+print(repr(str(1)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -634,15 +602,15 @@ str(1)
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-type(str(1))
+print(repr(type(str(1))))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-str
+<class 'str'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-str(1) + '番目'
+print(repr(str(1) + '番目'))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -661,7 +629,7 @@ str(1) + '番目'
 # 累積代入文を使わない場合
 count = 0
 count = count + 1
-count
+print(repr(count))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -672,7 +640,7 @@ count
 # 累積代入文を使う場合
 count = 0
 count += 1
-count
+print(repr(count))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -706,7 +674,7 @@ Python には、他にも幾つかの算術演算子が用意されています�
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 累乗
-2 ** 3
+print(repr(2 ** 3))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -718,7 +686,7 @@ Python には、他にも幾つかの算術演算子が用意されています�
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 剰余
-9 % 2
+print(repr(9 % 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -758,7 +726,7 @@ Python には、他にも幾つかの算術演算子が用意されています�
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-1 < 2
+print(repr(1 < 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -767,15 +735,15 @@ True
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 型の確認
-type(1 < 2)
+print(repr(type(1 < 2)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-bool
+<class 'bool'>
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-2 == 5
+print(repr(2 == 5))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -783,7 +751,7 @@ False
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-1 != 2
+print(repr(1 != 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -791,7 +759,7 @@ True
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-3 >= 3
+print(repr(3 >= 3))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -799,7 +767,7 @@ True
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-'test' == 'test'
+print(repr('test' == 'test'))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -835,7 +803,7 @@ print('Hello\tWorld')
 Hello	World
 \end{lstlisting}
 
-最初に Jupyter Notebook 上で変数の値を確認する際に、\texttt{print()} を使う場合と使わない場合の違いについて触れましたが、エスケープシーケンスを評価したい場合には、\texttt{print()} を使う必要があります。
+文字列の引用符やエスケープ表記を確認するには \texttt{print(repr(value))} を使い，改行やタブを表示に反映するには \texttt{print(value)} を使います。
 
 
 \begin{lstlisting}[style=codecell,language=Python]
@@ -844,7 +812,7 @@ d = 'Hello\nWorld'
 
 \begin{lstlisting}[style=codecell,language=Python]
 # エスケープシーケンスが評価されない
-d
+print(repr(d))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -874,7 +842,7 @@ World
 \begin{lstlisting}[style=codecell,language=Python]
 name = 'Chainer'
 
-name
+print(repr(name))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -883,7 +851,7 @@ name
 
 \begin{lstlisting}[style=codecell,language=Python]
 # すべてを小文字に変換
-name.lower()
+print(repr(name.lower()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -892,7 +860,7 @@ name.lower()
 
 \begin{lstlisting}[style=codecell,language=Python]
 # すべてを大文字に変換
-name.upper()
+print(repr(name.upper()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -913,7 +881,7 @@ f 文字列は，\texttt{f}というキーワードではじまり，その後�
 \begin{lstlisting}[style=codecell,language=Python]
 name = 'Chainer'
 
-f'{name} チュートリアルへようこそ'
+print(repr(f'{name} チュートリアルへようこそ'))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -924,7 +892,7 @@ f'{name} チュートリアルへようこそ'
 name1 = 'Chainer'
 name2 = 'チュートリアル'
 
-f'{name1} {name2}へようこそ'
+print(repr(f'{name1} {name2}へようこそ'))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -937,7 +905,7 @@ f 文字列を用いると \texttt{int} 型 や \texttt{float} 型の変数を�
 \begin{lstlisting}[style=codecell,language=Python]
 version = 3.7
 
-f'Python {version}'
+print(repr(f'Python {version}'))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -961,7 +929,7 @@ f'Python {version}'
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-0.5.as_integer_ratio()
+print(repr(0.5.as_integer_ratio()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -972,7 +940,7 @@ f'Python {version}'
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-0.25.as_integer_ratio()
+print(repr(0.25.as_integer_ratio()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1019,11 +987,11 @@ print(numbers)
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 型の確認
-type(numbers)
+print(repr(type(numbers)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-list
+<class 'list'>
 \end{lstlisting}
 
 \texttt{numbers} には 4 つの数値が入っており、\textbf{要素数} は 4 です。
@@ -1035,7 +1003,7 @@ list
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 要素数の確認
-len(numbers)
+print(repr(len(numbers)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1053,7 +1021,7 @@ len(numbers)
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 先頭の要素にアクセス
-numbers[0]
+print(repr(numbers[0]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1062,7 +1030,7 @@ numbers[0]
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 先頭から3番目の要素にアクセス
-numbers[2]
+print(repr(numbers[2]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1076,7 +1044,7 @@ numbers[1] = 10
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 値の確認
-numbers
+print(repr(numbers))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1090,7 +1058,7 @@ numbers
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 末尾の要素にアクセス
-numbers[-1]
+print(repr(numbers[-1]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1099,7 +1067,7 @@ numbers[-1]
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 末尾から3番目の要素にアクセス
-numbers[-3]
+print(repr(numbers[-3]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1117,7 +1085,7 @@ numbers[-3]
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-numbers[0:2]
+print(repr(numbers[0:2]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1133,7 +1101,7 @@ numbers[0:2]
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-numbers[:2]
+print(repr(numbers[:2]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1151,7 +1119,7 @@ numbers[:2]
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-numbers[1:]
+print(repr(numbers[1:]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1170,7 +1138,7 @@ numbers[1:]
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-numbers[:]
+print(repr(numbers[:]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1192,7 +1160,7 @@ numbers[:]
 \begin{lstlisting}[style=codecell,language=Python]
 # 文字列を格納したリスト
 array = ['hello', 'world']
-array
+print(repr(array))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1202,7 +1170,7 @@ array
 \begin{lstlisting}[style=codecell,language=Python]
 # 複数の型が混在したリスト
 array = [1, 1.2, 'Chainer']
-array
+print(repr(array))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1216,7 +1184,7 @@ array
 
 \begin{lstlisting}[style=codecell,language=Python]
 array = [[1, 1.2, 'Chainer', True], [3.2, 'Tutorial']]
-array
+print(repr(array))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1238,7 +1206,7 @@ array.append(2.5)
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 値の確認
-array
+print(repr(array))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1256,7 +1224,7 @@ array = []
 array.append('Chainer')
 array.append('チュートリアル')
 
-array
+print(repr(array))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1275,7 +1243,7 @@ array
 \begin{lstlisting}[style=codecell,language=Python]
 # タプルを定義
 array = (4, 5, 6, 7)
-array
+print(repr(array))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1284,11 +1252,11 @@ array
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 型の確認
-type(array)
+print(repr(type(array)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-tuple
+<class 'tuple'>
 \end{lstlisting}
 
 タプルの定義する際に \texttt{( )} を使用したため、要素へのアクセスも \texttt{( )} を使うように感じるかもしれませんが、実際にはリストと同様 \texttt{[ ]} を使用します。
@@ -1296,7 +1264,7 @@ tuple
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 先頭の要素へアクセス
-array[0]
+print(repr(array[0]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1305,7 +1273,7 @@ array[0]
 
 \begin{lstlisting}[style=codecell,language=Python]
 # リストと同様、スライスも使用可能
-array[:3]
+print(repr(array[:3]))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1365,16 +1333,16 @@ Python の \texttt{dict} 型は、\textbf{キー (key)} とそれに対応する
 \begin{lstlisting}[style=codecell,language=Python]
 # 辞書を定義
 scores = {'Math': 90, 'Science': 75, 'English': 80 }
-scores
+print(repr(scores))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-{'English': 80, 'Math': 90, 'Science': 75}
+{'Math': 90, 'Science': 75, 'English': 80}
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
 # key が Math の value にアクセス
-scores['Math']
+print(repr(scores['Math']))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1384,7 +1352,7 @@ scores['Math']
 \begin{lstlisting}[style=codecell,language=Python]
 # key に日本語を使用することも可能
 scores = {'数学': 90, '理科': 75, '英語': 80}
-scores
+print(repr(scores))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1392,7 +1360,7 @@ scores
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-scores['数学']
+print(repr(scores['数学']))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1413,7 +1381,7 @@ scores['数学']
 
 \begin{lstlisting}[style=codecell,language=Python]
 # キーのリスト
-scores.keys()
+print(repr(scores.keys()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1422,7 +1390,7 @@ dict_keys(['数学', '理科', '英語'])
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 値のリスト
-scores.values()
+print(repr(scores.values()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1431,7 +1399,7 @@ dict_values([90, 75, 80])
 
 \begin{lstlisting}[style=codecell,language=Python]
 # (キー, 値)というタプルを要素とするリスト
-scores.items()
+print(repr(scores.items()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1449,11 +1417,11 @@ scores['国語'] = 85
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-scores
+print(repr(scores))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-{'国語': 85, '数学': 90, '理科': 75, '英語': 80}
+{'数学': 90, '理科': 75, '英語': 80, '国語': 85}
 \end{lstlisting}
 
 また、既に存在するキーを指定した場合には、値が上書きされます。
@@ -1464,30 +1432,18 @@ scores['数学'] = 95
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-scores
+print(repr(scores))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
-{'国語': 85, '数学': 95, '理科': 75, '英語': 80}
+{'数学': 95, '理科': 75, '英語': 80, '国語': 85}
 \end{lstlisting}
 
 \section{Python プログラムのコマンドライン実行}
 
-だんだんとプログラムが長くなってくると，プログラムを1行1行インタプリタに入力していくのは大変です．
-
-Python には，テキストファイルに記述された Python プログラムを一度に実行する機能があるので，これを利用しましょう．
-
-
-一度，Python インタプリタを\texttt{exit()}により終了し，以下のコマンドを入力しましょう．
-
-\begin{lstlisting}[style=codecell]
-$ mkdir -p ~/workspace/python-basics/ch02
-$ cd ~/workspace/python-basics/ch02
-\end{lstlisting}
-
-
-その後，\texttt{sample.py}という名前のテキストファイルを作成して，以下のプログラムを書き込みましょう．
-
+ここでは複数行の処理を1本のファイルにまとめます。
+提出repoのルートを作業場所とし，既存の共有環境を有効にした状態で \texttt{scripts/ch02\_sample.py} を作成します。
+REPLを使っていた場合は \texttt{exit()} で終了してからターミナルへ戻ります。
 
 \begin{lstlisting}[style=codecell,language=Python]
 array = [50, 80, 40]
@@ -1499,18 +1455,11 @@ s /= 3
 print(s)
 \end{lstlisting}
 
-この Python プログラムでは，\texttt{array} というリストの要素の平均値を求めています．
-
-このプログラムを実行するには，\texttt{python}コマンドの後ろに，プログラムを記述したファイルの名前を入力します．
-
-すなわち，以下のコマンドを入力します．
+このプログラムはリストの要素の平均を求めます。次のコマンドでファイル全体を実行すると，平均値が表示されます。
 
 \begin{lstlisting}[style=codecell]
-$ python sample.py
+python scripts/ch02_sample.py
 \end{lstlisting}
-
-すると，すべての行が実行され，\texttt{s} の値が画面に表示されます．
-
 
 \section{制御構文}
 
@@ -1589,14 +1538,14 @@ for i in range(5):
 
 \begin{lstlisting}[style=codecell,language=Python]
 # 繰り返し処理が終わった後の値の確認
-i
+print(repr(i))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
 4
 \end{lstlisting}
 
-Jupyter Notebook では変数名をコードセルの最後の行に書いて実行するとその変数に代入されている値を確認できましたが、for 文の中のブロックでは明示的に \texttt{print()} を使う必要があります。
+\texttt{.py} では，for文の内外とも表示したい値に \texttt{print()} を使います。Notebookでもfor文のブロック内の値は自動表示されません。
 
 \texttt{print()} を用いないと、以下のように何も表示されません。
 
@@ -1649,7 +1598,7 @@ for i in range(3):
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-len(names)
+print(repr(len(names)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1874,7 +1823,7 @@ while True:
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-not True
+print(repr(not True))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1882,7 +1831,7 @@ False
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-not False
+print(repr(not False))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -1890,7 +1839,7 @@ True
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-not 1 == 2
+print(repr(not 1 == 2))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2121,7 +2070,7 @@ def add(a, b):
 \begin{lstlisting}[style=codecell,language=Python]
 result = add(1, 3)
 
-result
+print(repr(result))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2136,7 +2085,7 @@ result = add(1, 3)
 
 result_doubled = result * 2
 
-result_doubled
+print(repr(result_doubled))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2152,7 +2101,7 @@ result_doubled
 
 
 \begin{lstlisting}[style=codecell,language=Python]
-add(2, 3) * add(1, 3)
+print(repr(add(2, 3) * add(1, 3)))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2176,7 +2125,7 @@ def change():
     
 change()
 
-a
+print(repr(a))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2233,7 +2182,7 @@ def change():
 change()
 
 # 結果の確認 <- a の値が上書きされている
-a
+print(repr(a))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2434,7 +2383,7 @@ class Link:
 \begin{lstlisting}[style=codecell,language=Python]
 l = Link()
 
-l.a
+print(repr(l.a))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2442,7 +2391,7 @@ l.a
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-l.b
+print(repr(l.b))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2485,7 +2434,7 @@ class Chain(Link):
 # Chain クラスをインスタンス化
 c = Chain()
 
-c.a
+print(repr(c.a))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2493,7 +2442,7 @@ c.a
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-c.b
+print(repr(c.b))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2507,7 +2456,7 @@ c.b
 
 \begin{lstlisting}[style=codecell,language=Python]
 # sum メソッドを実行
-c.sum()
+print(repr(c.sum()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2600,7 +2549,7 @@ c = Chain()
 \end{lstlisting}
 
 \begin{lstlisting}[style=codecell,language=Python]
-c.sum()
+print(repr(c.sum()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
@@ -2609,7 +2558,7 @@ c.sum()
 
 今回はエラーが起きませんでした。
 
-\texttt{Link} クラスの \texttt{\_\_init\_\_()}  メソッドの冒頭で、まず親クラスの \texttt{\_\_init\_\_()}  メソッドを実行し、\texttt{a}、\texttt{b} という属性を定義しているためです。
+\texttt{Chain} クラスの \texttt{\_\_init\_\_()} の冒頭で，\texttt{super().\_\_init\_\_()} により親の \texttt{Link} を初期化し，\texttt{a}，\texttt{b} という属性を定義しているためです。
 
 
 あるクラスを継承して作られたクラスを、さらに継承して別のクラスを定義することもできます。
@@ -2631,7 +2580,7 @@ class MyNetwork(Chain):
 \begin{lstlisting}[style=codecell,language=Python]
 net = MyNetwork()
 
-net.mul()
+print(repr(net.mul()))
 \end{lstlisting}
 
 \begin{lstlisting}[style=outputcell]
