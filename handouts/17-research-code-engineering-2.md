@@ -13,6 +13,20 @@
 - test は「正しさを完全に証明するもの」ではなく、「壊していないことを素早く確認するもの」と考えると設計しやすい。今回のような CLI script では、実行できることとログに期待値が出ることが最低限の回帰確認になる。
 - draft PR は、まだ設計や確認が途中でも共有したいときに使う。最終版のふりをせず、未確定部分を先に明示することが重要である。
 
+### CLIをテストから起動する方法
+
+第16回と同じ提出リポジトリのルートにテストファイルを置き、同じPython環境で実行する。
+`unittest.TestCase` のサブクラスに `test_` で始まるメソッドを定義する。
+そのメソッド内で `subprocess.run([sys.executable, "session16_cli_logging_demo.py", "--config", "session16_config.json", "--out", "outputs/session17_test_run"], capture_output=True, text=True)` を呼ぶ。
+必要なimportは `subprocess`, `sys`, `unittest`, `pathlib.Path` である。
+`sys.executable` を使うことで、テストと同じPythonで子プロセスを起動できる。
+
+結果を `result` として、`self.assertEqual(result.returncode, 0, result.stderr)`、
+`self.assertIn("lr=0.001", result.stdout + result.stderr)`、
+`self.assertTrue(Path("outputs/session17_test_run").is_dir())` を確認する。
+第16回のloggingは標準エラー出力に書くため、標準出力だけを調べない。
+出力先が既に存在する場合は、新規作成を確かめられない。初回は未作成であることを確認し、再実行時は過去の出力の有無も記録する。
+
 ## 演習
 ### 基礎レベル
 1. 第16回の files があるリポジトリで `session17-pr-practice` branch を作成する。作業前に `git status` を確認し、どの branch で作業しているかを記録する。
