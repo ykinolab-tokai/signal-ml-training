@@ -1,305 +1,538 @@
-\chapter{Windows}
+\chapter{環境構築とワークフロー}
 
-\section{Visual Studio Code と Windowsターミナルのインストール}
+本章は，環境構築の手順とその意味を，初めて取り組む学生が確認できるように説明する。
+授業用のhandoutと重なる操作も含め，OS別の導入からPythonスクリプトの実行までを本章内で扱う。
+Windowsでは「環境構築 (Windows)」，Apple SiliconのMacでは「環境構築 (Mac)」を行い，その後は共通手順へ進む。
+設定済みの項目は確認コマンドで状態を確かめ，成功していれば再設定しなくてよい。
 
-
-\begin{enumerate}
-\item Microsoft Storeから\texttt{アプリ インストーラー}をインストール
-\end{enumerate}
-
-
-\begin{itemize}
-\item https://github.com/microsoft/winget-cli
-\end{itemize}
-
-
-\begin{enumerate}
-\item 画面左下の検索から\texttt{PowerShell}と検索し，クリックしてPowerShellを起動
-\end{enumerate}
-
-
-\begin{enumerate}
-\item PowerShellで以下のコマンドを1行ずつ実行
-\end{enumerate}
-
-
-\begin{lstlisting}[style=codecell]
-    winget install vscode
-    winget install "Windows Terminal"
-\end{lstlisting}
-
-
-\begin{enumerate}
-\item 画面左下の検索から\texttt{ターミナル}と検索し，クリックしてターミナルを開く
-\end{enumerate}
+\section{キーワード}
 
 \begin{itemize}
-\item ターミナル上で\texttt{PowerShell}が起動し操作できる
+\item \textbf{Operating System}
+
+コンピュータ全体を管理するための基本ソフトウェア。
+代表例として、Windows、macOS、Linuxがある。
+
+\item \textbf{ファイルシステム}
+
+ファイルやフォルダを保存し、整理し、読み書きするための仕組み。
+
+\item \textbf{Command line interface (CLI)}
+
+コマンドを入力してコンピュータを操作する仕組み．
+操作を自動化しやすいため、開発や研究でよく使われる。
+
+\item \textbf{ターミナル}
+
+CLIでコンピュータを操作するためのソフトウェア
+
+\item \textbf{テキストエディタ}
+
+文字情報を編集するためのソフトウェア。
+メモを書くための簡単なものから、
+プログラムを書くための高機能なものまである。
+代表例として、Visual Studio Code、Vim、Emacsなどがある。
+
+\item \textbf{Pythonと仮想環境}
+
+Pythonは、機械学習などで広く使われるプログラミング言語。
+仮想環境は、プロジェクトごとにPythonの実行環境を分けて管理する仕組みである。
+
+\item \textbf{Git}
+
+ソースコードや文書の変更履歴を管理するためのバージョン管理システム。
+いつ、誰が、どのような変更を加えたかを記録できる。
+Gitで管理されたプロジェクトをオンラインで記録・共有
+するためのサービスとしてGitHubがある．
+
 \end{itemize}
 
-
-\begin{enumerate}
-\item 以降，PowerShellを起動する場合は，Windowsターミナルを介すると便利
-\end{enumerate}
-
+\section{CLI操作における注意}
 
 \begin{itemize}
-\item タスクバーなどにピンどめしておくと良い
+\item むやみにコマンドを実行しない
+
+\item コマンドの実行結果をよく確認する
+
+\item エラーメッセージを無視しない
+
 \end{itemize}
 
+\section{環境構築 (Windows)}
 
-\section{WSL2 (Ubuntu) のインストール}
+この資料では，
+Windows 上に Ubuntu 24.04 LTS の WSL2 環境を作成し，
+その Ubuntu 上で Python と Git 操作を行うものとする。
+そのため，まずはWSL2環境を構築する．
 
-\begin{enumerate}
-\item PowerShellを管理者権限で起動し，以下のコマンドを実行
-\end{enumerate}
-
+まず PowerShell を管理者権限で開き，
+VS Code，Windows Terminal，WSL 本体をインストールする。
 
 \begin{lstlisting}[style=codecell]
-    wsl --install
+winget install --id Microsoft.VisualStudioCode --exact
+winget install --id Microsoft.WindowsTerminal --exact
+wsl --install --no-distribution
 \end{lstlisting}
 
-2026年4月時点の標準的な LTS は Ubuntu 24.04 LTS です．
-明示的に選びたい場合は \texttt{wsl --list --online} で候補を確認し，
-\texttt{wsl --install -d Ubuntu-24.04} を使います．
+再起動を求められたら再起動し，PowerShellを開き直す。
 
-
-\begin{enumerate}
-\item PCを再起動する
-\item windowsターミナルを起動し，画面上部のv字ボタンから Ubuntu を選択して起動する
-\item ユーザ名とパスワードの入力を求められるので，好きなものを入力
-\end{enumerate}
-
+\begin{lstlisting}[style=codecell]
+wsl --update
+wsl --version
+\end{lstlisting}
 
 \begin{itemize}
-\item パスワード入力の際，画面には入力した文字が全く表示されないが，きちんと入力されているので気にせず続けること
-\item 必要なら \texttt{wsl -l -v} で Ubuntu が WSL2 で動いていることを確認する
+\item \texttt{wsl --install --no-distribution} 後は PC の再起動が必要になる場合がある。
+
+\item Ubuntu 24.04 LTS 以降は新しい WSL distro format で配布されるため，\texttt{wsl --version} で WSL 2.4.10 以上になっていることを確認する。
+
+\begin{itemize}
+\item 古い場合は \texttt{wsl --update} を実行し，Windows Terminal を開き直す。
+
 \end{itemize}
 
+\end{itemize}
 
-\section{Python3 のインストール}
-
-\begin{enumerate}
-\item Ubuntuを起動し，以下のコマンドを実行
-\end{enumerate}
-
+次に，インストール可能な distro 名を確認し，\texttt{Ubuntu-24.04} を明示してインストールする。
 
 \begin{lstlisting}[style=codecell]
-    sudo apt update
-    sudo apt install python3 python3-venv python3-pip
+wsl --list --online
+wsl --install -d Ubuntu-24.04
 \end{lstlisting}
 
-WSL 上の Ubuntu 24.04 LTS では標準の \texttt{python3} は 3.12 系です．
-
-
-\section{Git のインストール}
-
-
-\begin{enumerate}
-\item Ubuntuを起動し，以下のコマンドを実行
-\end{enumerate}
-
+Ubuntu 24.04 LTS が WSL2 として入っているか，PowerShell 側で確認する。
 
 \begin{lstlisting}[style=codecell]
-    sudo apt update
-    sudo apt install git 
+wsl -l -v
 \end{lstlisting}
 
-
-\section{GitHub CLIのインストール}
-
-
-\begin{enumerate}
-\item Ubuntuを起動し，以下のコマンドを実行
-\end{enumerate}
-
+\texttt{Ubuntu-24.04} の \texttt{VERSION} が \texttt{2} であれば WSL2 として動く。必要なら既定の distro に設定する。
 
 \begin{lstlisting}[style=codecell]
-    type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && sudo apt update \
-    && sudo apt install gh -y
+wsl --set-default Ubuntu-24.04
+wsl ~ -d Ubuntu-24.04
 \end{lstlisting}
 
+インストール後，Windows Terminal から
+Ubuntu 24.04 LTS を起動する。
+初回起動時には Ubuntu 側の user name と password を設定する。
+password 入力中は画面に文字が表示されないが，入力自体は受け付けられている。
 
-
-\chapter{Mac}
-
-
-\section{Homebrew のインストール}
-
-\begin{enumerate}
-\item ターミナルを起動し，以下のコマンド (最新のコマンドは\href{https://brew.sh/ja/}{HomebrewのWebページ}を参照) を実行
-\end{enumerate}
+Ubuntu 側に入ったら，Ubuntu の release 情報も確認する。
 
 \begin{lstlisting}[style=codecell]
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+cat /etc/os-release
 \end{lstlisting}
 
+\texttt{VERSION\_ID="24.04"} が確認できれば，この授業で使う Ubuntu 24.04 LTS 環境になっている。
 
-\begin{enumerate}
-\item パスワードを入力
-\item インストールされるもののリストが表示されるので，続ける場合はEnterキーを入力
-\item インストールが完了すると実行すべきコマンドが表示されるので，それらを実行
-\end{enumerate}
-
-
-\section{Visual Studio Code のインストール}
-
-\begin{enumerate}
-\item ターミナルを起動し，以下のコマンドを実行
-\end{enumerate}
-
+Ubuntu を起動したら，Git，\texttt{curl}，SSHクライアントを入れる。Python 3.12は後述の \texttt{uv} で管理する。
+以降の作業は，原則としてこの Ubuntu のターミナルで行う。
 
 \begin{lstlisting}[style=codecell]
-    brew install --cask visual-studio-code
+sudo apt update
+sudo apt install git curl openssh-client
 \end{lstlisting}
 
-\begin{enumerate}
-\item ターミナルからVSCodeを起動できるように，VSCodeへのPATHを \texttt{.zshrc} に追加
-\end{enumerate}
-
+GitHub CLI (\texttt{gh}) は，GitHub への login や repository 操作をターミナルから行うために使う。
+Ubuntu 24.04 LTS では，GitHub CLI の公式apt配布元を登録してからインストールする。
+公開鍵ファイルはダウンロードしたパッケージの署名確認に使い，\texttt{signed-by} でそのファイルを指定する。
+以下の各コマンドの成功を確認してから次の行へ進む。
 
 \begin{lstlisting}[style=codecell]
-    echo 'export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/
-bin":$PATH' >> ~/.zshrc
+sudo mkdir -p -m 755 /etc/apt/keyrings
+sudo curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+  -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
+sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+  | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+gh --version
 \end{lstlisting}
 
-
-\section{Python3 のインストール}
-
-\begin{enumerate}
-\item ターミナルを起動し，以下のコマンドを実行
-\end{enumerate}
-
+WSL 上のディレクトリを VS Code で開くには，
+Windows 側の VS Code に WSL extension が入っている必要がある。
+インストールには，PowerShell で次を実行する。
 
 \begin{lstlisting}[style=codecell]
-    brew install python@3.12
+code --install-extension ms-vscode-remote.remote-wsl
 \end{lstlisting}
 
-この repo では Python 3.12 系を標準にします．
-\texttt{brew install python} で上流最新の 3.14 系を入れる方法もありますが，
-まずは共有環境と揃える方を優先してください．
-
-
-\section{Git のインストール}
-
-\begin{enumerate}
-\item Macは，Gitがデフォルトでインストールされている．ターミナルで以下のコマンドを実行し，Gitのバージョンが表示されれば問題ない
-\end{enumerate}
+その後，Ubuntu 側のターミナルを開き，
+次を実行できることを確認する。
 
 \begin{lstlisting}[style=codecell]
-    git --version
+code --version
+code .
 \end{lstlisting}
 
-\begin{enumerate}
-\item もし，Gitがインストールされていない場合は，以下のコマンドを実行
-\end{enumerate}
+初回の \texttt{code .} では，WSL 側に VS Code Server が自動 install される。
+\texttt{code: command not found} になる場合は，Windows Terminal と Ubuntu を開き直し，
+Windows 側の VS Code と WSL extension が入っているか確認する。
+
+\section{環境構築 (Mac)}
+
+この手順は Apple Silicon（M シリーズ）の Mac を対象にする。
+この repo で固定している PyTorch 2.7.1 には Intel Mac 用の wheel がないため，
+Intel Mac ではこの手順のまま環境をそろえることはできない。
+Intel Mac を使う場合は，授業用に別の対応環境を用意する必要がある。
+
+Mac では，まず，ソフトウェアをインストールするための
+package manager として，Homebrew を導入する．
+Terminal を開き，
+Homebrew 公式ページに掲載されている以下のコマンドを実行する。
 
 \begin{lstlisting}[style=codecell]
-    brew install git
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 \end{lstlisting}
 
+\begin{itemize}
+\item install の途中で password の入力や Enter の入力を求められることがある。
 
-\section{GitHub CLIのインストール}
+\item install 完了時に \texttt{Next steps} として PATH 設定用の コマンドが表示された場合は，それをそのまま実行する。
 
-\begin{enumerate}
-\item ターミナルを起動し，以下のコマンドを実行
-\end{enumerate}
+\end{itemize}
 
+次のコマンドで Homebrew が使えることを確認する。
 
 \begin{lstlisting}[style=codecell]
-    brew install gh
+brew --version
 \end{lstlisting}
 
-
-\chapter{共通}
-
-
-\section{GitHub の設定}
-
-\begin{enumerate}
-\item \href{https://github.co.jp/}{GitHub}から、「\href{https://github.com/join}{GitHubに登録する}」という項目に飛ぶことができるのでそこでGitHubに登録する。
-\end{enumerate}
-
-注）ユーザアカウント名は英語で登録する。
-
-\begin{enumerate}
-\item https://github.co.jp/pricing の一番左の項目である「Developer」から、「学生の方は、\href{https://education.github.com/}{Student Developer Pack}の一環として、無料で利用できます。」 という項目を選択する。
-\item そこのページから、「\href{https://education.github.com/pack}{Get Your Pack}」という項目を選択し、自分のアカウント情報、学校名など必要な情報を入力する。
-\item GitHubに登録したメールアドレスに「Powerup get! Welcome to the Student Developer Pack.」というタイトルのメールが届いたら無料の学生パックに登録が完了したこととなる。
-\item 管理者にお願いして ykinolab-tokai のメンバーに招待してもらう。
-\item Ubuntuを起動し，以下のコマンドを実行
-\end{enumerate}
-
+Homebrew が使えるようになったら，VS Code，Git，GitHub CLI をそろえる。
+Python 3.12 は，後述する \texttt{uv} でインストールして管理する。
+Mac に Git が入っている場合でも，\texttt{git --version} で確認してから進める。
 
 \begin{lstlisting}[style=codecell]
-    gh auth login
+brew install --cask visual-studio-code
+brew install git gh
 \end{lstlisting}
 
+Mac で terminal から VS Code を開くには，
+\texttt{code} command が PATH に入っている必要がある。
+まず次で確認する。
 
-\section{作業ディレクトリの準備}
+\begin{lstlisting}[style=codecell]
+code --version
+\end{lstlisting}
 
-環境構築が終わっても，どこで作業するかが曖昧だとすぐに迷います．
-まずはホームディレクトリの下に授業用の作業ディレクトリを作り，その中にリポジトリを置くようにします．
+\texttt{command not found: code} などと表示される場合は，
+VS Code を開き，Command Palette から
+\texttt{Shell Command: Install 'code' command in PATH} を実行する。
+その後，Terminal を開き直して，もう一度 \texttt{code --version} を確認する。
+確認できたら，作業 directory で次を実行すると VS Code が開く。
+
+\begin{lstlisting}[style=codecell]
+code .
+\end{lstlisting}
+
+\section{ターミナル操作とパス}
+
+ターミナルでの作業には，常に「現在地」となるディレクトリ（\textbf{カレントディレクトリ}）がある。
+相対パスで指定する操作はこの現在地を基準に行われるため，
+まずどこにいるかを把握することが重要である。
+
+\begin{center}
+\begin{tabular}{p{0.28\linewidth}p{0.62\linewidth}}
+\hline
+コマンド & 役割 \\
+\texttt{pwd} & 現在地のパスを表示する \\
+\texttt{ls} & 現在地にあるファイルやディレクトリの一覧を表示する \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{パス（path）} は，ファイルや
+ディレクトリ（フォルダ）の場所を表す文字列である。
+住所が分かれば建物にたどり着けるのと同じように，
+パスが分かれば目的のファイルにたどり着ける。
+パスは，ディレクトリ名を \textbf{\texttt{/}（スラッシュ）} でつないで書く。
+
+\begin{center}
+\begin{tabular}{p{0.28\linewidth}p{0.62\linewidth}}
+\hline
+記号 & 意味 \\
+\texttt{/} & ディレクトリの区切り。先頭の \texttt{/} はルート（最上位） \\
+\texttt{.} & カレントディレクトリ（現在地） \\
+\texttt{..} & 親ディレクトリ（1つ上） \\
+\texttt{\textasciitilde{}} & ホームディレクトリ（Ubuntuでは \texttt{/home/username}，Macでは \texttt{/Users/username}） \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{絶対パス}：ルートディレクトリ \texttt{/} から始まるパス
+
+\begin{lstlisting}[style=codecell]
+/home/yourname/workspace/data.csv
+\end{lstlisting}
+
+\textbf{相対パス}：現在地を基準として書くパス（\texttt{/} で始めない）
+
+\begin{lstlisting}[style=codecell]
+data.csv                    # 現在地にある data.csv
+outputs/log.txt             # 現在地にある outputs ディレクトリの中にある log.txt
+../README.md                # 1つ上のディレクトリにある README.md
+../../shared/config.yml     # 2つ上のディレクトリにある shared/ 内 の config.yml
+\end{lstlisting}
+
+現在地を別のディレクトリへ移動するには \texttt{cd} を使う。
+
+\begin{lstlisting}[style=codecell]
+cd workspace      # workspace ディレクトリへ移動
+cd ..             # 1つ上のディレクトリへ戻る（.. は親ディレクトリを表す）
+\end{lstlisting}
+
+新しいディレクトリを作るには \texttt{mkdir} を使う。
+\texttt{-p} オプションを付けると，
+途中のディレクトリもまとめて作成される。
+
+\begin{lstlisting}[style=codecell]
+mkdir -p outputs/session01
+\end{lstlisting}
+
+\section{GitHub と Git の初期設定}
+
+GitHub を使うには，GitHub account,
+GitHub CLI の認証が必要になる。
+この資料では GitHub との通信に SSH を使う前提にする。
+
+\begin{lstlisting}[style=codecell]
+gh auth login
+\end{lstlisting}
+
+\texttt{gh auth login} の質問に対して，接続先，Git通信の方式，使用するSSH鍵，認証方法を次のように選ぶ。
+表示される質問や順序は，\texttt{gh} のバージョンや既存の認証・SSH 鍵の設定によって変わる。
+
+\begin{itemize}
+\item \texttt{What account do you want to log into?}: \texttt{GitHub.com}
+
+\item \texttt{What is your preferred protocol for Git operations?}: \texttt{SSH}
+
+\item SSH 公開鍵の登録を求められたら，使用する鍵を選ぶ。鍵がない場合は，案内に従って作成する。
+
+\item browser を使う認証を選び，表示された code を GitHub の画面に入力する
+
+\end{itemize}
+
+SSH を選ぶと，\texttt{gh} は既存の SSH 鍵を探す。
+適切な鍵がない場合は，新しい鍵の作成と GitHub への登録を促す。
+このとき GitHub に登録されるのは公開鍵であり，
+秘密鍵は自分の PC または WSL 環境の中に残る。
+秘密鍵を他人に見せたり，GitHub に貼り付けたりしてはいけない。
+
+認証と SSH key の設定が終わったら，次で状態を確認する。
+
+\begin{lstlisting}[style=codecell]
+gh auth status
+ssh -T git@github.com
+\end{lstlisting}
+
+初回のSSH接続では，接続先のホスト鍵を信頼するか確認されることがある。
+表示されたfingerprint（鍵の識別値）を \href{https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints}{GitHub公式の公開鍵一覧} と照合し，一致した場合に \texttt{yes} を入力する。
+自分のGitHubユーザー名を含む認証成功メッセージが出ればよい。
+GitHubはSSHでのシェル操作を提供しないため，\texttt{ssh -T git@github.com} は認証成功時にも終了コード1を返す。
+\texttt{Permission denied (publickey)} は成功ではない。使用する公開鍵が自分のGitHubアカウントに登録されているかを確認する。
+
+Git の著者情報は次で設定する。
+
+\begin{lstlisting}[style=codecell]
+git config --global user.name "Your Name"
+git config --global user.email "your-email@example.com"
+git config --global --list
+\end{lstlisting}
+
+\texttt{user.name} と \texttt{user.email} は commit に記録される。
+自身の GitHub account と対応する情報にしておく。
+
+\section{作業ディレクトリの作成とリポジトリの clone}
+
+この教材では，
+作業場所をホームディレクトリの下にまとめる。
+例として \texttt{\textasciitilde{}/workspace} を作り，
+その中にこのリポジトリや提出用リポジトリを置く。
 
 \begin{lstlisting}[style=codecell]
 mkdir -p ~/workspace
 cd ~/workspace
+git clone git@github.com:ykinolab-tokai/signal-ml-training.git
 \end{lstlisting}
 
-以後は，教材，演習，出力ファイルをすべてこのような決まった場所の下に置く方が安全です．
-ダウンロードフォルダやデスクトップ直下に散らすと，再現や提出が難しくなります．
+すでに同じ場所へ取得済みの場合は \texttt{git clone} を省略する。リポジトリを取得したら，まず次を確認する。
 
+\begin{lstlisting}[style=codecell]
+pwd
+ls
+cd signal-ml-training
+ls
+git status
+\end{lstlisting}
 
-\section{Python 仮想環境と依存関係}
+\texttt{pwd} は現在地，\texttt{ls} は現在地のファイル，
+\texttt{git status} は Git が認識している変更状態を
+確認するために使う。
 
-Python では，プロジェクトごとに依存関係を分けるために仮想環境を使います．
-この repo では，個別に \texttt{pip install} を並べるよりも，
-\texttt{pyproject.toml} と \texttt{uv.lock} から共有環境を再現する方を標準にします．
+\section{Python 環境の構築}
 
-上流の最新 stable は 2026年4月時点で Python 3.14.4 ですが，
-この repo は \texttt{pyproject.toml} の
-\texttt{requires-python = ">=3.12,<3.13"} に合わせて Python 3.12 系を使います．
-NumPy や matplotlib，pandas，scikit-learn，Pillow，soundfile，PyTorch 系も更新が速いため，
-本文に固定値を並べるのではなく，正確な依存関係は \texttt{pyproject.toml} と \texttt{uv.lock} を参照してください．
-
-\begin{enumerate}
-\item \texttt{uv} を入れていない場合は，まずインストールします
-\end{enumerate}
+この repo は Python 3.12 系を標準にする。
+Python環境の管理には \texttt{uv} を用いる．
 
 \begin{lstlisting}[style=codecell]
 curl -LsSf https://astral.sh/uv/install.sh | sh
 \end{lstlisting}
 
-\begin{enumerate}
-\item repo ルートで共有環境を作ります
-\end{enumerate}
+インストール末尾に表示される PATH の案内に従い，
+ターミナルを開き直すか，案内された \texttt{source} コマンドを実行する。
+次のコマンドでバージョンが表示されることを確認してから先へ進む。
+
+\begin{lstlisting}[style=codecell]
+uv --version
+\end{lstlisting}
+
+repo ルートで次を実行すると，
+\texttt{pyproject.toml} と \texttt{uv.lock} に従い
+Python 3.12 環境と \texttt{.venv} が用意される。
+\texttt{pyproject.toml} は必要なパッケージの条件，\texttt{uv.lock} は解決済みのバージョンを記録する。
+\texttt{--locked} はlockfileを書き換えず，不整合があれば停止する指定である。
+取得前の空のディレクトリで実行せず，教材repoのルートへ移動してから実行する。
 
 \begin{lstlisting}[style=codecell]
 uv python install 3.12
-uv sync
+uv sync --locked
 source .venv/bin/activate
+python --version
+which python
 \end{lstlisting}
 
-有効化に成功すると，シェルの先頭に \texttt{(.venv)} のような表示が出ます．
-作業を終えたら
+\texttt{python --version} が 3.12 系であり，
+\texttt{which python} が \texttt{.venv} 配下を指していれば，
+授業用の環境に入っている。
+
+\section{VS Code からこのリポジトリを開く}
+
+この repo を VS Code で開くには，
+Ubuntu（WSL）または Mac のターミナルで次を実行する。
 
 \begin{lstlisting}[style=codecell]
-deactivate
+cd ~/workspace/signal-ml-training
+code .
 \end{lstlisting}
 
-で抜けられます．
+VS Code の Explorer に \texttt{pyproject.toml} と \texttt{uv.lock} が見えていることを確認する。
 
+WSL の場合は，VS Code の左下やウィンドウ名に
+\texttt{WSL: Ubuntu-24.04} のように表示されていることを確認する。
+このウィンドウのターミナルも Ubuntu 側で動作する。
+
+ターミナルからプログラムを実行する場合は，
+前節で準備した \texttt{uv} を使って repo の環境で実行できる。
+VS Code のターミナルでも，通常の Ubuntu や Mac のターミナルでも同じ操作でよい。
+次の例は，「最初の動作確認」のサンプルファイルを保存した後に実行する。
+
+\begin{lstlisting}[style=codecell]
+cd ~/workspace/signal-ml-training
+uv run --locked python exercises/exc01_01.py
+\end{lstlisting}
+
+\texttt{uv run --locked} はlockfileを更新せずにrepoの環境を確認・同期してから実行するため，
+事前に \texttt{source .venv/bin/activate} を実行する必要はない。
+一方，\texttt{python exercises/exc01\_01.py} と直接実行する場合は，
+そのターミナルで \texttt{.venv} が有効になっていることを先に確認する。
+新しいターミナルで \texttt{python} を直接使うときは，その都度 \texttt{.venv} を有効にする。
+詳しくは \href{https://docs.astral.sh/uv/guides/projects/}{uv のプロジェクト操作} を参照する。
+
+\section{VS Code の実行・デバッグ機能で \texttt{.venv} を使う（任意）}
+
+以下は，VS Code の実行ボタンやデバッグ機能から，
+repo の \texttt{.venv} にある Python を使いたい場合の任意の設定である。
+repo を VS Code で開いて編集するだけの場合や，ターミナルで \texttt{uv run} を使う場合には，
+この設定は必要ない。「最初の動作確認」へ進んでよい。
+授業用の Python 環境は，どの実行方法でも「Python 環境の構築」で説明した \texttt{uv} で管理する。
+
+この設定を行う場合は，まず repo のルートで次を実行し，
+\texttt{pyproject.toml} と \texttt{uv.lock} に従って \texttt{.venv} を準備する。
+
+\begin{lstlisting}[style=codecell]
+cd ~/workspace/signal-ml-training
+uv sync --locked
+\end{lstlisting}
+
+VS Code の Python 実行・デバッグ機能を使うには，
+Microsoft の Python 拡張機能が必要である。
+入っていない場合は，VS Code の拡張機能画面で \texttt{Python} を検索し，
+Microsoft が提供しているものをインストールする。
+WSL の場合は，拡張機能画面で Ubuntu 側でも有効になっていることを確認し，
+\texttt{Install in WSL: Ubuntu-24.04} と表示される場合はそのボタンでインストールする。
+
+次に，この repo で使う Python を明示的に選ぶ。
+
+\begin{enumerate}
+\item Windows では \texttt{Ctrl+Shift+P}，Mac では \texttt{Cmd+Shift+P} で Command Palette を開く。
+
+\item \texttt{Python: Select Interpreter} を実行する。
+
+\item この repo 内の \texttt{.venv/bin/python} に対応する Python 3.12 を選ぶ。
+
+\end{enumerate}
+
+選択するパスの例は次のとおりである。
+\begin{itemize}
+\item WSL：\texttt{/home/yourname/workspace/signal-ml-training/.venv/bin/python}
+\item Mac：\texttt{/Users/yourname/workspace/signal-ml-training/.venv/bin/python}
+\end{itemize}
+\texttt{yourname} は自分の user name に読み替える。
+候補に \texttt{.venv} が見つからない場合は，repo のルートで \texttt{uv sync --locked} が成功したことを確認し，
+Command Palette の \texttt{Developer: Reload Window} でウィンドウを再読み込みしてから選び直す。
+
+選択後，既存のターミナルをゴミ箱ボタンで終了し，
+メニューの \texttt{Terminal} → \texttt{New Terminal} から新しいターミナルを開く。
+次を実行して，そのターミナルの現在地と Python を確認する。
+
+\begin{lstlisting}[style=codecell]
+cd ~/workspace/signal-ml-training
+pwd
+which python
+python --version
+\end{lstlisting}
+
+\texttt{pwd} が repo のルート，\texttt{which python} がこの repo 内の \texttt{.venv/bin/python}，
+\texttt{python --version} が 3.12 系を示すことを確認する。
+新しいターミナルで仮想環境が自動的に有効にならない場合は，
+repo のルートで \texttt{source .venv/bin/activate} を実行し，もう一度確認する。
+
+VS Code の実行ボタンで使われる Python も確認する。
+
+次の 2 行を repo 直下の \texttt{interpreter\_check.py} として保存する。
+
+\begin{lstlisting}[style=codecell]
+import sys
+print(sys.executable)
+\end{lstlisting}
+
+このファイルをエディタで開いた状態で，右上の \texttt{Run Python File in Terminal} を押す。
+同じ操作は，エディタ内を右クリックし，\texttt{Run} → \texttt{Python File in Terminal} からも選べる。
+表示されるパスがこのリポジトリ内の \texttt{.venv/bin/python} であることを確認する。
+異なる場合は \texttt{Python: Select Interpreter} でこの repo の \texttt{.venv} を選び直す。
+
+\texttt{Run Python File in Terminal} は，VS Code で選択した Python を使ってファイルを実行する。
+デバッグ機能も，実行環境を個別に指定していなければ，この選択を使う。
+教材を更新して依存パッケージが変わった場合は，実行前に repo のルートで \texttt{uv sync --locked} を行う。
+詳しくは \href{https://code.visualstudio.com/docs/python/run}{VS Code の Python 実行手順} を参照する。
 
 \section{最初の動作確認}
 
-環境構築では「インストールできた」だけでは不十分です．
-実際に Python が起動し，必要なライブラリを import でき，図を保存できるところまで確認してください．
+環境構築後は，Pythonを実行できることまで確認する。
+まず repo のルートに移動し，スクリプトの保存先を作る。
 
-\begin{lstlisting}[style=codecell,language=Python]
+\begin{lstlisting}[style=codecell]
+cd ~/workspace/signal-ml-training
+mkdir -p exercises
+\end{lstlisting}
+
+次の Python スクリプトを
+repo 直下の \texttt{exercises/exc01\_01.py} として保存する。
+
+\begin{lstlisting}[style=codecell]
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -321,90 +554,92 @@ plt.close()
 print("setup check completed")
 \end{lstlisting}
 
-このコードで
-\begin{itemize}
-\item Python が起動する
-\item NumPy と matplotlib を import できる
-\item \texttt{outputs/setup\_check/sin.png} が保存される
-\end{itemize}
-ことを確認できれば，最初の一歩は通っています．
-
-
-\section{Git の初期設定}
-
-Git をインストールしただけでは，まだ commit の準備が終わっていません．
-最初に名前とメールアドレスを設定します．
+repo のルートで仮想環境を有効にして，保存したスクリプトを実行する。
 
 \begin{lstlisting}[style=codecell]
-git config --global user.name "Your Name"
-git config --global user.email "your-email@example.com"
+cd ~/workspace/signal-ml-training
+source .venv/bin/activate
+python exercises/exc01_01.py
 \end{lstlisting}
 
-設定内容は次で確認できます．
+\texttt{setup check completed} と表示され，repo 直下に
+\texttt{outputs/setup\_check/sin.png} が作られることを確認する。
+この画像を開いて正弦波が描かれていれば，動作確認は完了である。
 
-\begin{lstlisting}[style=codecell]
-git config --global --list
-\end{lstlisting}
+\texttt{git status} も実行し，Gitが認識している変更の有無を確認する。
+無視対象のファイルは通常の \texttt{git status} に表示されない。出力画像の有無は実際にファイルを開いて確認する。
 
-研究室や授業で GitHub を使うなら，Git のローカル設定と GitHub 側のアカウント情報が大きく矛盾していない方が管理しやすいです．
+\section{教材repoと提出repoの使い分け}
 
-
-\section{リポジトリを clone して動作確認する}
-
-GitHub 認証が済んだら，対象リポジトリを clone して中に入ります．
-
-\begin{lstlisting}[style=codecell]
-git clone <repository-url>
-cd <repository-name>
-\end{lstlisting}
-
-リポジトリを開いたら，少なくとも次の 3 つを確認してください．
-\begin{itemize}
-\item \texttt{pwd} で今どこにいるか
-\item \texttt{ls} でファイルが見えるか
-\item \texttt{git status} で Git 管理下にあるか
-\end{itemize}
-
-\begin{lstlisting}[style=codecell]
-pwd
-ls
-git status
-\end{lstlisting}
-
-
-\section{VS Code から開く}
-
-WSL や macOS では，ターミナルから VS Code を開けるようにしておくと作業が速くなります．
-カレントディレクトリをそのまま開くには，
-
-\begin{lstlisting}[style=codecell]
-code .
-\end{lstlisting}
-
-を使います．
-
-ターミナルで見ている場所と VS Code で開いている場所が一致していることは，初学者にとって非常に重要です．
-別のフォルダを開いたまま作業すると，実行結果と編集対象がずれて混乱しやすくなります．
-
-
-\section{詰まりやすい点}
-
-環境構築では，次のような詰まり方が非常に多いです．
+教材repoは教材・見本・共通の依存関係を読む場所で，第1回の動作確認もここで行う。
+第2回以降の解答は学生ごとの非公開の提出repoへ保存する。提出repoのURLとフォルダ名は授業で指定される。
+未案内の場合は担当者に確認し，URLを推測しない。
+第2〜13回の \texttt{scripts/}，\texttt{data/}，\texttt{outputs/} は，特記がなければ提出repoのルートからの相対パスである。
 
 \begin{itemize}
-\item 仮想環境に入っていないまま \texttt{pip install} している
-\item Windows 側と WSL 側のどちらで作業しているか分からなくなっている
-\item \texttt{python} と \texttt{python3} が別物で混乱している
-\item ターミナルでいる場所と VS Code で開いている場所が一致していない
-\item 図は表示されたが保存されておらず，提出物になっていない
+\item コードは \texttt{scripts/sessionXX\_名前.py} に保存する。
+
+\item 説明と数値結果は \texttt{outputs/sessionXX/sessionXX\_report.md} に保存する。
+
+\item 図・音声は各回で指定された \texttt{outputs/} 以下へ保存する。
+
+\item \texttt{data/cat.png} や \texttt{data/piano.wav} を使う場合は，教材repoの同名ファイルを提出repoの \texttt{data/} へコピーする。
+
 \end{itemize}
 
-何かがおかしいと感じたら，まず
+提出repoのルートへ移動してから，教材repoの仮想環境を有効にする。
+
 \begin{lstlisting}[style=codecell]
-which python
+source ~/workspace/signal-ml-training/.venv/bin/activate
 python --version
-pwd
-git status
+which python
 \end{lstlisting}
-を順に見てください．
-「どの Python を使っているか」「どこで作業しているか」を確認するだけで，多くの問題は切り分けられます．
+
+その後，\texttt{python scripts/ファイル名.py} で保存した解答を実行する。
+教材repoを別の場所に置いた場合は，上のパスを読み替える。
+\texttt{.venv} は環境が置かれた場所に依存するため，提出repoへコピーしない。毎回作り直す必要もない。
+保存前に \texttt{Path(...).mkdir(parents=True, exist\_ok=True)} などで出力ディレクトリを作る。
+
+\section{うまく進まないとき}
+
+\begin{itemize}
+\item WSLのバージョンが2.4.10未満：PowerShellで \texttt{wsl --update} を実行し，Windows Terminalを開き直して \texttt{wsl --version} を再確認する。
+
+\item \texttt{wsl -l -v} でUbuntuの \texttt{VERSION} が1：PowerShellで \texttt{wsl --set-version Ubuntu-24.04 2} を実行し，\texttt{wsl -l -v} で2になったことを確認する。
+
+\item \texttt{code} や \texttt{uv} が見つからない：インストール完了時のPATH設定を確認してターミナルを開き直し，\texttt{code --version} または \texttt{uv --version} を再実行する。
+
+\item \texttt{uv sync --locked} がプロジェクトを見つけられない：\texttt{pwd} と \texttt{ls} で教材repoの \texttt{pyproject.toml} と \texttt{uv.lock} がある場所か確認する。
+
+\item lockfileと設定の不整合で停止する：授業で指定された教材の版か確認し，担当者にエラーを伝える。自分だけ依存関係を変更しない。
+
+\item Pythonのパスが \texttt{.venv} ではない：教材repoで \texttt{source .venv/bin/activate} を実行し，\texttt{which python} と \texttt{python --version} を再確認する。
+
+\item 画像が見つからない：実行時の現在地を \texttt{pwd} で確認する。サンプルはその現在地を基準に \texttt{outputs/setup\_check/sin.png} を作る。
+
+\end{itemize}
+
+\section{公式資料}
+
+\begin{itemize}
+\item \href{https://learn.microsoft.com/en-us/windows/wsl/install}{Microsoft：WSLのインストール}
+
+\item \href{https://ubuntu.com/wsl/docs/stable/howto/install-ubuntu-wsl2/}{Ubuntu：WSL2への導入と必要なWSLバージョン}
+
+\item \href{https://github.com/cli/cli/blob/trunk/docs/install_linux.md}{GitHub CLI：Linuxへの導入}
+
+\item \href{https://cli.github.com/manual/gh_auth_login}{GitHub CLI：認証}
+
+\item \href{https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection}{GitHub：SSH接続の確認}
+
+\item \href{https://brew.sh/}{Homebrew：導入}
+
+\item \href{https://docs.astral.sh/uv/getting-started/installation/}{uv：導入}
+
+\item \href{https://docs.astral.sh/uv/concepts/projects/sync/}{uv：lockfileと環境の同期}
+
+\item \href{https://code.visualstudio.com/docs/remote/wsl}{VS Code：WSL}
+
+\item \href{https://code.visualstudio.com/docs/python/environments}{VS Code：Python環境}
+
+\end{itemize}
