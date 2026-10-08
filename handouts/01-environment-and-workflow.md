@@ -527,6 +527,17 @@ python exercises/exc01_01.py
 `outputs/setup_check/sin.png` が作られることを確認する。
 この画像を開いて正弦波が描かれていれば，動作確認は完了である。
 
+### 自分用リポジトリの作成
+
+第2回以降の解答を保存する，自分用の非公開リポジトリをテンプレートから作成する。
+
+1. GitHub にサインインし，[作業用テンプレート](https://github.com/ykinolab-tokai/signal-ml-work-template)を開く。
+2. **Use this template** → **Create a new repository** を選ぶ。
+3. **Owner** を `ykinolab-tokai`，**Repository name** を `signal-ml-work-<GitHubユーザー名>`（例：ユーザー名が `taro-lab` なら `signal-ml-work-taro-lab`），公開範囲を **Private** にして作成する。
+4. 作成した**自分用リポジトリ**の README にある「最初に一度だけ行うこと」に従い，`~/workspace/signal-ml-work` に clone して動作確認する。
+
+テンプレートを開けない，Owner に `ykinolab-tokai` が表示されない，または作成できない場合は，担当教員に連絡する。
+
 ## 演習
 今回は環境構築を主とするため，追加の演習はない。上の動作確認を完了する。
 
@@ -539,6 +550,7 @@ python exercises/exc01_01.py
 - `signal-ml-training` ディレクトリで `uv --version`，`python --version`，`which python` を確認し，`.venv` のPythonを使っている。
 - `exercises/exc01_01.py` を `signal-ml-training` ディレクトリから実行し，完了メッセージと `outputs/setup_check/sin.png` の正弦波を確認した。
 - `git status` で `signal-ml-training` リポジトリの変更状態を説明できる。
+- テンプレートから自分用の非公開リポジトリを作成し，その README の初期設定を完了した。
 - VS Codeの実行・デバッグ設定を選んだ場合だけ，`sys.executable` も確認した。設定を省略しても本回は完了できる。
 
 ## 詰まったときに見る資料
