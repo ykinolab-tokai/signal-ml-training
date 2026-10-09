@@ -390,21 +390,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv --version
 ```
 
-まず，作業用リポジトリに環境定義ファイル `pyproject.toml` と `uv.lock` を用意する。
-この2ファイルがまだない場合は，認証済みの GitHub CLI を使い，教材リポジトリからファイルだけを取得する。
-すでに両方ある場合は，取得を省略して次の環境構築へ進む。
+作業用テンプレートには，環境定義ファイル `pyproject.toml` と `uv.lock` が含まれている。
+作業用リポジトリのルートに両方あることを確認する。
 
 ```bash
 cd ~/workspace/signal-ml-work
-gh api -H 'Accept: application/vnd.github.raw+json' \
-  'repos/ykinolab-tokai/signal-ml-training/contents/pyproject.toml?ref=main' > pyproject.toml
-gh api -H 'Accept: application/vnd.github.raw+json' \
-  'repos/ykinolab-tokai/signal-ml-training/contents/uv.lock?ref=main' > uv.lock
-ls -l pyproject.toml uv.lock
+ls pyproject.toml uv.lock
 ```
-
-両方の取得に成功し，ファイルが空でないことを確認する。エラーが出た場合は先へ進まず，アクセス権や通信状態を確認する。
-テンプレートの README に教材側の環境を使う説明が残っている場合も，環境構築はこの資料の手順に従う。
 
 続いて，`signal-ml-work` ディレクトリで次を実行する。
 `pyproject.toml` と `uv.lock` に従い，作業用リポジトリ内に Python 3.12 環境 `.venv` が用意される。
@@ -433,7 +425,7 @@ code .
 ```
 
 VS Code の Explorer に `pyproject.toml` と `uv.lock` が見えていることを確認する。
-取得した2ファイルは作業用リポジトリのGit管理に含める。`.venv/` は管理対象に含めない。
+環境定義の2ファイルは作業用リポジトリのGit管理に含める。`.venv/` は管理対象に含めない。
 
 WSL の場合は，VS Code の左下やウィンドウ名に
 `WSL: Ubuntu-24.04` のように表示されていることを確認する。
