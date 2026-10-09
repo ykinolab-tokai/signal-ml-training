@@ -4,9 +4,8 @@
 - 種別: 前期発展枠 / 固定
 
 ## この回の目標
-- plain block と residual block の違いをコードで比較できる。
-- 出力 shape と parameter 数を見て、見た目の違いと内部の違いを分けて説明できる。
-- skip connection が表現と勾配の流れにどう関わるかを言葉で説明できる。
+
+plain block と residual block を比較し，skip connection の役割を説明できる。
 
 ## 解説
 - CNN block は「畳み込みの並び」で考えると読みやすいが、ResNet ではそこに入力を足し戻す skip connection が入る。これにより、同じ shape を保ちながら振る舞いが変わる。

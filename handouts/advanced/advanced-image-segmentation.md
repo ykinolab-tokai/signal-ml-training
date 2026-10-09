@@ -5,9 +5,8 @@
 - 運用: このテーマを選んだ年度は、第 25〜27 回の 3 回を使って `segmentation` を扱う。画像・音響・共通基盤を同じ年度にすべて扱う前提にはしない。
 
 ## この回の目標
-- segmentation の入力画像、正解 mask、出力 mask、loss の対応を説明できる。
-- 最小の segmentation pipeline を実装し、予測 mask を保存できる。
-- pixel accuracy と Dice の違いを、予測 mask の評価観点として説明できる。
+
+画像 segmentation を実装し，正解・予測 mask と loss・評価指標の対応を説明できる。
 
 ## 解説
 - segmentation では、1 枚の画像に対して 1 クラスを出すのではなく、各画素ごとに出力を持つ。だから model 出力も `(batch, channels, H, W)` になりやすい。

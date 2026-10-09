@@ -4,9 +4,8 @@
 - 種別: 前期発展枠 / 固定
 
 ## この回の目標
-- metadata、Dataset、collate、DataLoader の役割を分けて実装できる。
-- augmentation の有無で入力値がどう変わるかを確認できる。
-- augmentation が label を保つかどうかを、データの意味から説明できる。
+
+Dataset と DataLoader によるデータ処理を実装し，augmentation が入力とラベルに与える影響を説明できる。
 
 ## 解説
 - `Dataset` は 1 サンプルを返し、`DataLoader` は複数サンプルをまとめてバッチにする。責務を分けると、前処理や augmentation をどこで行うか整理しやすい。
