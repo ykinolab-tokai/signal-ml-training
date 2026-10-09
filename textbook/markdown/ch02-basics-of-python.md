@@ -29,12 +29,14 @@ Pythonにはバージョンとして 2 系と 3 系の 2 つの系統があり�
 
 ## Python の実行
 
-演習の基本は，提出repoの `scripts/session02_python_basics.py` をVS Codeで編集し，ターミナルから実行する方法です。
+演習の基本は，作業repoの `scripts/session02_python_basics.py` をVS Codeで編集し，ターミナルから実行する方法です。
+準備・更新と保存先は [共通手順](../../handouts/README.md#作業場所と保存先)を参照します。
 第1回で用意した教材repoの `.venv` を使います。新しい仮想環境は作りません。
-教材repoを第1回の標準位置に置いた場合，提出repoのルートで次を実行します。
+教材repoを第1回の標準位置に置いた場合，作業repoのルートで次を実行します。
 
 ```bash
-source ~/workspace/signal-ml-training/.venv/bin/activate
+cd ~/workspace/signal-ml-work
+source ../signal-ml-training/.venv/bin/activate
 python scripts/session02_python_basics.py
 ```
 
@@ -1208,7 +1210,7 @@ print(repr(scores))
 ## Python プログラムのコマンドライン実行
 
 ここでは複数行の処理を1本のファイルにまとめます。
-提出repoのルートを作業場所とし，既存の共有環境を有効にした状態で `scripts/ch02_sample.py` を作成します。
+作業repoのルートを作業場所とし，既存の共有環境を有効にした状態で `scripts/ch02_sample.py` を作成します。
 REPLを使っていた場合は `exit()` で終了してからターミナルへ戻ります。
 
 ```python

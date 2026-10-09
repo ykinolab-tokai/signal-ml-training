@@ -14,10 +14,13 @@
 - 画像モデルを比較するときは、shape だけでなく「入力との差分がどう扱われるか」を見ると、block の意味を捉えやすい。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
 ### 基礎レベル
 1. `session21_image_block_compare.py` を作成し、同じ入力 `x = torch.randn(2, 8, 32, 32)` に対して `PlainBlock` と `ResidualBlock` の forward を通す。
 2. 2 つの block の output shape、parameter 数、`(out - x).abs().mean()` を計算する。
-3. `session21_image_block_compare_report.md` に `## 入力と出力 shape`, `## parameter 数`, `## block の違い`, `## 入力との差分` を書く。
+3. 入力と出力の shape，parameter 数，block の違い，入力との差分をコードコメントまたは既存の結果ファイルに記録する。
 4. shape と parameter 数が近くても、skip connection の有無によって block の意味が変わる理由を、`x + F(x)` という見方に触れて説明する。
 
 ### 発展レベル
@@ -26,7 +29,7 @@
 
 ## 確認ポイント
 - `x.shape`, `plain_out.shape`, `res_out.shape` がすべて `(2, 8, 32, 32)` である。
-- report に `入力と出力 shape`、`parameter 数`、`block の違い` があり、発展課題では入力との差分も説明されている。
+- 基礎課題の記録に入力と出力の shape，parameter 数，block の違い，入力との差分がある。
 - skip connection の説明が、単に「足している」ではなく、入力を保持しながら変化量を学ぶという見方に触れている。
 
 ## 詰まったときに見る資料
