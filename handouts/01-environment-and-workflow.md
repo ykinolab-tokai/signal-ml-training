@@ -536,6 +536,8 @@ python exercises/exc01_01.py
 3. **Owner** を `ykinolab-tokai`，**Repository name** を `signal-ml-work-<GitHubユーザー名>`（例：ユーザー名が `taro-lab` なら `signal-ml-work-taro-lab`），公開範囲を **Private** にして作成する。
 4. 作成した**自分用リポジトリ**の README にある「最初に一度だけ行うこと」に従い，`~/workspace/signal-ml-work` に clone して動作確認する。
 
+GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダ名は `signal-ml-work` とする。すでに作成・取得済みなら同じrepoを使い，`cd ~/workspace/signal-ml-work` と `code .` で開く。教材側の `.venv` を共用し，作業repo用の環境は作り直さない。
+
 テンプレートを開けない，Owner に `ykinolab-tokai` が表示されない，または作成できない場合は，担当教員に連絡する。
 
 ## 演習

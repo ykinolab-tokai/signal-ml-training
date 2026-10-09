@@ -12,6 +12,9 @@
 - Matplotlib の図は画面表示だけで終えず，`savefig` で保存する。保存された図と script を対応づけることで，結果を再現しやすくなる。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
 ### 基礎レベル（7問）
 1. `scripts/`，`outputs/session03/`，`outputs/figures/`，`outputs/data/` を作成し，`scripts/session03_math_numpy_matplotlib.py` で `np.linspace(-5, 5, 501)` の `x` を作る。
 2. `y = x`，`y = x**2`，`y = np.sin(x)`，`y = np.exp(-x**2)` を計算し，それぞれの先頭5要素，shape，dtype を表示する。
@@ -19,7 +22,7 @@
 4. `f(x) = x**2`，`g(x) = (x - 2)**2 + 1`，`h(x) = (x + 1)**2 - 2` を描き，平行移動の方向を確認する。
 5. `np.array([[1, 2, 3], [4, 5, 6]])` を作り，shape，dtype，1行目，2列目，右下の値を取り出す。
 6. Python list に対する `+` と NumPy 配列に対する `+` の違いを，短い例で確認する。
-7. `outputs/session03/session03_report.md` に，作成した図の file 名，配列の shape，平行移動の読み取りを書く。
+7. 作成した図のファイル名，配列の shape，平行移動の読み取りを，コードコメントまたは既存の結果ファイルに記録する。別レポートは作らない。
 
 ### 発展レベル（7問）
 1. `np.log(x)` と `np.sqrt(x)` を扱うとき，定義域の外で何が起きるか確認し，warning や `nan` の意味を書く。
