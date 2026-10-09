@@ -425,13 +425,10 @@ code .
 ```
 
 VS Code の Explorer に `pyproject.toml` と `uv.lock` が見えていることを確認する。
-環境定義の2ファイルは作業用リポジトリのGit管理に含める。`.venv/` は管理対象に含めない。
 
 WSL の場合は，VS Code の左下やウィンドウ名に
 `WSL: Ubuntu-24.04` のように表示されていることを確認する。
 このウィンドウのターミナルも Ubuntu 側で動作する。
-
-Python スクリプトの作成と実行は，後述の「最初の動作確認」で行う。
 
 ### VS Code の実行・デバッグ機能で `.venv` を使う（任意）
 
@@ -439,15 +436,6 @@ Python スクリプトの作成と実行は，後述の「最初の動作確認�
 `signal-ml-work` ディレクトリ内の仮想環境 `.venv` にある Python を使いたい場合の任意の設定である。
 `signal-ml-work` ディレクトリを VS Code で開いてファイルを編集するだけの場合や，ターミナルで `uv run` を使う場合には，
 この設定は必要ない。「最初の動作確認」へ進んでよい。
-授業用の Python 環境は，どの実行方法でも「Python 環境の構築」で説明した `uv` で管理する。
-
-この設定を行う場合は，まず `signal-ml-work` ディレクトリで次を実行し，
-`pyproject.toml` と `uv.lock` に従って `.venv` を準備する。
-
-```bash
-cd ~/workspace/signal-ml-work
-uv sync --locked
-```
 
 VS Code の Python 実行・デバッグ機能を使うには，
 Microsoft の Python 拡張機能が必要である。
@@ -552,8 +540,53 @@ python exercise/exc01_01.py
 `outputs/setup_check/sin.png` が作られることを確認する。
 この画像を開いて正弦波が描かれていれば，動作確認は完了である。
 
+### 変更の記録と GitHub への push
+
+動作確認で作成したコードと画像を，Git で記録して自分の作業用リポジトリへ送る。
+**commit** は変更を手元の履歴に記録する操作，**push** はその履歴を GitHub へ送る操作である。
+
+まず，作業用リポジトリで現在のブランチと送信先を確認する。
+
+```bash
+cd ~/workspace/signal-ml-work
+git status
+git remote -v
+```
+
+ブランチが `main`，`origin` のURLが自分の `signal-ml-work-<GitHubユーザー名>` を指していることを確認する。
+続いて，記録するファイルを `git add` で選ぶ。
+
+```bash
+git add exercise/exc01_01.py outputs/setup_check/sin.png
+```
+
+任意の VS Code 設定で `interpreter_check.py` を作成した場合は，
+`git add interpreter_check.py .vscode/settings.json` も実行する。
+`.venv/` は Git の管理対象に含めない。
+
+次のコマンドで，commitするファイルと変更内容を確認する。
+
+```bash
+git status
+git diff --cached
+```
+
+`git diff --cached` は，`git add` で選んだ変更を表示する。画像については，画像ファイルが追加されたことを確認する。
+差分の閲覧画面に切り替わった場合は，`q` を押すとコマンド入力へ戻れる。
+内容を確認したら，変更内容を表すメッセージを付けてcommitし，pushする。
+
+```bash
+git commit -m "第1回: 環境構築と動作確認"
+git push origin main
+git status
+```
+
+pushが成功したら，ブラウザで自分の作業用リポジトリの `main` を開く。
+commitメッセージと `exercise/exc01_01.py`，`outputs/setup_check/sin.png` が反映されていることを確認する。
+pushに失敗した場合は，エラーメッセージを確認し，解決できなければ担当教員に相談する。
+
 ## 演習
-今回は環境構築を主とするため，追加の演習はありません。上の動作確認を完了してください。
+今回は環境構築を主とするため，追加の演習はありません。上の動作確認とGitHubへのpushを完了してください。
 
 第1回の `exercise/exc01_01.py` と `outputs/setup_check/`，第2回以降の解答は，
 すべて自分の作業用リポジトリ `signal-ml-work` 内に保存してください。
@@ -564,6 +597,7 @@ python exercise/exc01_01.py
 - `signal-ml-work` ディレクトリで `uv --version`，`python --version`，`which python` を確認し，`.venv` のPythonを使っている。
 - `exercise/exc01_01.py` を `signal-ml-work` ディレクトリから実行し，完了メッセージと `outputs/setup_check/sin.png` の正弦波を確認した。
 - `git status` で `signal-ml-work` リポジトリの変更状態を説明できる。
+- 動作確認のコードと画像をcommit・pushし，自分の作業用リポジトリの `main` に反映されたことをGitHub上で確認した。
 - テンプレートから自分用の非公開リポジトリを作成し，この資料に従って作業用リポジトリ内で環境構築と動作確認を完了した。
 - VS Codeの実行・デバッグ設定を選んだ場合だけ，`sys.executable` も確認した。設定を省略しても本回は完了できる。
 
