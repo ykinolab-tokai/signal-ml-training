@@ -12,6 +12,9 @@
 - Wiener filter は，信号とノイズのパワー比に基づいて周波数成分を調整する考え方である。ここでは合成データで信号とノイズのスペクトルを既知として扱う。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
 ### 基礎レベル（7問）
 1. `scripts/`，`outputs/session11/`，`outputs/figures/` を作成し，`scripts/session11_noise_restoration.py` で 5 Hz と 40 Hz の sine 波を足した clean signal を作る。
 2. 平均 0 の Gaussian noise を加え，noisy signal を作る。clean，noise，noisy を同じ図に描く。
@@ -19,7 +22,7 @@
 4. moving average filter を実装し，window length 3，9，21 で復元結果を比較する。
 5. clean と復元信号の平均二乗誤差を計算し，window length ごとに表にする。
 6. 合成データで得られる clean と noise のパワースペクトルを使い，周波数領域の Wiener filter を実装する。
-7. noisy，moving average，Wiener filter の結果を比較し，`outputs/session11/session11_report.md` に図と誤差をまとめる。
+7. noisy，moving average，Wiener filter の結果を比較する。図のファイル名と誤差を，コードコメントまたは既存の結果ファイルに記録する。別レポートは作らない。
 
 ### 発展レベル（7問）
 1. ノイズの標準偏差を 0.1，0.5，1.0 に変え，復元の難しさがどう変わるか確認する。

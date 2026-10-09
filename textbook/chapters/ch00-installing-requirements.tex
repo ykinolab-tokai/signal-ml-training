@@ -569,36 +569,62 @@ python exercises/exc01_01.py
 \texttt{git status} も実行し，Gitが認識している変更の有無を確認する。
 無視対象のファイルは通常の \texttt{git status} に表示されない。出力画像の有無は実際にファイルを開いて確認する。
 
-\section{教材repoと提出repoの使い分け}
+\hypertarget{ux6559ux6750repoux3068ux4f5cux696drepoux306eux4f7fux3044ux5206ux3051}{%
+\section{教材repoと作業repoの使い分け}\label{ux6559ux6750repoux3068ux4f5cux696drepoux306eux4f7fux3044ux5206ux3051}}
 
 教材repoは教材・見本・共通の依存関係を読む場所で，第1回の動作確認もここで行う。
-第2回以降の解答は学生ごとの非公開の提出repoへ保存する。提出repoのURLとフォルダ名は授業で指定される。
-未案内の場合は担当者に確認し，URLを推測しない。
-第2〜13回の \texttt{scripts/}，\texttt{data/}，\texttt{outputs/} は，特記がなければ提出repoのルートからの相対パスである。
+第2回以降の解答は自分の作業repo（提出repo／submission repo）へ保存する。
+\href{https://github.com/ykinolab-tokai/signal-ml-training/blob/main/handouts/01-environment-and-workflow.md\#自分用リポジトリの作成}{第1回の作成手順}に従い，
+作業用テンプレートから \texttt{ykinolab-tokai} 所有の非公開
+\texttt{signal-ml-work-\textless{}GitHubユーザー名\textgreater{}}
+を作成する。 作成したrepoのREADMEに従って
+\texttt{\textasciitilde{}/workspace/signal-ml-work} にcloneする。
+取得済みならそのフォルダを開き，二重にcloneしない。 教材repoは
+\texttt{\textasciitilde{}/workspace/signal-ml-training}，作業repoは
+\texttt{\textasciitilde{}/workspace/signal-ml-work} に並ぶ。
+
+第2回以降と補足の課題の相対パスは，特記がなければ作業repoのルートを基準とする。
 
 \begin{itemize}
-\item コードは \texttt{scripts/sessionXX\_名前.py} に保存する。
-
-\item 説明と数値結果は \texttt{outputs/sessionXX/sessionXX\_report.md} に保存する。
-
-\item 図・音声は各回で指定された \texttt{outputs/} 以下へ保存する。
-
-\item \texttt{data/cat.png} や \texttt{data/piano.wav} を使う場合は，教材repoの同名ファイルを提出repoの \texttt{data/} へコピーする。
-
+\item
+  コードの標準は
+  \texttt{exercise/excXX\_YY.py}（回番号・問題番号は2桁）。各回が
+  \texttt{scripts/}
+  以下などを指定した場合はその指定を優先する。フォルダなしのファイル名だけを指定した場合は作業repoのルートに置く。
+\item
+  図・音声・数値結果の標準は \texttt{outputs/}
+  以下。説明はコードコメントまたは既存の結果ファイルに残し，別レポートは必要な課題が明示した場合だけ作る。同じ内容を転記しない。
+\item
+  \texttt{data/cat.png} や \texttt{data/piano.wav}
+  を使う場合は，教材repoの同名ファイルを作業repoの \texttt{data/}
+  へコピーする。
 \end{itemize}
 
-提出repoのルートへ移動してから，教材repoの仮想環境を有効にする。
+環境の初回準備は本章の前半に従う。教材更新後の依存関係の同期は教材repoで行う。
 
 \begin{lstlisting}[style=codecell]
-source ~/workspace/signal-ml-training/.venv/bin/activate
+cd ~/workspace/signal-ml-training
+uv sync --locked
+\end{lstlisting}
+
+演習時は作業repoへ移動し，教材側の仮想環境を有効にする。
+
+\begin{lstlisting}[style=codecell]
+cd ~/workspace/signal-ml-work
+source ../signal-ml-training/.venv/bin/activate
+pwd
 python --version
 which python
 \end{lstlisting}
 
-その後，\texttt{python scripts/ファイル名.py} で保存した解答を実行する。
-教材repoを別の場所に置いた場合は，上のパスを読み替える。
-\texttt{.venv} は環境が置かれた場所に依存するため，提出repoへコピーしない。毎回作り直す必要もない。
-保存前に \texttt{Path(...).mkdir(parents=True, exist\_ok=True)} などで出力ディレクトリを作る。
+\texttt{pwd} が作業repo，\texttt{which\ python} が教材側の
+\texttt{.venv/bin/python} を指すことを確認する。 例えば第2回第1問は
+\texttt{python\ exercise/exc02\_01.py} で実行する。
+配置を変えた場合は実際のパスへ読み替える。\texttt{.venv}
+は作業repoへコピーせず，毎回作り直さない。 保存前に
+\texttt{Path(...).mkdir(parents=True,\ exist\_ok=True)}
+などで出力ディレクトリを作る。 保存規則とPR練習後の通常作業への戻り方は
+\href{https://github.com/ykinolab-tokai/signal-ml-training/blob/main/handouts/README.md\#作業場所と保存先}{共通手順}を参照する。
 
 \section{うまく進まないとき}
 
