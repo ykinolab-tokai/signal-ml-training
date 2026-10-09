@@ -16,13 +16,18 @@
 - [sounddevice documentation](https://python-sounddevice.readthedocs.io/)
 - [librosa documentation](https://librosa.org/doc/latest/index.html)
 
-Pythonパッケージは第1回の教材repoで `uv sync --locked` によりそろえ，その `.venv` を使う。
+Pythonパッケージの準備・更新は教材repoで行う。演習は作業repoで教材側の `.venv` を有効にして実行する。手順は [共有Python環境](README.md#python環境の準備更新と演習の実行)を参照する。
 保存・再読込・周波数解析は音声デバイスなしで実施できる。
 再生・収録の節は，対応する機器が使える場合の任意の例であり，基礎演習の完了条件には含めない。
-Linuxで `sounddevice` がPortAudio不足を報告する場合は，担当者と環境を確認してから必要なシステムライブラリを用意する。
+Linuxで `sounddevice` がPortAudio不足を報告する場合は，担当者と環境を確認してから必要なシステムライブラリを用意する。これはPython環境の同期とは別の操作である。
+
+```bash
+sudo apt update
+sudo apt install -y libportaudio2 pulseaudio-utils alsa-utils libasound2-plugins libsndfile1 ffmpeg
+```
 
 以下の「音の保存」から「メルスペクトログラム」までのPythonコードは，同じ `.py` ファイルへ順に追記する。
-作業場所は提出repoのルートとし，入力・保存先は各コードの `Path` で指定する。
+作業場所は作業repoのルートとし，入力・保存先は各コードの `Path` で指定する。
 
 ### 1. sounddevice を用いた音信号の再生と収録
 
@@ -369,15 +374,15 @@ plt.close()
 
 ## 演習
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
-`scripts/session09_audio.py` と `outputs/session09/session09_report.md` を作る。
+`scripts/session09_audio.py` に実装し，結果と説明はコードコメントまたは既存の結果ファイルに残す。
 
 ### 基礎レベル
 1. 振幅0.2，440 Hz，1秒，$F_s=16000$ Hzの正弦波を作り，`outputs/audio/09_sine_440hz.wav` へ `subtype="PCM_16"` で保存する。同じファイルを読み直し，shape `(16000,)`，標本化周波数，時間長，元の浮動小数点配列との最大絶対誤差を確認する。量子化幅 $1/32768$ と比較する。
 2. 読み込んだ配列から上の例に沿って振幅スペクトルを保存し，440 Hz付近のピークを確認する。ステレオを扱う場合だけチャネル平均でモノラル化する。
 3. $x(t)=0.2\sin(2\pi(f_0t+kt^2/2))$，$f_0=100$ Hz，$f_1=4000$ Hz，$T=2$ 秒，$k=(f_1-f_0)/T$ のチャープを同じ $F_s$ で生成する。Hann窓，`n_fft=1024`，`hop_length=512`，`center=True` でSTFTを計算し，時間・周波数軸付きで保存する。
-4. 同じチャープとSTFT条件で80帯域のメルスペクトログラムを作る。計算・`specshow` とも `htk=True` にする。各出力shapeと軸の意味，STFTとの見え方の違いをレポートに記録する。メル軸の配置は非線形だが，`specshow(y_axis="mel")` の目盛ラベルはHzである。
+4. 同じチャープとSTFT条件で80帯域のメルスペクトログラムを作る。計算・`specshow` とも `htk=True` にする。各出力shapeと軸の意味，STFTとの見え方の違いをコードコメントまたは既存の結果ファイルに記録する。メル軸の配置は非線形だが，`specshow(y_axis="mel")` の目盛ラベルはHzである。
 
 ### 発展レベル（1項目を選択）
 1. 教材repoからコピーした `data/piano.wav` のスペクトルのピークを調べ，含まれる音の候補を挙げる。周波数と音名の対応を根拠にする。
