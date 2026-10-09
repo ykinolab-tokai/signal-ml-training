@@ -26,9 +26,11 @@ git checkout main
 git pull origin main
 
 # Testing
-# No automated test suite; re-run any edited `.py` script or Markdown example manually.
+# HTML converter tests; re-run edited teaching scripts/examples manually.
+python3 -m unittest discover -s tests -v
 
 # Build
+python3 scripts/build_handouts.py  # Pandoc required; HTML/ZIP in build/
 cd textbook
 latexmk -interaction=nonstopmode -halt-on-error main.tex
 ```
@@ -50,6 +52,8 @@ README.md            canonical seminar policy and yearly structure
 textbook/            canonical LaTeX source for the legacy textbook-style material
 handouts/            student-facing handouts numbered in student work order
 templates/           handout templates for new or revised sessions
+scripts/             HTML conversion script, template, and stylesheet
+tests/               HTML converter behavior tests
 .progress/           task and milestone tracking for repository updates
 ```
 
