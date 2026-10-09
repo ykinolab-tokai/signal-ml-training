@@ -14,21 +14,24 @@
 - どの表現がよいかは「何を軸として残したいか」で変わる。shape を追うだけでなく、どの軸を model が読むのかまで把握すると設計判断しやすい。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
 ### 基礎レベル
 1. `session22_audio_model_input_demo.py` を作成し、1 秒の 440 Hz 波形から waveform, STFT, log-mel を作る。`wave.shape`, `stft.shape`, `log_mel.shape` を表示する。
 2. waveform を入力する 1D CNN と、log-mel を入力する `TinyCRNN` を実装し、それぞれ logits shape が `(1, 2)` になることを確認する。
 3. log-mel を `outputs/figures/session22_log_mel.png` に保存する。図には時間方向と周波数方向が分かるように軸ラベルを付ける。
-4. `session22_audio_model_input_report.md` に `## 表現ごとの shape`, `## 1D CNN の入力と出力`, `## CRNN の入力と出力` を書き、各 model がどの軸を時間として扱っているかを説明する。
+4. 表現ごとの shape，1D CNN と CRNN の入力・出力を記録し，各 model がどの軸を時間として扱うかをコードコメントまたは既存の結果ファイルに説明する。
 
 ### 発展レベル
-1. `session22_audio_model_input_report.md` に `## 表現と model の相性` を追加し、`waveform + 1D CNN` と `log-mel + CRNN` を、直接使いやすい軸情報と前処理の負担の観点で比較する。
+1. `waveform + 1D CNN` と `log-mel + CRNN` を，直接使いやすい軸情報と前処理の負担の観点で比較し，基礎課題の記録に追記する。
 2. 波形をそのまま CRNN に入れる場合、または log-mel を 1D CNN に入れる場合に、入力 shape をどう整える必要があるかを 3 行以内で説明する。
 
 ## 確認ポイント
 - `wave.shape` が `(1, 16000)` である。
 - `cnn1d` と `TinyCRNN` の logits shape がどちらも `(1, 2)` である。
 - `session22_log_mel.png` が保存されている。
-- report に、shape の列挙だけでなく、軸の意味と表現と model の相性に関する説明がある。
+- 基礎課題の記録に shape と軸の意味があり，発展課題に取り組んだ場合は表現と model の相性の比較もある。
 
 ## 詰まったときに見る資料
 - [`07-signals-and-sampling.md`](07-signals-and-sampling.md)
