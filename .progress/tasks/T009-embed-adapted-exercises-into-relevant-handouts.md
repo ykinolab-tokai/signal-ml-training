@@ -21,7 +21,7 @@ Milestone: M003
 ## Acceptance Criteria
 - [x] Matching handouts contain concrete exercises derived from `exercises.md`.
 - [x] Exercise wording matches the current seminar structure and repository policy.
-- [x] Redundant or obsolete instructions from the old repo structure are removed or rewritten.
+- [x] 旧リポジトリ構成に由来する重複した手順や古い手順を削除または修正した。
 
 ## Dependencies / Blockers
 - None.

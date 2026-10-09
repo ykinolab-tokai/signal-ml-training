@@ -9,8 +9,8 @@ NumPy による**多次元配列（multidimensional array）**の扱い方を知
 
 ## NumPy と Matplotlib を使う準備
 
-NumPy と Matplotlib は教材repoの共有環境に含まれる。
-教材repoの共有Python環境を使う。準備・更新は教材repoで行い，演習は作業repoのルートで教材側の `.venv` を有効にして実行する。手順と保存先は [共通手順](../../handouts/README.md#作業場所と保存先)を参照する。
+NumPy と Matplotlib は教材リポジトリの共有環境に含まれる。
+教材リポジトリの共有Python環境を使う。準備・更新は教材リポジトリで行い，演習は作業リポジトリのルートで教材側の `.venv` を有効にして実行する。手順と保存先は [共通手順](../../handouts/README.md#作業場所と保存先)を参照する。
 
 ライブラリの機能を利用するには、そのライブラリが提供するモジュールを読み込む必要があります。
 

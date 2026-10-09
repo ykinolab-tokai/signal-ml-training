@@ -24,7 +24,7 @@ Milestone: M010
 - [x] All files under `handouts/spring/` and `handouts/autumn/` use only the new section headings.
 - [x] Each handout contains `## ミニ講義` plus `### 基礎レベル` and `### 発展レベル` under `## 演習`.
 - [x] Exercises remain concrete enough to start without instructor translation but include at least one reasoning, comparison, or interpretation task.
-- [x] `詰まったときに見る資料` still points to the most relevant repo-internal or official references.
+- [x] `詰まったときに見る資料` は，引き続き最も関連するリポジトリ内の資料や公式資料を参照している。
 
 ## Dependencies / Blockers
 - No external blocker. The rewrite must preserve the current curriculum and role expectations described in `README.md`.

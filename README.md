@@ -28,13 +28,13 @@
 | 11 | ノイズと信号復元 | 加法性ノイズ，信号とノイズのスペクトル，フィーナーフィルタ | [11 ノイズと信号復元](handouts/11-noise-and-signal-restoration.md) |
 | 12 | 画像信号 | 2次元信号，画像の読み込み，表示，幾何変換，2次元DFT，2次元フィルタ | [12 画像信号](handouts/12-image-signals.md) |
 | 13 | ミニプロジェクト | 画像: ノイズ除去，鮮鋭化，トーンマッピング，色変換，音: ノイズ除去，簡易イコライザ作成，音声のピッチ推定 | [13 画像 baseline ミニ実装](handouts/13-image-baseline-mini-implementation.md) |
-| 14 | 統合確認 | 口頭技術確認、code walkthrough、repo 整理、PR / code review 体験 | [14 口頭確認と repo 整理](handouts/14-oral-check-and-repo-wrapup.md) |
+| 14 | 統合確認 | 口頭技術確認、code walkthrough、リポジトリ整理、PR / code review 体験 | [14 口頭確認とリポジトリ整理](handouts/14-oral-check-and-repo-wrapup.md) |
 
 ### 第 15〜28 回
 
 | 回 | 主題 | 内容 | 資料 |
 | -- | -- | -- | -- |
-| 15 | 年間方針と役割 | 年間方針、役割分担、共通 repo、生成 AI 運用、コーディング規約 | [15 年間方針と役割](handouts/15-annual-policy-and-roles.md) |
+| 15 | 年間方針と役割 | 年間方針、役割分担、共通リポジトリ、生成 AI 運用、コーディング規約 | [15 年間方針と役割](handouts/15-annual-policy-and-roles.md) |
 | 16 | research code engineering I | project 構造、config、logging、CLI | [16 research code engineering I](handouts/16-research-code-engineering-1.md) |
 | 17 | research code engineering II | Git flow、PR、code review、簡単な test | [17 research code engineering II](handouts/17-research-code-engineering-2.md) |
 | 18 | 数値線形代数の実装 | 最小二乗、SVD、PCA | [18 数値線形代数](handouts/18-numerical-linear-algebra.md) |
@@ -60,8 +60,8 @@
 - 学生に直接配布する資料は、すべて Markdown ファイルとして [`handouts/`](handouts/) に配置します。
 - HTML版は `python3 scripts/build_handouts.py` で生成できます。各回は `build/handouts/` 内の対応するHTMLファイル1つで配布でき、CSSなどの別添は不要です。全資料の確認には `build/handouts/index.html`、一括配布には `build/handouts.zip` を使います。詳細は [HTML生成の説明](scripts/README.md) を参照してください。
 - 第 25〜27 回の発展テーマ枠は、年度ごとに画像・音響・共通基盤のうち 1 テーマだけを選び、3 回に分けて扱います。各回の入口 handout は `handouts/25-...md` から `handouts/27-...md` に置き、候補テーマ別 handout は [`handouts/advanced/`](handouts/advanced/) に置きます。
-- 学生用の作業repoは，[第1回の作成手順](handouts/01-environment-and-workflow.md#自分用リポジトリの作成)で [作業用テンプレート](https://github.com/ykinolab-tokai/signal-ml-work-template)から作ります。保存先と共有Python環境の使い方は [共通手順](handouts/README.md#作業場所と保存先)に従います。説明・結果はコードコメントや既存の結果ファイルに残し，別レポートは必要な課題で指定された場合だけ作ります。
-- 配布資料を執筆するための雛形は [`templates/session-template.md`](templates/session-template.md) に置きます。学生の解答用repoを作るテンプレートとは別のものです。
+- 学生用の作業リポジトリは，[第1回の作成手順](handouts/01-environment-and-workflow.md#自分用リポジトリの作成)で [作業用テンプレート](https://github.com/ykinolab-tokai/signal-ml-work-template)から作ります。保存先と共有Python環境の使い方は [共通手順](handouts/README.md#作業場所と保存先)に従います。説明・結果はコードコメントや既存の結果ファイルに残し，別レポートは必要な課題で指定された場合だけ作ります。
+- 配布資料を執筆するための雛形は [`templates/session-template.md`](templates/session-template.md) に置きます。学生の解答用リポジトリを作るテンプレートとは別のものです。
 - README から各資料へのリンクは相対リンクで統一します。GitHub 上でも clone 後でも追いやすい構成を保つためです。
 
 ## 4. 各回の標準的な時間配分

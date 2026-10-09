@@ -16,19 +16,19 @@
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
-このテーマでは，複数条件の結果と解釈をまとめて参照するため，下で指定する比較レポートを作る。数値や図は保存先を参照し，既存ファイルの内容を転記しない。第26回の比較記録からもこのレポートを参照する。
+このテーマでは，複数条件の結果と解釈をまとめて参照するため，下で指定する比較レポートを作ってください。数値や図は保存先を参照し，既存ファイルの内容を転記しないでください。第26回の比較記録からもこのレポートを参照してください。
 
 ### 基礎レベル
-1. `advanced_image_segmentation_demo.py` を作成し、synthetic な画像と binary mask を返す dataset、最小の segmentation model、`BCEWithLogitsLoss` を使った学習 loop を実装する。dataset は 10 サンプルにする。
-2. model 出力 shape が `(batch, 1, 32, 32)` になることを確認し、logits, sigmoid 後の確率, threshold 後の mask の違いをコード内で確認する。
-3. 予測 mask を `outputs/figures/advanced_image_mask_prediction.png` に保存し、pixel accuracy と Dice を計算する。
-4. `advanced_image_segmentation_report.md` に `## データと mask`, `## model 出力`, `## 予測 mask`, `## 評価指標` を書き、見た目・pixel accuracy・Dice の違いを説明する。
+1. `advanced_image_segmentation_demo.py` を作成し、synthetic な画像と binary mask を返す dataset、最小の segmentation model、`BCEWithLogitsLoss` を使った学習 loop を実装してください。dataset は 10 サンプルにしてください。
+2. model 出力 shape が `(batch, 1, 32, 32)` になることを確認し、logits, sigmoid 後の確率, threshold 後の mask の違いをコード内で確認してください。
+3. 予測 mask を `outputs/figures/advanced_image_mask_prediction.png` に保存し、pixel accuracy と Dice を計算してください。
+4. `advanced_image_segmentation_report.md` に `## データと mask`, `## model 出力`, `## 予測 mask`, `## 評価指標` を書き、見た目・pixel accuracy・Dice の違いを説明してください。
 
 ### 発展レベル
-1. 背景が多い例を 1 つ追加し、pixel accuracy と Dice のどちらが変化を捉えやすいかを比較する。
-2. report に `## 指標の比較` を追加し、背景優勢な segmentation で pixel accuracy だけを見る危険を 3 行以内で説明する。
+1. 背景が多い例を 1 つ追加し、pixel accuracy と Dice のどちらが変化を捉えやすいかを比較してください。
+2. report に `## 指標の比較` を追加し、背景優勢な segmentation で pixel accuracy だけを見る危険を 3 行以内で説明してください。
 
 ## 確認ポイント
 - dataset 長が `10` である。

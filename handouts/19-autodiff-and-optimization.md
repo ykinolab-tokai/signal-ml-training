@@ -15,18 +15,18 @@
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
 ### 基礎レベル
-1. `session19_autodiff_demo.py` を作成し、`y = 2x + 1` の toy データに対して `nn.Linear(1, 1)` の MSE loss を計算する。
-2. 初期重みについて、autograd の勾配と中心差分による数値微分を比較する。数値微分は `eps = 1e-3` とし、どの parameter を動かしたかが分かるように書く。
-3. `SGD(lr=0.1)` と `StepLR(step_size=10, gamma=0.1)` で 20 step 学習し、loss と learning rate を記録する。loss 曲線を `outputs/figures/session19_loss_curve.png` に保存する。
-4. 勾配比較の数値，最初と最後の loss，learning rate が変わった step を記録し，optimizer と scheduler の役割をコードコメントまたは既存の結果ファイルに説明する。
+1. `session19_autodiff_demo.py` を作成し、`y = 2x + 1` の toy データに対して `nn.Linear(1, 1)` の MSE loss を計算してください。
+2. 初期重みについて、autograd の勾配と中心差分による数値微分を比較してください。数値微分は `eps = 1e-3` とし、どの parameter を動かしたかが分かるように書いてください。
+3. `SGD(lr=0.1)` と `StepLR(step_size=10, gamma=0.1)` で 20 step 学習し、loss と learning rate を記録してください。loss 曲線を `outputs/figures/session19_loss_curve.png` に保存してください。
+4. 勾配比較の数値，最初と最後の loss，learning rate が変わった step を記録し，optimizer と scheduler の役割をコードコメントまたは既存の結果ファイルに説明してください。
 
 ### 発展レベル
-1. scheduler なしの条件も同じ初期化で実行し、scheduler あり・なしの loss 曲線を同じ図で比較する。
-2. scheduler あり・なしの最終 loss，learning rate の変化，今回の toy 問題での安定性を比較し，基礎課題の記録に追記する。
-3. 「勾配が正しく計算できていても loss が下がらないことがある理由」を、learning rate または初期値の観点から 3 行以内で説明する。
+1. scheduler なしの条件も同じ初期化で実行し、scheduler あり・なしの loss 曲線を同じ図で比較してください。
+2. scheduler あり・なしの最終 loss，learning rate の変化，今回の toy 問題での安定性を比較し，基礎課題の記録に追記してください。
+3. 「勾配が正しく計算できていても loss が下がらないことがある理由」を、learning rate または初期値の観点から 3 行以内で説明してください。
 
 ## 確認ポイント
 - autograd 勾配と数値微分が近い値になる。
