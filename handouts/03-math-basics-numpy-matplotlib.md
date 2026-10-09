@@ -15,9 +15,9 @@
 
 ## 演習
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
-`scripts/session03_math_numpy_matplotlib.py` と `outputs/session03/session03_report.md` を作る。
+`scripts/session03_math_numpy_matplotlib.py` に実装し，結果と説明はコードコメントまたは既存の結果ファイルに残す。
 
 次の準備コードをファイルの先頭に置き，演習のコードを続ける。
 
@@ -34,7 +34,7 @@ Path("outputs/figures").mkdir(parents=True, exist_ok=True)
 1. `a = np.arange(12).reshape(3, 4)` の `shape`，`dtype`，`ndim`，`a[1, :]`，`a[:, 1]`，`a[::2, 1:3]` の値とshapeを予想してから確認する。`axis=0` は行を集約して列ごとの値を，`axis=1` は列を集約して行ごとの値を返すことを確かめる。
 2. `x = np.linspace(-5, 5, 501)` で `f(x)=x**2` と `g(x)=(x-2)**2+1` を描く。移動方向を先に予想し，凡例・軸ラベル付きの図を `outputs/figures/session03_translation.png` へ保存する。
 3. `centered = a - a.mean(axis=0)` を読み，引く配列のshapeと各行への適用を説明する。各列の平均が0になることを確認する。この処理を列ごとの中心化と呼び，後のPCAの前処理につながることを確認する。
-4. `a_list = [1, 2, 3]` の `a_list + a_list` と，`np.array(a_list) + np.array(a_list)` を比較する。図・配列のshape・axisの予測結果・中心化の説明をレポートにまとめる。
+4. `a_list = [1, 2, 3]` の `a_list + a_list` と，`np.array(a_list) + np.array(a_list)` を比較する。図・配列のshape・axisの予測結果・中心化の説明をコードコメントまたは既存の結果ファイルにまとめる。
 
 ### 発展レベル（1項目を選択）
 1. `sin(x)` の描画点数を21，101，1001に変え，図の滑らかさと配列のshapeを比較する。
@@ -44,7 +44,7 @@ Path("outputs/figures").mkdir(parents=True, exist_ok=True)
 ## 確認ポイント
 - スライスとaxisごとの出力shapeを，実行前の予測と比較している。
 - 平行移動の向きと列平均を引く操作を，式・図・数値に対応づけて説明できる。
-- スクリプト，図，レポートが指定場所にある。
+- スクリプトと図が指定場所にあり，予測・結果・説明をコードコメントまたは既存の結果ファイルから確認できる。
 
 ## 詰まったときに見る資料
 - [`../textbook/markdown/ch03-reviewing-elementary-math-with-numpy-and-matplotlib.md`](../textbook/markdown/ch03-reviewing-elementary-math-with-numpy-and-matplotlib.md)

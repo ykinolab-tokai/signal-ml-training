@@ -15,25 +15,8 @@ NumPy による\textbf{多次元配列（multidimensional array）}の扱い方�
 \section{NumPy と Matplotlib を使う準備}
 
 
-NumPy や Matplotlib などのライブラリを利用する際には、仮想環境上にこれらをインストールする必要があります。
-
-NumPy と Matplotlib をインストールするためには、仮想環境が有効化されているターミナルで以下のコマンドを実行します。
-
-\begin{lstlisting}[style=codecell]
-$ pip install numpy matplotlib
-\end{lstlisting}
-
-
-\texttt{pip} コマンドは Python ライブラリをインストールするためのコマンドであり、NumPy や Matplotlib 以外にも以下の構文を用いて様々なライブラリをインストールできます。
-
-\begin{lstlisting}[style=codecell]
-$ pip install <ライブラリ名>
-\end{lstlisting}
-
-今後、他のライブラリが必要となった際には、このコマンドを用いてインストールを行います．
-
-
-以上の操作で NumPy と Matplotlib のインストール作業は完了したものの、これだけではライブラリの機能を利用することができません。
+NumPy と Matplotlib は教材repoの共有環境に含まれる。
+教材repoの共有Python環境を使う。準備・更新は教材repoで行い，演習は作業repoのルートで教材側の \texttt{.venv} を有効にして実行する。手順と保存先は \href{https://github.com/ykinolab-tokai/signal-ml-training/blob/main/handouts/README.md}{共通手順}を参照する。
 
 ライブラリの機能を利用するには、そのライブラリが提供するモジュールを読み込む必要があります。
 
