@@ -24,34 +24,36 @@
 
 ## 作業場所と保存先
 
-- **教材リポジトリ**（`signal-ml-training`）は，教材・見本・共通の依存関係を読む場所とする。第1回の環境確認サンプルだけは，このリポジトリの `exercises/` に保存する。
-- **作業リポジトリ**（提出リポジトリ）は，[第1回の作成手順](01-environment-and-workflow.md#自分用リポジトリの作成)で学生本人が作る非公開リポジトリで，第2回以降の解答と結果を保存する。所有者は `ykinolab-tokai`，GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダは `~/workspace/signal-ml-work` とする。取得済みならそのフォルダを開き，重ねてcloneしない。
-- 第2回以降と補足の課題にある相対パスは，特記がない限り**作業リポジトリのルートからの相対パス**である。標準はコードが `exercise/excXX_YY.py`（回番号・問題番号は2桁），図・音声・数値結果が `outputs/` 以下。各回が `scripts/sessionXX_名前.py` などを指定した場合は，その指定を優先する。`session13_image_baseline.py` のようにフォルダなしでファイル名だけを指定した場合は，作業リポジトリのルートに置く。
+- **教材リポジトリ**（`signal-ml-training`）は，教材・見本・共通の依存関係を参照する場所とする。教材は配布資料やGitHub上で読み，学生は基本的にこのリポジトリをcloneしない。
+- **作業リポジトリ**（提出リポジトリ）は，[第1回の作成手順](01-environment-and-workflow.md#自分用作業リポジトリの作成)で学生本人が作る非公開リポジトリで，第1回の環境構築から各回の解答と結果の保存までに使う。所有者は `ykinolab-tokai`，GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダは `~/workspace/signal-ml-work` とする。取得済みならそのフォルダを開き，重ねてcloneしない。
+- 各回と補足の課題にある相対パスは，特記がない限り**作業リポジトリのルートからの相対パス**である。標準はコードが `exercise/excXX_YY.py`（回番号・問題番号は2桁），図・音声・数値結果が `outputs/` 以下。各回が `scripts/sessionXX_名前.py` などを指定した場合は，その指定を優先する。`session13_image_baseline.py` のようにフォルダなしでファイル名だけを指定した場合は，作業リポジトリのルートに置く。
 - 説明・予測・結果の解釈は，該当コードのコメントまたは既存の結果ファイルに残す。数値は項目名・条件とともに保存し，同じ内容を別ファイルへ転記しない。**別レポートは，複数条件の比較などで必要な課題がファイル名と記載内容を指定した場合だけ作る。** チェックリストや再実行手順が指定されている場合も，同じ説明は既存のコード・結果への参照でよい。
-- `data/cat.png` や `data/piano.wav` を使う回では，教材リポジトリの同名ファイルを作業リポジトリの `data/` へコピーする。入力ファイルと自分が生成した `outputs/` を区別する。
+- `data/cat.png` や `data/piano.wav` を使う回では，GitHub上の教材リポジトリの [data/](../data/) から該当ファイルをダウンロードし，作業リポジトリの `data/` に保存する。入力ファイルと自分が生成した `outputs/` を区別する。
 - 各回の出力ディレクトリは，保存前に `Path(...).mkdir(parents=True, exist_ok=True)` などで作る。実行時の現在地は作業リポジトリのルートにそろえる。
 
 ### Python環境の準備・更新と演習の実行
 
-Python環境の初回準備は第1回で行う。教材更新後の依存関係の同期は，教材リポジトリで行う。
-
-```bash
-cd ~/workspace/signal-ml-training
-uv sync --locked
-```
-
-演習は作業リポジトリで，教材側の `.venv` を有効にして実行する。新しいターミナルを開いたら次を行う。
+Python環境の初回準備は[第1回](01-environment-and-workflow.md#python-環境の構築)で行う。
+`pyproject.toml` と `uv.lock` を作業リポジトリに保存し，そのリポジトリ内の `.venv` に環境を作る。
+授業で環境定義ファイルの更新が案内された場合は，2ファイルを更新してから，作業リポジトリで依存関係を同期する。
 
 ```bash
 cd ~/workspace/signal-ml-work
-source ../signal-ml-training/.venv/bin/activate
+uv sync --locked
+```
+
+演習は作業リポジトリで，作業リポジトリ内の `.venv` を有効にして実行する。新しいターミナルを開いたら次を行う。
+
+```bash
+cd ~/workspace/signal-ml-work
+source .venv/bin/activate
 pwd
 which python
 ```
 
-`pwd` が作業リポジトリ，`which python` が教材リポジトリの `.venv/bin/python` を指すことを確認する。
+`pwd` が作業リポジトリ，`which python` がその中の `.venv/bin/python` を指すことを確認する。
 例えば第2回第1問は `python exercise/exc02_01.py` で実行する。各回が別のパスを指定している場合は読み替える。
-`.venv` を作業リポジトリへコピーしたり，毎回作り直したりする必要はない。配置を変えた場合は実際のパスを使う。
+作業リポジトリ内の `.venv` は毎回作り直す必要はない。配置を変えた場合は実際のパスを使う。
 OS側の音声ライブラリ等はPython環境とは別に準備する。各回の案内に従う。
 
 ### PR練習後に通常作業へ戻る
