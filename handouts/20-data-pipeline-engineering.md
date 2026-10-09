@@ -15,18 +15,18 @@
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
 ### 基礎レベル
-1. `session20_dataloader_demo.py` を作成し、`metadata` から `vertical` / `horizontal` の stripe 画像 `(1, 16, 16)` と label を返す `StripeDataset` を実装する。
-2. `augment=False` と `augment=True` の dataset を作り、左右反転によって入力 tensor のどこが変わり、shape と label がどう保たれるかを確認する。
-3. `collate_fn` と `DataLoader(batch_size=2, shuffle=False)` を実装し、`batch_x.shape == (2, 1, 16, 16)`, `batch_y.shape == (2,)` になることを確認する。
-4. metadata，DataLoader の出力，augmentation の有無による違いを記録し，Dataset, collate, DataLoader の責務をコードコメントまたは既存の結果ファイルに説明する。
+1. `session20_dataloader_demo.py` を作成し、`metadata` から `vertical` / `horizontal` の stripe 画像 `(1, 16, 16)` と label を返す `StripeDataset` を実装してください。
+2. `augment=False` と `augment=True` の dataset を作り、左右反転によって入力 tensor のどこが変わり、shape と label がどう保たれるかを確認してください。
+3. `collate_fn` と `DataLoader(batch_size=2, shuffle=False)` を実装し、`batch_x.shape == (2, 1, 16, 16)`, `batch_y.shape == (2,)` になることを確認してください。
+4. metadata，DataLoader の出力，augmentation の有無による違いを記録し，Dataset, collate, DataLoader の責務をコードコメントまたは既存の結果ファイルに説明してください。
 
 ### 発展レベル
-1. `augment="shift"` を追加し、`torch.roll(image, shifts=2, dims=2)` による水平方向 shift を実装する。
-2. `flip` と `shift` が `vertical` / `horizontal` の label を保つかを task 定義に基づいて説明し，基礎課題の記録に追記する。
-3. 今回の stripe 分類で最初に採用する augmentation を 1 つ選び、採用理由と避けたい失敗例を 3 行以内で書く。
+1. `augment="shift"` を追加し、`torch.roll(image, shifts=2, dims=2)` による水平方向 shift を実装してください。
+2. `flip` と `shift` が `vertical` / `horizontal` の label を保つかを task 定義に基づいて説明し，基礎課題の記録に追記してください。
+3. 今回の stripe 分類で最初に採用する augmentation を 1 つ選び、採用理由と避けたい失敗例を 3 行以内で書いてください。
 
 ## 確認ポイント
 - `len(metadata)` が `4` である。

@@ -536,16 +536,16 @@ python exercises/exc01_01.py
 3. **Owner** を `ykinolab-tokai`，**Repository name** を `signal-ml-work-<GitHubユーザー名>`（例：ユーザー名が `taro-lab` なら `signal-ml-work-taro-lab`），公開範囲を **Private** にして作成する。
 4. 作成した**自分用リポジトリ**の README にある「最初に一度だけ行うこと」に従い，`~/workspace/signal-ml-work` に clone して動作確認する。
 
-GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダ名は `signal-ml-work` とする。すでに作成・取得済みなら同じrepoを使い，`cd ~/workspace/signal-ml-work` と `code .` で開く。教材側の `.venv` を共用し，作業repo用の環境は作り直さない。
+GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダ名は `signal-ml-work` とする。すでに作成・取得済みなら同じリポジトリを使い，`cd ~/workspace/signal-ml-work` と `code .` で開く。教材側の `.venv` を共用し，作業リポジトリ用の環境は作り直さない。
 
 テンプレートを開けない，Owner に `ykinolab-tokai` が表示されない，または作成できない場合は，担当教員に連絡する。
 
 ## 演習
-今回は環境構築を主とするため，追加の演習はない。上の動作確認を完了する。
+今回は環境構築を主とするため，追加の演習はありません。上の動作確認を完了してください。
 
-第1回の `exercises/exc01_01.py` と `outputs/setup_check/` は，教材用の仮想環境を確認するため `signal-ml-training` ディレクトリ内に置く。
-第2回以降の解答は，学生ごとの非公開の提出用リポジトリを clone したディレクトリに保存する。
-教材用の `signal-ml-training` リポジトリと提出用リポジトリの役割・実行環境の使い方は [共通の作業場所](README.md#作業場所と保存先) を参照する。
+第1回の `exercises/exc01_01.py` と `outputs/setup_check/` は，教材用の仮想環境を確認するため `signal-ml-training` ディレクトリ内に置いてください。
+第2回以降の解答は，学生ごとの非公開の提出用リポジトリを clone したディレクトリに保存してください。
+教材用の `signal-ml-training` リポジトリと提出用リポジトリの役割・実行環境の使い方は [共通の作業場所](README.md#作業場所と保存先) を参照してください。
 
 ## 確認ポイント
 - Ubuntu 24.04 LTS（Windowsの場合）とPython 3.12の環境を確認した。

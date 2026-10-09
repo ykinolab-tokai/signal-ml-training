@@ -15,17 +15,17 @@
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
 ### 基礎レベル
-1. `session22_audio_model_input_demo.py` を作成し、1 秒の 440 Hz 波形から waveform, STFT, log-mel を作る。`wave.shape`, `stft.shape`, `log_mel.shape` を表示する。
-2. waveform を入力する 1D CNN と、log-mel を入力する `TinyCRNN` を実装し、それぞれ logits shape が `(1, 2)` になることを確認する。
-3. log-mel を `outputs/figures/session22_log_mel.png` に保存する。図には時間方向と周波数方向が分かるように軸ラベルを付ける。
-4. 表現ごとの shape，1D CNN と CRNN の入力・出力を記録し，各 model がどの軸を時間として扱うかをコードコメントまたは既存の結果ファイルに説明する。
+1. `session22_audio_model_input_demo.py` を作成し、1 秒の 440 Hz 波形から waveform, STFT, log-mel を作ってください。`wave.shape`, `stft.shape`, `log_mel.shape` を表示してください。
+2. waveform を入力する 1D CNN と、log-mel を入力する `TinyCRNN` を実装し、それぞれ logits shape が `(1, 2)` になることを確認してください。
+3. log-mel を `outputs/figures/session22_log_mel.png` に保存してください。図には時間方向と周波数方向が分かるように軸ラベルを付けてください。
+4. 表現ごとの shape，1D CNN と CRNN の入力・出力を記録し，各 model がどの軸を時間として扱うかをコードコメントまたは既存の結果ファイルに説明してください。
 
 ### 発展レベル
-1. `waveform + 1D CNN` と `log-mel + CRNN` を，直接使いやすい軸情報と前処理の負担の観点で比較し，基礎課題の記録に追記する。
-2. 波形をそのまま CRNN に入れる場合、または log-mel を 1D CNN に入れる場合に、入力 shape をどう整える必要があるかを 3 行以内で説明する。
+1. `waveform + 1D CNN` と `log-mel + CRNN` を，直接使いやすい軸情報と前処理の負担の観点で比較し，基礎課題の記録に追記してください。
+2. 波形をそのまま CRNN に入れる場合、または log-mel を 1D CNN に入れる場合に、入力 shape をどう整える必要があるかを 3 行以内で説明してください。
 
 ## 確認ポイント
 - `wave.shape` が `(1, 16000)` である。

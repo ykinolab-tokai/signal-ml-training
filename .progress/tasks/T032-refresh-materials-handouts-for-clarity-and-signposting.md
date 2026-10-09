@@ -18,7 +18,7 @@ Milestone: M009
 ## Deliverables
 - Updated handouts with consistent `この回の目標` wording.
 - Clearer mandatory-task wording and submission conditions in older handouts.
-- Better links from `handouts/` to deeper repo-internal or official references.
+- `handouts/` からリポジトリ内の詳細資料や公式資料へのリンクを改善する。
 
 ## Acceptance Criteria
 - [x] Student-facing handouts use `この回の目標` rather than mixed goal headings.

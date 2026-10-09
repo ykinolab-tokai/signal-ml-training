@@ -9,7 +9,7 @@
 しかし、そういった数学やプログラミングの全てに精通していなければ研究をはじめられないかというと、必ずしもそうではありません。
 
 本資料では、まず必要になる最低限の数学とプログラミングの知識から学び始められるように、資料を充実させています。
-また，本資料に沿って作成する提出物はGitHub上のrepoで管理します．
+また，本資料に沿って作成する提出物はGitHub上のリポジトリで管理します．
 
 GitHubは，現在のソフトウェア開発にはなくてはならないサービスです．
 まずは，GitHubのことから勉強をはじめましょう．
@@ -114,7 +114,7 @@ Git をベースとして動いているGitHubですが，GitHubならではの�
 そして，コピーしたリポジトリに対しては，自由に変更を加えることが可能になります。
 
 このゼミでは，B3の通常提出でforkは使いません．
-forkは「他人の公開repoを自分側にコピーして改善したいときに使う機能」と理解すれば十分です．
+forkは「他人の公開リポジトリを自分側にコピーして改善したいときに使う機能」と理解すれば十分です．
 
 ### プルリクエスト (pull request)
 フォークしたリポジトリへの変更が他の人にとっても有用だと思う場合，
@@ -133,13 +133,13 @@ B3の毎週の通常提出では必須にしません．
 
 ## 実践 GitHub
 
-このゼミでは，教材repoと自分の作業repo（提出repo／submission repo）を分けて使う。
+このゼミでは，教材リポジトリと自分の作業リポジトリ（提出リポジトリ）を分けて使う。
 第1回の [自分用リポジトリの作成](../../handouts/01-environment-and-workflow.md#自分用リポジトリの作成)で，
 `ykinolab-tokai` 所有の非公開 `signal-ml-work-<GitHubユーザー名>` を作成し，
-作成したrepoのREADMEに従って `~/workspace/signal-ml-work` にcloneする。
-教材repoは `~/workspace/signal-ml-training` に置く。
-取得済みなら，もう一度cloneせず次の手順で既存の作業repoを開く。
-未作成・未取得なら，先に第1回と作業repoのREADMEの手順を完了する。
+作成したリポジトリのREADMEに従って `~/workspace/signal-ml-work` にcloneする。
+教材リポジトリは `~/workspace/signal-ml-training` に置く。
+取得済みなら，もう一度cloneせず次の手順で既存の作業リポジトリを開く。
+未作成・未取得なら，先に第1回と作業リポジトリのREADMEの手順を完了する。
 
 ### 通常作業を始める
 
@@ -159,7 +159,7 @@ git config --global user.name "<ユーザ名>"
 git config --global user.email "<メールアドレス>"
 ```
 
-この章の操作練習では，作業repo内に `exercise/git-practice.txt` を作り，例えば「Gitの操作を確認した」と書く。
+この章の操作練習では，作業リポジトリ内に `exercise/git-practice.txt` を作り，例えば「Gitの操作を確認した」と書く。
 VS Codeで作成してよい。ターミナルで作る場合は次を実行する。
 
 ```bash
@@ -168,7 +168,7 @@ vim exercise/git-practice.txt
 ```
 
 Vimでは `i` で入力を始め，入力後に `Esc`，`:wq`，Enterの順で保存して終了する。
-現在地は作業repoのルートのままにする。
+現在地は作業リポジトリのルートのままにする。
 演習コードと結果の保存規則は [共通手順](../../handouts/README.md#作業場所と保存先)に従う。
 Pythonを実行するときは，教材側の環境を有効にする。
 
@@ -204,9 +204,9 @@ git commit -m "Record PR practice"
 git push -u origin pr-practice
 ```
 
-GitHub上で，**自分の作業repoの `main` を宛先（base）**，`pr-practice` を比較元（compare）にしたPRを作成する。
+GitHub上で，**自分の作業リポジトリの `main` を宛先（base）**，`pr-practice` を比較元（compare）にしたPRを作成する。
 PR本文に「変更点」「確認方法」「未確認事項」を書く。
-教材repoや作業テンプレートrepoへ送るPRではない。
+教材リポジトリや作業テンプレートリポジトリへ送るPRではない。
 練習の追記・レビューへの修正は同じ練習ブランチにcommitしてpushする。
 
 ### PR練習後に通常作業へ戻る

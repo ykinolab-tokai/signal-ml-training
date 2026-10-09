@@ -13,25 +13,25 @@
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
 ### 基礎レベル（7問）
-1. `scripts/`，`outputs/session11/`，`outputs/figures/` を作成し，`scripts/session11_noise_restoration.py` で 5 Hz と 40 Hz の sine 波を足した clean signal を作る。
-2. 平均 0 の Gaussian noise を加え，noisy signal を作る。clean，noise，noisy を同じ図に描く。
-3. clean，noise，noisy の振幅スペクトルを描き，どの周波数帯に成分があるか確認する。
-4. moving average filter を実装し，window length 3，9，21 で復元結果を比較する。
-5. clean と復元信号の平均二乗誤差を計算し，window length ごとに表にする。
-6. 合成データで得られる clean と noise のパワースペクトルを使い，周波数領域の Wiener filter を実装する。
-7. noisy，moving average，Wiener filter の結果を比較する。図のファイル名と誤差を，コードコメントまたは既存の結果ファイルに記録する。別レポートは作らない。
+1. `scripts/`，`outputs/session11/`，`outputs/figures/` を作成し，`scripts/session11_noise_restoration.py` で 5 Hz と 40 Hz の sine 波を足した clean signal を作ってください。
+2. 平均 0 の Gaussian noise を加え，noisy signal を作ってください。clean，noise，noisy を同じ図に描いてください。
+3. clean，noise，noisy の振幅スペクトルを描き，どの周波数帯に成分があるか確認してください。
+4. moving average filter を実装し，window length 3，9，21 で復元結果を比較してください。
+5. clean と復元信号の平均二乗誤差を計算し，window length ごとに表にしてください。
+6. 合成データで得られる clean と noise のパワースペクトルを使い，周波数領域の Wiener filter を実装してください。
+7. noisy，moving average，Wiener filter の結果を比較してください。図のファイル名と誤差を，コードコメントまたは既存の結果ファイルに記録してください。別レポートは作らないでください。
 
 ### 発展レベル（7問）
-1. ノイズの標準偏差を 0.1，0.5，1.0 に変え，復元の難しさがどう変わるか確認する。
-2. 高周波ノイズだけでなく低周波ノイズを加え，移動平均が効きにくい例を作る。
-3. Wiener filter で信号パワーまたはノイズパワーの推定を意図的にずらし，復元結果への影響を見る。
-4. 時間領域の移動平均と周波数領域の低域通過フィルタを比較する。
-5. 復元結果の MSE だけでなく，最大絶対誤差も計算する。
-6. clean signal を知らない場合に，ノイズの性質をどう推定できるか，今回の合成実験に基づいて案を書く。
-7. 過度に強いフィルタで信号まで失われる例を作り，スペクトルと時間波形の両方で説明する。
+1. ノイズの標準偏差を 0.1，0.5，1.0 に変え，復元の難しさがどう変わるか確認してください。
+2. 高周波ノイズだけでなく低周波ノイズを加え，移動平均が効きにくい例を作ってください。
+3. Wiener filter で信号パワーまたはノイズパワーの推定を意図的にずらし，復元結果への影響を見てください。
+4. 時間領域の移動平均と周波数領域の低域通過フィルタを比較してください。
+5. 復元結果の MSE だけでなく，最大絶対誤差も計算してください。
+6. clean signal を知らない場合に，ノイズの性質をどう推定できるか，今回の合成実験に基づいて案を書いてください。
+7. 過度に強いフィルタで信号まで失われる例を作り，スペクトルと時間波形の両方で説明してください。
 
 ## 詰まったときに見る資料
 - [`../textbook/markdown/ch13-basics-of-signal-processing.md`](../textbook/markdown/ch13-basics-of-signal-processing.md)

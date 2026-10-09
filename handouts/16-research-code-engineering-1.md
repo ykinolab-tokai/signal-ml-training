@@ -15,17 +15,17 @@
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
 ### 基礎レベル
-1. `session16_config.json` を作成し、`lr`, `epochs`, `name` を設定として保存する。値は `0.001`, `3`, `session16-demo` とする。
-2. `session16_cli_logging_demo.py` を作成し、`argparse`, `json`, `logging`, `pathlib.Path` を使って `--config` と `--out` を受け取る CLI script にする。出力先ディレクトリを作成し、読み込んだ設定と出力先を log に残す。
-3. 同じ config を使って、`outputs/session16_run` と `outputs/session16_run_alt` の 2 通りで実行する。2 回の実行で何が同じで何が変わったかを確認する。
-4. 実行コマンドをコードコメントに残し，保存した config とログの場所を示す。`lr` と `epochs` を config に置き，`out` を CLI に置いた理由も書く。設定値とログの転記は不要。
+1. `session16_config.json` を作成し、`lr`, `epochs`, `name` を設定として保存してください。値は `0.001`, `3`, `session16-demo` とします。
+2. `session16_cli_logging_demo.py` を作成し、`argparse`, `json`, `logging`, `pathlib.Path` を使って `--config` と `--out` を受け取る CLI script にしてください。出力先ディレクトリを作成し、読み込んだ設定と出力先を log に残してください。
+3. 同じ config を使って、`outputs/session16_run` と `outputs/session16_run_alt` の 2 通りで実行してください。2 回の実行で何が同じで何が変わったかを確認してください。
+4. 実行コマンドをコードコメントに残し，保存した config とログの場所を示してください。`lr` と `epochs` を config に置き，`out` を CLI に置いた理由も書いてください。設定値とログの転記は不要です。
 
 ### 発展レベル
-1. config file が存在しない場合に、Python の traceback だけで終わらないよう明示的なエラーメッセージを追加する。どの例外を捕まえたかもコードコメントまたは既存の結果ファイルに書く。
-2. コードコメントに，別の人が同じ結果を再実行するために必要な情報と，まだ足りない情報を分けて追記する。
+1. config file が存在しない場合に、Python の traceback だけで終わらないよう明示的なエラーメッセージを追加してください。どの例外を捕まえたかもコードコメントまたは既存の結果ファイルに書いてください。
+2. コードコメントに，別の人が同じ結果を再実行するために必要な情報と，まだ足りない情報を分けて追記してください。
 
 ## 確認ポイント
 - `session16_config.json` が指定どおりの内容になっている。

@@ -16,19 +16,19 @@
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
-このテーマでは，複数条件の結果と解釈をまとめて参照するため，下で指定する比較レポートを作る。数値や図は保存先を参照し，既存ファイルの内容を転記しない。第26回の比較記録からもこのレポートを参照する。
+このテーマでは，複数条件の結果と解釈をまとめて参照するため，下で指定する比較レポートを作ってください。数値や図は保存先を参照し，既存ファイルの内容を転記しないでください。第26回の比較記録からもこのレポートを参照してください。
 
 ### 基礎レベル
-1. `advanced_audio_tagging_demo.py` を作成し、multi-label target を持つ synthetic audio tagging dataset と log-mel 入力の小さな model を実装する。dataset は 8 サンプルにする。
-2. target shape と model 出力 shape がどちらも `(batch, 2)` になることを確認し、`BCEWithLogitsLoss` で数 step 学習する。
-3. log-mel 例を `outputs/figures/advanced_audio_log_mel_example.png` に保存し、sigmoid 後の確率と threshold 後の予測 label を表示する。
-4. `advanced_audio_tagging_report.md` に `## multi-label target`, `## logits と確率`, `## threshold の影響` を書き、確率が高いことと採用 label になることの違いを説明する。
+1. `advanced_audio_tagging_demo.py` を作成し、multi-label target を持つ synthetic audio tagging dataset と log-mel 入力の小さな model を実装してください。dataset は 8 サンプルにしてください。
+2. target shape と model 出力 shape がどちらも `(batch, 2)` になることを確認し、`BCEWithLogitsLoss` で数 step 学習してください。
+3. log-mel 例を `outputs/figures/advanced_audio_log_mel_example.png` に保存し、sigmoid 後の確率と threshold 後の予測 label を表示してください。
+4. `advanced_audio_tagging_report.md` に `## multi-label target`, `## logits と確率`, `## threshold の影響` を書き、確率が高いことと採用 label になることの違いを説明してください。
 
 ### 発展レベル
-1. threshold を `0.3`, `0.5`, `0.7` に変え、予測 label がどう変わるかを比較する。
-2. report に `## threshold 比較` を追加し、取りこぼしと誤検出のどちらを重く見るかで threshold の選び方が変わる理由を説明する。
+1. threshold を `0.3`, `0.5`, `0.7` に変え、予測 label がどう変わるかを比較してください。
+2. report に `## threshold 比較` を追加し、取りこぼしと誤検出のどちらを重く見るかで threshold の選び方が変わる理由を説明してください。
 
 ## 確認ポイント
 - dataset 長が `8` である。
