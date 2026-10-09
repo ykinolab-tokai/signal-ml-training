@@ -229,9 +229,9 @@ Hann窓は端の値を小さくして遠くへの漏れを抑える一方，ピ�
 
 ## 演習
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
-`scripts/session08_fourier.py` と `outputs/session08/session08_report.md` を作る。図は `outputs/figures/` に保存する。
+`scripts/session08_fourier.py` に実装し，結果と説明はコードコメントまたは既存の結果ファイルに残す。図は `outputs/figures/` に保存する。
 
 ### 基礎レベル
 1. $z=1+2j$ の共役と $\overline{z}z$ を手計算して `np.conj` で確認する。周期 $T=1/4$ 秒の信号を $F_s=10$ Hzで標本化したときの正規化周波数と角周波数を求める。$\omega=3\pi/4$ の基本周期も確認する。

@@ -29,21 +29,24 @@ python session16_cli_logging_demo.py --config session16_config.json --out output
 ```
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
 ### 基礎レベル
 1. `session16_config.json` を作成し、`lr`, `epochs`, `name` を設定として保存する。値は `0.001`, `3`, `session16-demo` とする。
 2. `session16_cli_logging_demo.py` を作成し、`argparse`, `json`, `logging`, `pathlib.Path` を使って `--config` と `--out` を受け取る CLI script にする。出力先ディレクトリを作成し、読み込んだ設定と出力先を log に残す。
 3. 同じ config を使って、`outputs/session16_run` と `outputs/session16_run_alt` の 2 通りで実行する。2 回の実行で何が同じで何が変わったかを確認する。
-4. `session16_run_log.md` を作成し、`## config の内容`, `## 実行コマンド`, `## ログに残った値`, `## config と CLI の分担` の 4 見出しを書く。`lr` と `epochs` を config に置き、`out` を CLI に置いた理由を自分の言葉で説明する。
+4. 実行コマンドをコードコメントに残し，保存した config とログの場所を示す。`lr` と `epochs` を config に置き，`out` を CLI に置いた理由も書く。設定値とログの転記は不要。
 
 ### 発展レベル
-1. config file が存在しない場合に、Python の traceback だけで終わらないよう明示的なエラーメッセージを追加する。どの例外を捕まえたかも report に書く。
-2. `session16_run_log.md` に `## 再実行しやすさの確認` を追加し、別の人が同じ結果を再実行するために必要な情報と、まだ足りない情報を分けて書く。
+1. config file が存在しない場合に、Python の traceback だけで終わらないよう明示的なエラーメッセージを追加する。どの例外を捕まえたかもコードコメントまたは既存の結果ファイルに書く。
+2. コードコメントに，別の人が同じ結果を再実行するために必要な情報と，まだ足りない情報を分けて追記する。
 
 ## 確認ポイント
 - `session16_config.json` が指定どおりの内容になっている。
 - script が `--config` と `--out` を受け取り、`outputs/session16_run` と `outputs/session16_run_alt` を作成できる。
 - ログに `lr=0.001`, `epochs=3`, `name=session16-demo` が含まれている。
-- `session16_run_log.md` に、config と CLI の役割分担について自分の説明がある。
+- コードコメントに実行コマンドと config・ログの場所，config と CLI の役割分担の説明がある。
 
 ## 詰まったときに見る資料
 - [`15-annual-policy-and-roles.md`](15-annual-policy-and-roles.md)
