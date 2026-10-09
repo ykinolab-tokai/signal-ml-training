@@ -15,6 +15,11 @@
 - 予測が良いかを見るとき、画素一致率だけだと背景優勢な場合に高く見えやすい。Dice のように重なりを見る指標も併せて確認すると解釈しやすい。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
+このテーマでは，複数条件の結果と解釈をまとめて参照するため，下で指定する比較レポートを作る。数値や図は保存先を参照し，既存ファイルの内容を転記しない。第26回の比較記録からもこのレポートを参照する。
+
 ### 基礎レベル
 1. `advanced_image_segmentation_demo.py` を作成し、synthetic な画像と binary mask を返す dataset、最小の segmentation model、`BCEWithLogitsLoss` を使った学習 loop を実装する。dataset は 10 サンプルにする。
 2. model 出力 shape が `(batch, 1, 32, 32)` になることを確認し、logits, sigmoid 後の確率, threshold 後の mask の違いをコード内で確認する。

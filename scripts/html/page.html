@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>$pagetitle$ | Signal ML Training</title>
+$for(css)$
+  <link rel="stylesheet" href="$css$">
+$endfor$
+$if(highlighting-css)$
+  <style>
+$highlighting-css$
+  </style>
+$endif$
+</head>
+<body>
+  <a class="skip-link" href="#main-content">本文へ移動</a>
+  <header class="site-header">
+    <a href="$index-url$">Signal ML Training · 教材一覧（GitHub）</a>
+  </header>
+  <div class="layout">
+$if(toc)$
+    <nav class="toc" aria-label="この資料の目次">
+      <p class="toc-title">この資料の目次</p>
+$table-of-contents$
+    </nav>
+$endif$
+    <main id="main-content">
+$body$
+    </main>
+  </div>
+  <footer>
+    <a href="$index-url$">教材一覧（GitHub）</a>
+    <details class="license">
+      <summary>ライセンス</summary>
+      <pre>$license-text$</pre>
+    </details>
+  </footer>
+</body>
+</html>
