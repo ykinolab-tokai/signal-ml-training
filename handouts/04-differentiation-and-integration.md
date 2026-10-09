@@ -15,9 +15,9 @@
 
 ## 演習
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
-`scripts/session04_differential_integral.py` に実装し，手計算・誤差表を `outputs/session04/session04_report.md` にまとめる。
+`scripts/session04_differential_integral.py` に実装し，手計算・誤差表をコードコメントまたは既存の結果ファイルにまとめる。
 
 ### 基礎レベル
 1. `f(x)=x**2+3*x+1` の `f'(1)=5` を確認する。前進差分 `(f(x+h)-f(x))/h` と中心差分 `(f(x+h)-f(x-h))/(2*h)` を `h=1e-1, 1e-3` で比較し，絶対誤差を表にする。
