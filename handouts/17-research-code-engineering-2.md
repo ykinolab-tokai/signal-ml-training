@@ -14,18 +14,23 @@
 - draft PR は、まだ設計や確認が途中でも共有したいときに使う。最終版のふりをせず、未確定部分を先に明示することが重要である。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
 ### 基礎レベル
 1. 第16回の files があるリポジトリで `session17-pr-practice` branch を作成する。作業前に `git status` を確認し、どの branch で作業しているかを記録する。
 2. `test_session16_cli_logging_demo.py` を作成し、`subprocess` と `unittest` で第16回の CLI script が実行できること、`lr=0.001` がログに出ること、`outputs/session17_test_run` が作成されることを確認する test を書く。
 3. `python3 -m unittest test_session16_cli_logging_demo.py` を実行し、成功した結果を `session17_pr_checklist.md` に記録する。失敗した場合は、失敗内容と直した内容も残す。
 4. `session17_pr_checklist.md` に `## 変更目的`, `## 追加した test`, `## 確認方法`, `## review で見てほしい点` を書き、commit, push, draft PR 作成まで行う。PR 本文には `変更点`, `確認方法`, `未確認事項` を入れる。
 
+PRの宛先は自分の作業repoの `main`，比較元は `session17-pr-practice` とする。練習の追記は同じブランチにcommit・pushする。次回の通常作業の前に [PR練習後の手順](README.md#pr練習後に通常作業へ戻る)で `main` へ切り替え，同期する。レビュー待ちの変更は練習ブランチに残る。
+
 ### 発展レベル
 1. `session17_pr_checklist.md` に `## 残っているリスク` を追加し、この test では検出できない不具合を 2 つ書く。
 2. PR 本文または checklist に、「この test がどの regression を防ぎ、どの regression は防げないか」を 3 行以内で説明する。
 
 ## 確認ポイント
-- branch 名が `session17-pr-practice` である。
+- PRの比較元が `session17-pr-practice`，宛先が自分の作業repoの `main` である。
 - `python3 -m unittest test_session16_cli_logging_demo.py` が成功する。
 - draft PR が作成され、本文に `変更点`、`確認方法`、`未確認事項` がある。
 - `review で見てほしい点` と `残っているリスク` が書かれており、test の限界が明示されている。
