@@ -60,7 +60,7 @@
 - 学生に直接配布する資料は、すべて Markdown ファイルとして [`handouts/`](handouts/) に配置します。
 - HTML版は `python3 scripts/build_handouts.py` で生成できます。各回は `build/handouts/` 内の対応するHTMLファイル1つで配布でき、CSSなどの別添は不要です。全資料の確認には `build/handouts/index.html`、一括配布には `build/handouts.zip` を使います。詳細は [HTML生成の説明](scripts/README.md) を参照してください。
 - 第 25〜27 回の発展テーマ枠は、年度ごとに画像・音響・共通基盤のうち 1 テーマだけを選び、3 回に分けて扱います。各回の入口 handout は `handouts/25-...md` から `handouts/27-...md` に置き、候補テーマ別 handout は [`handouts/advanced/`](handouts/advanced/) に置きます。
-- 学生用の作業リポジトリは，[第1回の作成手順](handouts/01-environment-and-workflow.md#自分用リポジトリの作成)で [作業用テンプレート](https://github.com/ykinolab-tokai/signal-ml-work-template)から作ります。保存先と共有Python環境の使い方は [共通手順](handouts/README.md#作業場所と保存先)に従います。説明・結果はコードコメントや既存の結果ファイルに残し，別レポートは必要な課題で指定された場合だけ作ります。
+- 学生用の作業リポジトリは，[第1回の作成手順](handouts/01-environment-and-workflow.md#自分用作業リポジトリの作成)で [作業用テンプレート](https://github.com/ykinolab-tokai/signal-ml-work-template)から作ります。保存先と作業リポジトリ内のPython環境の使い方は [共通手順](handouts/README.md#作業場所と保存先)に従います。説明・結果はコードコメントや既存の結果ファイルに残し，別レポートは必要な課題で指定された場合だけ作ります。
 - 配布資料を執筆するための雛形は [`templates/session-template.md`](templates/session-template.md) に置きます。学生の解答用リポジトリを作るテンプレートとは別のものです。
 - README から各資料へのリンクは相対リンクで統一します。GitHub 上でも clone 後でも追いやすい構成を保つためです。
 

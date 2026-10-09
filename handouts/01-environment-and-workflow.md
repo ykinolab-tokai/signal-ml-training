@@ -4,7 +4,7 @@
 
 - ターミナルで現在地，ファイルパス，ディレクトリ構造を確認する。
 - Python 仮想環境を作成し，実行に使われる Python を確認する。
-- VS Code で `signal-ml-training` ディレクトリを開き，ターミナルとエディタを行き来しながら作業する。
+- VS Code で `signal-ml-work` ディレクトリを開き，ターミナルとエディタを行き来しながら作業する。
 - Git で作業状態を確認する最小手順を身につける。
 
 ## 解説
@@ -329,27 +329,42 @@ git config --global --list
 `user.name` と `user.email` は commit に記録される。
 自身の GitHub account と対応する情報にしておく。
 
+### 自分用作業リポジトリの作成
+
+環境構築と各回の解答の保存に使う，自分用の非公開作業リポジトリをテンプレートから作成する。
+
+1. GitHub にサインインし，[作業用テンプレート](https://github.com/ykinolab-tokai/signal-ml-work-template)を開く。
+2. **Use this template** → **Create a new repository** を選ぶ。
+3. **Owner** を `ykinolab-tokai`，**Repository name** を `signal-ml-work-<GitHubユーザー名>`（例：ユーザー名が `taro-lab` なら `signal-ml-work-taro-lab`），公開範囲を **Private** にして作成する。
+
+GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダ名は `signal-ml-work` とする。
+すでに作成・取得済みなら同じリポジトリを使う。
+
+テンプレートを開けない，Owner に `ykinolab-tokai` が表示されない，または作成できない場合は，担当教員に連絡する。
+
 ### 作業ディレクトリの作成とリポジトリの clone
 
-この教材では，
-作業場所をホームディレクトリの下にまとめる。
-例として `~/workspace` を作り，
-その中に教材用の `signal-ml-training` リポジトリや提出用リポジトリを clone する。
+この教材では，ホームディレクトリの下に作業場所 `~/workspace` を作り，
+その中に先ほど作成した自分用の作業リポジトリを以下のコマンドで clone する。
 
 ```bash
 mkdir -p ~/workspace
 cd ~/workspace
-git clone git@github.com:ykinolab-tokai/signal-ml-training.git
+git clone REPOSITORY_URL signal-ml-work
 ```
 
-このコマンドで `~/workspace/signal-ml-training` ディレクトリが作られ，教材ファイルとGitの管理情報が保存される。
-以降，この教材ではこの場所を `signal-ml-training` ディレクトリと呼ぶ。
-リポジトリを clone したら，次のコマンドで現在地とファイルを確認し，このディレクトリへ移動する。
+ここで `REPOSITORY_URL` は，
+作業リポジトリの **Code** → **SSH** ボタンからコピーしたURLに置き換える。
+
+このコマンドで `~/workspace/signal-ml-work` ディレクトリが作られ，
+作業用テンプレートのファイルとGitの管理情報が保存される。
+以降，この教材ではこの場所を `signal-ml-work` ディレクトリと呼ぶ。
+リポジトリを clone したら，次のコマンドでカレントディレクトリとファイルを確認し，このディレクトリへ移動する。
 
 ```bash
 pwd
 ls
-cd signal-ml-training
+cd signal-ml-work
 ls
 git status
 ```
@@ -375,13 +390,28 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv --version
 ```
 
-`signal-ml-training` ディレクトリで次を実行すると，
-`pyproject.toml` と `uv.lock` に従い
-Python 3.12 環境と `.venv` が用意される。
+まず，作業用リポジトリに環境定義ファイル `pyproject.toml` と `uv.lock` を用意する。
+この2ファイルがまだない場合は，認証済みの GitHub CLI を使い，教材リポジトリからファイルだけを取得する。
+すでに両方ある場合は，取得を省略して次の環境構築へ進む。
+
+```bash
+cd ~/workspace/signal-ml-work
+gh api -H 'Accept: application/vnd.github.raw+json' \
+  'repos/ykinolab-tokai/signal-ml-training/contents/pyproject.toml?ref=main' > pyproject.toml
+gh api -H 'Accept: application/vnd.github.raw+json' \
+  'repos/ykinolab-tokai/signal-ml-training/contents/uv.lock?ref=main' > uv.lock
+ls -l pyproject.toml uv.lock
+```
+
+両方の取得に成功し，ファイルが空でないことを確認する。エラーが出た場合は先へ進まず，アクセス権や通信状態を確認する。
+テンプレートの README に教材側の環境を使う説明が残っている場合も，環境構築はこの資料の手順に従う。
+
+続いて，`signal-ml-work` ディレクトリで次を実行する。
+`pyproject.toml` と `uv.lock` に従い，作業用リポジトリ内に Python 3.12 環境 `.venv` が用意される。
 
 ```bash
 uv python install 3.12
-uv sync
+uv sync --locked
 source .venv/bin/activate
 python --version
 which python
@@ -392,17 +422,18 @@ which python
 授業用の環境に入っている。
 
 
-### VS Code で教材のディレクトリを開く
+### VS Code で作業用リポジトリを開く
 
-`signal-ml-training` ディレクトリを VS Code で開くには，
+`signal-ml-work` ディレクトリを VS Code で開くには，
 Ubuntu（WSL）または Mac のターミナルで次を実行する。
 
 ```bash
-cd ~/workspace/signal-ml-training
+cd ~/workspace/signal-ml-work
 code .
 ```
 
 VS Code の Explorer に `pyproject.toml` と `uv.lock` が見えていることを確認する。
+取得した2ファイルは作業用リポジトリのGit管理に含める。`.venv/` は管理対象に含めない。
 
 WSL の場合は，VS Code の左下やウィンドウ名に
 `WSL: Ubuntu-24.04` のように表示されていることを確認する。
@@ -413,17 +444,17 @@ Python スクリプトの作成と実行は，後述の「最初の動作確認�
 ### VS Code の実行・デバッグ機能で `.venv` を使う（任意）
 
 以下は，VS Code の実行ボタンやデバッグ機能から，
-`signal-ml-training` ディレクトリ内の仮想環境 `.venv` にある Python を使いたい場合の任意の設定である。
-`signal-ml-training` ディレクトリを VS Code で開いてファイルを編集するだけの場合や，ターミナルで `uv run` を使う場合には，
+`signal-ml-work` ディレクトリ内の仮想環境 `.venv` にある Python を使いたい場合の任意の設定である。
+`signal-ml-work` ディレクトリを VS Code で開いてファイルを編集するだけの場合や，ターミナルで `uv run` を使う場合には，
 この設定は必要ない。「最初の動作確認」へ進んでよい。
 授業用の Python 環境は，どの実行方法でも「Python 環境の構築」で説明した `uv` で管理する。
 
-この設定を行う場合は，まず `signal-ml-training` ディレクトリで次を実行し，
+この設定を行う場合は，まず `signal-ml-work` ディレクトリで次を実行し，
 `pyproject.toml` と `uv.lock` に従って `.venv` を準備する。
 
 ```bash
-cd ~/workspace/signal-ml-training
-uv sync
+cd ~/workspace/signal-ml-work
+uv sync --locked
 ```
 
 VS Code の Python 実行・デバッグ機能を使うには，
@@ -433,17 +464,19 @@ Microsoft が提供しているものをインストールする。
 WSL の場合は，拡張機能画面で Ubuntu 側でも有効になっていることを確認し，
 `Install in WSL: Ubuntu-24.04` と表示される場合はそのボタンでインストールする。
 
-次に，この教材のコードを実行する Python を明示的に選ぶ。
+作業用リポジトリの `.vscode/settings.json` に `python.defaultInterpreterPath` がある場合は，
+その値を `${workspaceFolder}/.venv/bin/python` に変更する。
+次に，コードを実行する Python を明示的に選ぶ。
 
 1. Windows では `Ctrl+Shift+P`，Mac では `Cmd+Shift+P` で Command Palette を開く。
 2. `Python: Select Interpreter` を実行する。
-3. `signal-ml-training` ディレクトリ内の `.venv/bin/python` に対応する Python 3.12 を選ぶ。
+3. `signal-ml-work` ディレクトリ内の `.venv/bin/python` に対応する Python 3.12 を選ぶ。
 
 選択するパスの例は，WSL では
-`/home/yourname/workspace/signal-ml-training/.venv/bin/python`，
-Mac では `/Users/yourname/workspace/signal-ml-training/.venv/bin/python` である。
+`/home/yourname/workspace/signal-ml-work/.venv/bin/python`，
+Mac では `/Users/yourname/workspace/signal-ml-work/.venv/bin/python` である。
 `yourname` は自分の user name に読み替える。
-候補に `.venv` が見つからない場合は，`signal-ml-training` ディレクトリで `uv sync` が成功したことを確認し，
+候補に `.venv` が見つからない場合は，`signal-ml-work` ディレクトリで `uv sync --locked` が成功したことを確認し，
 Command Palette の `Developer: Reload Window` でウィンドウを再読み込みしてから選び直す。
 
 選択後，既存のターミナルをゴミ箱ボタンで終了し，
@@ -451,19 +484,19 @@ Command Palette の `Developer: Reload Window` でウィンドウを再読み込
 次を実行して，そのターミナルの現在地と Python を確認する。
 
 ```bash
-cd ~/workspace/signal-ml-training
+cd ~/workspace/signal-ml-work
 pwd
 which python
 python --version
 ```
 
-`pwd` が `signal-ml-training` ディレクトリのパス，`which python` がその中の `.venv/bin/python` のパス，
+`pwd` が `signal-ml-work` ディレクトリのパス，`which python` がその中の `.venv/bin/python` のパス，
 `python --version` が 3.12 系を示すことを確認する。
 新しいターミナルで仮想環境が自動的に有効にならない場合は，
-`signal-ml-training` ディレクトリで `source .venv/bin/activate` を実行し，もう一度確認する。
+`signal-ml-work` ディレクトリで `source .venv/bin/activate` を実行し，もう一度確認する。
 
 VS Code の実行ボタンで使われる Python も確認するため，
-次の 2 行を `signal-ml-training` ディレクトリ直下の `interpreter_check.py` として保存する。
+次の 2 行を `signal-ml-work` ディレクトリ直下の `interpreter_check.py` として保存する。
 
 ```python
 import sys
@@ -472,26 +505,26 @@ print(sys.executable)
 
 このファイルをエディタで開いた状態で，右上の `Run Python File in Terminal` を押す。
 同じ操作は，エディタ内を右クリックし，`Run` → `Python File in Terminal` からも選べる。
-表示されるパスが `signal-ml-training` ディレクトリ内の `.venv/bin/python` であることを確認する。
-異なる場合は `Python: Select Interpreter` で `signal-ml-training` ディレクトリ内の `.venv` にある Python を選び直す。
+表示されるパスが `signal-ml-work` ディレクトリ内の `.venv/bin/python` であることを確認する。
+異なる場合は `Python: Select Interpreter` で `signal-ml-work` ディレクトリ内の `.venv` にある Python を選び直す。
 
 `Run Python File in Terminal` は，VS Code で選択した Python を使ってファイルを実行する。
 デバッグ機能も，実行環境を個別に指定していなければ，この選択を使う。
-教材を更新して依存パッケージが変わった場合は，実行前に `signal-ml-training` ディレクトリで `uv sync` を行う。
+作業用リポジトリの環境定義ファイルを更新した場合は，実行前に `signal-ml-work` ディレクトリで `uv sync --locked` を行う。
 詳しくは [VS Code の Python 実行手順](https://code.visualstudio.com/docs/python/run) を参照する。
 
 ### 最初の動作確認
 
 環境構築後は，Pythonを実行できることまで確認する。
-まず `signal-ml-training` ディレクトリに移動し，スクリプトの保存先を作る。
+まず `signal-ml-work` ディレクトリに移動し，スクリプトの保存先を作る。
 
 ```bash
-cd ~/workspace/signal-ml-training
-mkdir -p exercises
+cd ~/workspace/signal-ml-work
+mkdir -p exercise
 ```
 
 次の Python スクリプトを
-`signal-ml-training` ディレクトリ内の `exercises/exc01_01.py` として保存する。
+`signal-ml-work` ディレクトリ内の `exercise/exc01_01.py` として保存する。
 
 ```python
 from pathlib import Path
@@ -515,44 +548,31 @@ plt.close()
 print("setup check completed")
 ```
 
-`signal-ml-training` ディレクトリで仮想環境を有効にして，保存したスクリプトを実行する。
+`signal-ml-work` ディレクトリで仮想環境を有効にして，保存したスクリプトを実行する。
 
 ```bash
-cd ~/workspace/signal-ml-training
+cd ~/workspace/signal-ml-work
 source .venv/bin/activate
-python exercises/exc01_01.py
+python exercise/exc01_01.py
 ```
 
-`setup check completed` と表示され，`signal-ml-training` ディレクトリ内に
+`setup check completed` と表示され，`signal-ml-work` ディレクトリ内に
 `outputs/setup_check/sin.png` が作られることを確認する。
 この画像を開いて正弦波が描かれていれば，動作確認は完了である。
-
-### 自分用リポジトリの作成
-
-第2回以降の解答を保存する，自分用の非公開リポジトリをテンプレートから作成する。
-
-1. GitHub にサインインし，[作業用テンプレート](https://github.com/ykinolab-tokai/signal-ml-work-template)を開く。
-2. **Use this template** → **Create a new repository** を選ぶ。
-3. **Owner** を `ykinolab-tokai`，**Repository name** を `signal-ml-work-<GitHubユーザー名>`（例：ユーザー名が `taro-lab` なら `signal-ml-work-taro-lab`），公開範囲を **Private** にして作成する。
-4. 作成した**自分用リポジトリ**の README にある「最初に一度だけ行うこと」に従い，`~/workspace/signal-ml-work` に clone して動作確認する。
-
-GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダ名は `signal-ml-work` とする。すでに作成・取得済みなら同じリポジトリを使い，`cd ~/workspace/signal-ml-work` と `code .` で開く。教材側の `.venv` を共用し，作業リポジトリ用の環境は作り直さない。
-
-テンプレートを開けない，Owner に `ykinolab-tokai` が表示されない，または作成できない場合は，担当教員に連絡する。
 
 ## 演習
 今回は環境構築を主とするため，追加の演習はありません。上の動作確認を完了してください。
 
-第1回の `exercises/exc01_01.py` と `outputs/setup_check/` は，教材用の仮想環境を確認するため `signal-ml-training` ディレクトリ内に置いてください。
-第2回以降の解答は，学生ごとの非公開の提出用リポジトリを clone したディレクトリに保存してください。
-教材用の `signal-ml-training` リポジトリと提出用リポジトリの役割・実行環境の使い方は [共通の作業場所](README.md#作業場所と保存先) を参照してください。
+第1回の `exercise/exc01_01.py` と `outputs/setup_check/`，第2回以降の解答は，
+すべて自分の作業用リポジトリ `signal-ml-work` 内に保存してください。
+保存先と実行環境の使い方は [共通の作業場所](README.md#作業場所と保存先) を参照してください。
 
 ## 確認ポイント
 - Ubuntu 24.04 LTS（Windowsの場合）とPython 3.12の環境を確認した。
-- `signal-ml-training` ディレクトリで `uv --version`，`python --version`，`which python` を確認し，`.venv` のPythonを使っている。
-- `exercises/exc01_01.py` を `signal-ml-training` ディレクトリから実行し，完了メッセージと `outputs/setup_check/sin.png` の正弦波を確認した。
-- `git status` で `signal-ml-training` リポジトリの変更状態を説明できる。
-- テンプレートから自分用の非公開リポジトリを作成し，その README の初期設定を完了した。
+- `signal-ml-work` ディレクトリで `uv --version`，`python --version`，`which python` を確認し，`.venv` のPythonを使っている。
+- `exercise/exc01_01.py` を `signal-ml-work` ディレクトリから実行し，完了メッセージと `outputs/setup_check/sin.png` の正弦波を確認した。
+- `git status` で `signal-ml-work` リポジトリの変更状態を説明できる。
+- テンプレートから自分用の非公開リポジトリを作成し，この資料に従って作業用リポジトリ内で環境構築と動作確認を完了した。
 - VS Codeの実行・デバッグ設定を選んだ場合だけ，`sys.executable` も確認した。設定を省略しても本回は完了できる。
 
 ## 詰まったときに見る資料

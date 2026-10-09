@@ -14,7 +14,7 @@
 - [sounddevice documentation](https://python-sounddevice.readthedocs.io/)
 - [librosa documentation](https://librosa.org/doc/latest/index.html)
 
-Pythonパッケージは教材リポジトリの共有環境に含まれる。[共通手順](README.md#python環境の準備更新と演習の実行)に従い，環境の同期は教材リポジトリで行い，演習は作業リポジトリで実行する。
+Pythonパッケージは授業用の環境定義に含まれる。[共通手順](README.md#python環境の準備更新と演習の実行)に従い，環境の同期と演習の実行は作業リポジトリで行う。実行時には，作業リポジトリ内の `.venv` を有効にする。
 
 Linuxで音声入出力に必要なOS側ライブラリをまだ準備していない場合は，次を実行する。これはPython環境の同期とは別の操作である。
 ```bash
