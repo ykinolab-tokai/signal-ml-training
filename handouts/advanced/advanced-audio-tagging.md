@@ -40,6 +40,11 @@ lossへはsigmoid前のlogitsを渡す。学習時は `model.train()`、予測�
 軸は第22回と同じく時間 [秒] とメル帯域番号とする。この固定8件での結果を未知の音声への性能とは解釈しない。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
+このテーマでは，複数条件の結果と解釈をまとめて参照するため，下で指定する比較レポートを作る。数値や図は保存先を参照し，既存ファイルの内容を転記しない。第26回の比較記録からもこのレポートを参照する。
+
 ### 基礎レベル
 1. `advanced_audio_tagging_demo.py` を作成し、multi-label target を持つ synthetic audio tagging dataset と log-mel 入力の小さな model を実装する。dataset は 8 サンプルにする。
 2. target shape と model 出力 shape がどちらも `(batch, 2)` になることを確認し、`BCEWithLogitsLoss` で10 epoch学習する。

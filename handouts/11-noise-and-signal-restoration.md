@@ -17,9 +17,9 @@
 
 ## 演習
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
-`scripts/session11_noise_restoration.py` と `outputs/session11/session11_report.md` を作る。
+`scripts/session11_noise_restoration.py` に実装し，結果と説明はコードコメントまたは既存の結果ファイルに残す。
 
 ### 基礎レベル
 1. 上の2点のMSEを手計算する。次に $F_s=1000$ Hz，1秒，`t=np.arange(1000)/1000` で真の信号 `clean=sin(2*pi*5*t)+0.5*sin(2*pi*40*t)` を作る。seed=0，平均0，標準偏差 `sigma=0.5`（分散0.25）のガウス雑音 `noise` を加え，観測 `noisy` を作る。

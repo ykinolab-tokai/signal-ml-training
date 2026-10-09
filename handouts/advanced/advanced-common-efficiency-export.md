@@ -44,11 +44,16 @@ exportは `traced_model = torch.jit.trace(model, x)`、保存は `traced_model.s
 今回は分岐のない固定モデルを扱う。入力値に依存するPythonの分岐を含むモデル一般に、このtrace結果をそのまま適用できるとは限らない。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
+このテーマでは，複数条件の結果と解釈をまとめて参照するため，下で指定する比較レポートを作る。数値や図は保存先を参照し，既存ファイルの内容を転記しない。第26回の比較記録からもこのレポートを参照する。
+
 ### 基礎レベル
 1. `advanced_common_efficiency_export.py` を作成し、10 次元 logits を返す小さな model と batch size 64 の固定入力を用意して、warm-up 後に複数回の推論時間を測定する。
 2. batch size を 1 と 64 で比較し、1 回あたり時間と 1 サンプルあたり時間を分けて計算する。
 3. `torch.jit.trace` で model を TorchScript 化し、`advanced_common_traced_model.pt` として保存する。trace 前後で出力 shape が一致することを確認する。
-4. `advanced_common_profile_summary.txt` と `advanced_common_efficiency_report.md` を作成し、測定条件、平均時間、batch size による見え方の違い、trace 前後の確認結果を書く。
+4. `advanced_common_profile_summary.txt` に測定条件，平均時間，trace 前後の確認結果を保存する。`advanced_common_efficiency_report.md` ではこの結果ファイルを参照し，batch size による見え方の違いを説明する。
 
 ### 発展レベル
 1. 測定回数を変えた場合に平均値がどれくらい揺れるかを確認する。
