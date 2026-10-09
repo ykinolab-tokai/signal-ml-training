@@ -21,9 +21,8 @@ Pillow は PIL (Python Imaging Library) を引き継ぐ画像処理ライブラ�
 
 ## インストール
 
-```bash
-python -m pip install Pillow
-```
+Pillow は教材repoの共有環境に含まれる。
+教材repoの共有Python環境を使う。準備・更新は教材repoで行い，演習は作業repoのルートで教材側の `.venv` を有効にして実行する。手順と保存先は [共通手順](../../handouts/README.md#作業場所と保存先)を参照する。
 
 ```python
 from PIL import Image, ImageDraw, ImageFilter

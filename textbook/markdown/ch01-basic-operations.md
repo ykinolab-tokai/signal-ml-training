@@ -132,96 +132,99 @@ B3の毎週の通常提出では必須にしません．
 実際にこれらの操作を行って，理解を深めましょう．
 
 ## 実践 GitHub
-このゼミでは，GitHub上のrepoを役割ごとに分けて使います．
-- 共通 repo: 教材配布，見本コード，共通資産の参照先
-- submission repo: 各学生が通常提出を残すための private repo
 
-B3の通常提出では，forkは使いません．
-学期の最初に共通 repo と自分の submission repo をそれぞれ clone し，
-毎週の提出では自分の submission repo で `edit -> commit -> push` を繰り返します．
-pull request は練習として体験しますが，通常提出のたびに作る必要はありません．
+このゼミでは，教材repoと自分の作業repo（提出repo／submission repo）を分けて使う。
+第1回の [自分用リポジトリの作成](../../handouts/01-environment-and-workflow.md#自分用リポジトリの作成)で，
+`ykinolab-tokai` 所有の非公開 `signal-ml-work-<GitHubユーザー名>` を作成し，
+作成したrepoのREADMEに従って `~/workspace/signal-ml-work` にcloneする。
+教材repoは `~/workspace/signal-ml-training` に置く。
+取得済みなら，もう一度cloneせず次の手順で既存の作業repoを開く。
+未作成・未取得なら，先に第1回と作業repoのREADMEの手順を完了する。
 
-これらの操作の多くは，**コマンド**で行うことができます．
-以下の手順に従って操作をしてみましょう．
+### 通常作業を始める
 
-1. ターミナル (Windowsの場合はWSL2) を起動する
-1. `cd`コマンドを使い，作業ディレクトリをホームディレクトリに変更する
-   ```
-   $ cd ~/
-   ```
+以下のコマンドはターミナル（WindowsではWSLのUbuntu）で実行する。
 
-2. 共通 repo と自分の submission repo をホームディレクトリに clone する
-   ```
-   $ git clone <common-repo-url>
-   $ git clone <submission-repo-url>
-   $ cd <submission-repo-name>
-   ```
-   共通 repo は教材を見るためのもの，submission repo は提出物を置くためのものです．
-1. 初めて git を使う人は，以下のコマンドを実行します
-   ```
-   $ git config --global user.name "<ユーザ名>"
-   $ git config --global user.email "<メールアドレス>"
-   ```
+```bash
+cd ~/workspace/signal-ml-work
+code .
+git status
+```
 
-3. まずは通常提出の流れとして，submission repo の default branch で作業する
-4. 自分用の提出ディレクトリを作る．下記のコマンドを実行して，新しいディレクトリを作成し，ターミナルの作業ディレクトリを作成したディレクトリに移動できます．
+通常作業は `main` で行う。他のブランチで練習していた場合は，後述の「PR練習後に通常作業へ戻る」を先に行う。
+Gitの名前・メールアドレスをまだ設定していない場合は，自分の情報を設定する。
 
-   今後，課題で作成するプログラムなどはすべて submission repo 内の提出ディレクトリに追加していきます．
-   ```
-   $ mkdir -p session-17
-   $ cd session-17
-   ```
-5. 作成したディレクトリに，`q01.txt`というファイルを作成してみましょう．
+```bash
+git config --global user.name "<ユーザ名>"
+git config --global user.email "<メールアドレス>"
+```
 
-   Vimというソフトウェアを使うと，ターミナル上でテキストファイルを作成したり編集したりできます．
-   以下のコマンドを入力してください．
-   ```
-   $ vim q01.txt
-   ```
-   q01.txtというファイルが作成され，中身を変更できます．
-   ただし，vimを使って文字を入力するには，まず`i`キーを押して入力モードに移行する必要があります．
-   入力モードを終わり，元々のノーマルモードに戻るには`Esc`キーを押します．
-   ノーマルモードの状態で，`:wq`と入力しエンターキーを押すと，ファイルが保存されVimが終了します．  
+この章の操作練習では，作業repo内に `exercise/git-practice.txt` を作り，例えば「Gitの操作を確認した」と書く。
+VS Codeで作成してよい。ターミナルで作る場合は次を実行する。
 
-   VSCodeを使ってディレクトリやファイルを操作することもできます．
-   以下のコマンドを実行すると submission repo のディレクトリをVSCodeで開くことができます．
-   ```
-   $ code ~/<submission-repo-name>
-   ```
-   今後，課題の回答として作成するファイル名やディレクトリ名は，各回の handout の指示に従ってください．
-   たとえば `session-17/q01.txt` や `session-18/answer.py` のように，回ごとの提出物をまとめておくと管理しやすくなります．
+```bash
+mkdir -p exercise
+vim exercise/git-practice.txt
+```
 
-6. 新しく書いたコードを git の管理対象に追加（アッド）する
-   ```
-   $ git add q01.txt
-   ```
-7. コミットし，変更を記録する
+Vimでは `i` で入力を始め，入力後に `Esc`，`:wq`，Enterの順で保存して終了する。
+現在地は作業repoのルートのままにする。
+演習コードと結果の保存規則は [共通手順](../../handouts/README.md#作業場所と保存先)に従う。
+Pythonを実行するときは，教材側の環境を有効にする。
 
-   コミットメッセージは「XX章q00を追加」などわかりやすい文章にしてください．
-   ```
-   $ git commit -m "session-17"
-   ```
-8. submission repo の default branch に push する
-   ```
-   $ git push origin main
-   ```
+```bash
+source ../signal-ml-training/.venv/bin/activate
+```
 
-   これがB3の通常提出の基本形です．
+作成・変更したファイルを確認して，記録・送信する。
+
+```bash
+git status
+git add exercise/git-practice.txt
+git commit -m "Record Git practice"
+git push origin main
+```
+
+通常の演習でも，対象ファイル名をその回に作成・変更したものへ置き換えて `edit -> commit -> push` を行う。
+forkや毎回のPR作成は不要である。
 
 ### pull request の練習
-pull request は，通常提出のたびには使いませんが，
-GitHub の機能を知るために 1 回は練習しておくと役に立ちます．
 
-```
-$ git checkout -b pr-practice
-$ git add <changed-files>
-$ git commit -m "pr practice"
-$ git push -u origin pr-practice
+`main` の作業をcommit・pushし，未commitの変更がないことを `git status` で確認してから，練習ブランチを作る。
+
+```bash
+git switch -c pr-practice
 ```
 
-このあと GitHub 上で `pr-practice` ブランチから pull request を作成し，
-「変更点」「確認方法」「未確認事項」を短く書いてみてください．
+`exercise/git-practice.txt` に「PRの差分を確認する」と追記し，保存してから次を実行する。
 
-以上が，このゼミでの GitHub 利用の流れです．
-次章以降の課題に取り組む際にも，通常提出は submission repo で行い，
-教材の確認は共通 repo と各回の handout を参照してください．
+```bash
+git add exercise/git-practice.txt
+git commit -m "Record PR practice"
+git push -u origin pr-practice
+```
+
+GitHub上で，**自分の作業repoの `main` を宛先（base）**，`pr-practice` を比較元（compare）にしたPRを作成する。
+PR本文に「変更点」「確認方法」「未確認事項」を書く。
+教材repoや作業テンプレートrepoへ送るPRではない。
+練習の追記・レビューへの修正は同じ練習ブランチにcommitしてpushする。
+
+### PR練習後に通常作業へ戻る
+
+次回の通常作業の前に，練習ブランチの変更を保存・commit・pushしてから次を実行する。
+
+```bash
+git status
+# Continue only with a clean working tree
+git switch main
+git pull --ff-only origin main
+git status
+```
+
+最後の表示が `main` であることを確認してから，次回のファイルを編集する。
+PRがマージ済みなら，同期後の `main` に練習の変更も含まれる。
+レビュー待ちなら，変更は練習ブランチに残り，まだ `main` には含まれない。
+ブランチは残し，修正するときは `git switch pr-practice` で戻る。
+次回の作業が未マージの変更を必要とする場合は，先にレビューとマージの扱いを担当者に確認する。
+切り替えや同期が失敗した場合はエラーを確認し，変更を削除して進めない。
+練習ブランチでcommitした変更は，`git push origin main` では送信されないことにも注意する。
