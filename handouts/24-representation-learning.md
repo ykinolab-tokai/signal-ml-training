@@ -14,11 +14,14 @@
 - embedding の散布図は見た目の確認に便利だが、見た目だけでは曖昧なこともある。平均 cosine similarity のような数値を添えると変化を説明しやすい。
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
 ### 基礎レベル
 1. `session24_representation_learning.py` を作成し、指定された positive pair データ、2 次元 encoder、`CosineEmbeddingLoss` を使って 50 step 学習する。
 2. 学習前後の embedding をそれぞれ `outputs/figures/session24_embeddings_before.png`, `outputs/figures/session24_embeddings_after.png` に保存する。同じ pair が対応して見えるように色や marker を工夫する。
 3. positive pair の平均 cosine similarity を学習前後で計算する。
-4. `session24_representation_learning_report.md` に `## 学習設定`, `## 学習前の embedding`, `## 学習後の embedding`, `## cosine similarity の比較` を書き、散布図と数値が対応しているかを説明する。
+4. 学習設定，学習前後の embedding の図のファイル名，cosine similarity を記録し，散布図と数値の対応をコードコメントまたは既存の結果ファイルに説明する。
 
 ### 発展レベル
 1. `x2` の並びを 1 つずらした negative pair を作り、学習後 embedding で平均 cosine similarity を計算する。
@@ -28,7 +31,7 @@
 ## 確認ポイント
 - encoder の出力次元が `2` である。
 - `session24_embeddings_before.png` と `session24_embeddings_after.png` が保存されている。
-- report に、散布図の見た目と cosine similarity の両方の説明がある。
+- コードコメントまたは既存の結果ファイルに、散布図の見た目と cosine similarity の両方の説明がある。
 - 発展課題で、positive と negative の違いを loss の目的と結びつけて説明している。
 
 ## 詰まったときに見る資料

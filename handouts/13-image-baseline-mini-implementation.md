@@ -31,11 +31,11 @@
 
 ### 基礎レベル（必須）
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
 1. どちらか1つを選び，`scripts/session13_signal_project.py` を作成する。入力生成，基準手法，条件を1つ変えた処理，MSE計算を順に実行する。画像を選んだ場合はPSNRも計算する。
 2. 入力・基準手法・条件変更後の結果を同じ尺度で並べ，`outputs/figures/session13_comparison.png` に保存する。音は横軸を秒，画像は表示範囲を `[0,1]` にそろえる。正解も比較図に含める。
-3. `outputs/session13/session13_report.md` に `## 入力と生成条件`，`## 基準手法と比較条件`，`## 結果` を書く。seed，shape，サンプリング周波数または画素値の範囲，MSEの一覧，変更の影響，実行コマンドを記す。実行は提出repoのルートから `python scripts/session13_signal_project.py` とする。
+3. 入力と生成条件，基準手法と比較条件，結果をコードコメントまたは既存の結果ファイルに残す。seed，shape，サンプリング周波数または画素値の範囲，MSEの一覧，変更の影響，実行コマンドを記す。実行は作業repoのルートから `python scripts/session13_signal_project.py` とする。
 
 ### 発展レベル（任意・1つ選択）
 
