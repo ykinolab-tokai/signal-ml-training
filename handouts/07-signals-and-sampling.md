@@ -198,9 +198,9 @@ def quantize(x, n_bits, x_min=-1.0, x_max=1.0):
 
 ## 演習
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
-`scripts/session07_sampling.py` と `outputs/session07/session07_report.md` に計算・予測・図の説明を保存する。
+`scripts/session07_sampling.py` に実装し，計算結果・予測・図の説明はコードコメントまたは既存の結果ファイルに保存する。
 
 ### 基礎レベル
 1. $F_s=44100$ Hzの標本化周期と5秒間の標本数を手計算する。コードの時刻は `np.arange(N)/Fs` とし，終点を重複させない。
