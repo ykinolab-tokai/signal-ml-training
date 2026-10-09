@@ -5,9 +5,8 @@
 - 運用: このテーマを選んだ年度は、第 25〜27 回の 3 回を使って `CPU profiling` と `TorchScript export` を扱う。画像・音響・共通基盤を同じ年度にすべて扱う前提にはしない。
 
 ## この回の目標
-- baseline 推論時間を測定し、平均値を記録できる。
-- `torch.jit.trace` で TorchScript 化して保存できる。
-- batch size が推論時間の見え方にどう影響するかを説明できる。
+
+推論時間を測定して batch size の影響を説明し，モデルを TorchScript 形式で保存できる。
 
 ## 解説
 - profiling では 1 回だけ測るとばらつきが大きい。warm-up の後で複数回測り、平均を取ると比較しやすい。

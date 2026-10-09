@@ -4,9 +4,8 @@
 - 種別: 前期発展枠 / 準固定
 
 ## この回の目標
-- `linear_probe`, `partial_ft`, `full_ft` の違いをコードで比較できる。
-- trainable parameter 数を数え、どこを学習対象にしたかを対応づけて説明できる。
-- データ量や初期モデルへの信頼度に応じて、どの条件から試すかを説明できる。
+
+転移学習で更新するパラメータの範囲を比較し，データと初期モデルに応じた選び方を説明できる。
 
 ## 解説
 - transfer learning では、すでに学習済みの表現をどこまで残すかが重要になる。`linear probe` は head だけ、`partial fine-tuning` は一部の層と head、`full fine-tuning` は全層を更新する。

@@ -4,9 +4,8 @@
 - 種別: 前期発展枠 / 準固定
 
 ## この回の目標
-- toy な pair データで contrastive learning の最小学習を実行できる。
-- 学習前後の embedding を可視化できる。
-- pair を近づける loss が、embedding 空間で何を起こしているかを説明できる。
+
+contrastive learning を実装し，学習による embedding の変化を説明できる。
 
 ## 解説
 - representation learning では、分類ラベルを直接当てる代わりに、似ているものは近く、異なるものは遠くに配置される表現を学ぶことが多い。

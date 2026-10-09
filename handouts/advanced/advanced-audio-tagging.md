@@ -5,9 +5,8 @@
 - 運用: このテーマを選んだ年度は、第 25〜27 回の 3 回を使って `tagging` を扱う。画像・音響・共通基盤を同じ年度にすべて扱う前提にはしない。
 
 ## この回の目標
-- clip-level audio tagging における multi-label target と logits の対応を説明できる。
-- log-mel 入力の最小 tagging pipeline を実装できる。
-- sigmoid 後の確率と threshold の関係を説明できる。
+
+音響 tagging を実装し，ラベル・モデル出力・判定閾値の関係を説明できる。
 
 ## 解説
 - audio tagging は「どのクラスが含まれるか」を複数同時に判定することがある。そのため target は one-hot ではなく multi-hot になり、各次元は独立に解釈する。
