@@ -56,27 +56,12 @@ Google Colab は，Pythonをさっと書いて実行結果を確認する目的�
 そこで，本研修では，みなさんのPC上で Python を実行するやり方に慣れてもらおうと思います．
 
 
-まず，以下のコマンドを入力し，Python を実行するための仮想環境を構築します．
+教材repoの共有Python環境を使う。準備・更新は教材repoで行い，演習は作業repoのルートで教材側の \texttt{.venv} を有効にして実行する。手順と保存先は \href{https://github.com/ykinolab-tokai/signal-ml-training/blob/main/handouts/README.md}{共通手順}を参照する。
+新しい仮想環境は作らず，第1回で用意した環境を使う。
 
 \begin{lstlisting}[style=codecell]
-$ mkdir -p ~/workspace/python-basics
-$ cd ~/workspace/python-basics
-$ python3 -m venv .venv
-\end{lstlisting}
-
-Python の実行環境とは，Python のプログラムを実行するために必要となるソフトウェアの組み合わせを指します．
-
-また，仮想環境とは，簡単に言ってしまえば本研修のための専用環境のことです．
-
-普通 Python の実行環境は一台のPCにつき1つのみですが，
-
-仮想環境は一台のPC上にいくつも作ることができます．
-
-
-仮想環境を有効にするには以下のコマンドを入力します．
-
-\begin{lstlisting}[style=codecell]
-$ source .venv/bin/activate
+cd ~/workspace/signal-ml-work
+source ../signal-ml-training/.venv/bin/activate
 \end{lstlisting}
 
 仮想環境が有効になった状態で\texttt{python}と入力すると，
@@ -1481,12 +1466,12 @@ Python には，テキストファイルに記述された Python プログラ�
 一度，Python インタプリタを\texttt{exit()}により終了し，以下のコマンドを入力しましょう．
 
 \begin{lstlisting}[style=codecell]
-$ mkdir -p ~/workspace/python-basics/ch02
-$ cd ~/workspace/python-basics/ch02
+$ cd ~/workspace/signal-ml-work
+$ mkdir -p exercise
 \end{lstlisting}
 
 
-その後，\texttt{sample.py}という名前のテキストファイルを作成して，以下のプログラムを書き込みましょう．
+その後，\texttt{exercise/sample.py}という名前のテキストファイルを作成して，以下のプログラムを書き込みましょう．
 
 
 \begin{lstlisting}[style=codecell,language=Python]
@@ -1506,7 +1491,7 @@ print(s)
 すなわち，以下のコマンドを入力します．
 
 \begin{lstlisting}[style=codecell]
-$ python sample.py
+$ python exercise/sample.py
 \end{lstlisting}
 
 すると，すべての行が実行され，\texttt{s} の値が画面に表示されます．

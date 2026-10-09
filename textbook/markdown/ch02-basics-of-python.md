@@ -33,21 +33,14 @@ Google Colab は，Pythonをさっと書いて実行結果を確認する目的�
 一方，コードが長く複雑になってくると，Google Colab 上でプログラミングするのは難しくなってきます．
 そこで，本研修では，みなさんのPC上で Python を実行するやり方に慣れてもらおうと思います．
 
-まず，以下のコマンドを入力し，Python を実行するための仮想環境を構築します．
-```
-$ mkdir -p ~/workspace/python-basics
-$ cd ~/workspace/python-basics
-$ python3 -m venv .venv
-```
-Python の実行環境とは，Python のプログラムを実行するために必要となるソフトウェアの組み合わせを指します．
-また，仮想環境とは，簡単に言ってしまえば本研修のための専用環境のことです．
-普通 Python の実行環境は一台のPCにつき1つのみですが，
-仮想環境は一台のPC上にいくつも作ることができます．
+教材repoの共有Python環境を使う。準備・更新は教材repoで行い，演習は作業repoのルートで教材側の `.venv` を有効にして実行する。手順と保存先は [共通手順](../../handouts/README.md#作業場所と保存先)を参照する。
+新しい仮想環境は作らず，第1回で用意した環境を使う。
 
-仮想環境を有効にするには以下のコマンドを入力します．
+```bash
+cd ~/workspace/signal-ml-work
+source ../signal-ml-training/.venv/bin/activate
 ```
-$ source .venv/bin/activate
-```
+
 仮想環境が有効になった状態で`python`と入力すると，
 Python プログラムを1行ごとに入力・実行できる対話型のインタープリタが起動します．
 インタープリタを終了するには以下のように入力します．
@@ -1223,11 +1216,11 @@ Python には，テキストファイルに記述された Python プログラ�
 
 一度，Python インタプリタを`exit()`により終了し，以下のコマンドを入力しましょう．
 ```
-$ mkdir -p ~/workspace/python-basics/ch02
-$ cd ~/workspace/python-basics/ch02
+$ cd ~/workspace/signal-ml-work
+$ mkdir -p exercise
 ```
 
-その後，`sample.py`という名前のテキストファイルを作成して，以下のプログラムを書き込みましょう．
+その後，`exercise/sample.py`という名前のテキストファイルを作成して，以下のプログラムを書き込みましょう．
 
 ```python
 array = [50, 80, 40]
@@ -1243,7 +1236,7 @@ print(s)
 このプログラムを実行するには，`python`コマンドの後ろに，プログラムを記述したファイルの名前を入力します．
 すなわち，以下のコマンドを入力します．
 ```
-$ python sample.py
+$ python exercise/sample.py
 ```
 すると，すべての行が実行され，`s` の値が画面に表示されます．
 

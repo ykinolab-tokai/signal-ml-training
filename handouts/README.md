@@ -25,11 +25,56 @@
 ## 作業場所と保存先
 
 - **教材repo**（`signal-ml-training`）は，教材・見本・共通の依存関係を読む場所とする。第1回の環境確認サンプルだけは，このrepoの `exercises/` に保存する。
-- **提出repo**（学生ごとの非公開のsubmission repo）は，第2回以降の解答を保存・提出する場所とする。URLと実際のフォルダ名は授業で指定されたものを使い，不明な場合は担当者に確認する。
-- 第2〜13回の `scripts/`，`outputs/`，`data/` は，特記がない限り**提出repoのルートからの相対パス**である。コードは `scripts/sessionXX_名前.py`，説明と数値結果は `outputs/sessionXX/sessionXX_report.md`，図・音声は各回で指定した `outputs/` 以下へ保存する。
-- 教材repoの `.venv` を利用する。第1回と同じ場所に教材repoを置いた場合，提出repoのルートで `source ~/workspace/signal-ml-training/.venv/bin/activate` を実行してから `python scripts/ファイル名.py` を使える。`.venv` を提出repoへコピーしたり，毎回作り直したりする必要はない。教材repoを別の場所に置いた場合はそのパスに読み替える。
-- `data/cat.png` や `data/piano.wav` を使う回では，教材repoの同名ファイルを提出repoの `data/` へコピーする。入力ファイルと自分が生成した `outputs/` を区別する。
-- 各回の出力ディレクトリは，保存前に `Path(...).mkdir(parents=True, exist_ok=True)` などで作る。実行時の現在地は提出repoのルートにそろえる。
+- **作業repo**（提出repo／submission repo）は，[第1回の作成手順](01-environment-and-workflow.md#自分用リポジトリの作成)で学生本人が作る非公開repoで，第2回以降の解答と結果を保存する。所有者は `ykinolab-tokai`，GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダは `~/workspace/signal-ml-work` とする。取得済みならそのフォルダを開き，重ねてcloneしない。
+- 第2回以降と補足の課題にある相対パスは，特記がない限り**作業repoのルートからの相対パス**である。標準はコードが `exercise/excXX_YY.py`（回番号・問題番号は2桁），図・音声・数値結果が `outputs/` 以下。各回が `scripts/sessionXX_名前.py` などを指定した場合は，その指定を優先する。`session13_image_baseline.py` のようにフォルダなしでファイル名だけを指定した場合は，作業repoのルートに置く。
+- 説明・予測・結果の解釈は，該当コードのコメントまたは既存の結果ファイルに残す。数値は項目名・条件とともに保存し，同じ内容を別ファイルへ転記しない。**別レポートは，複数条件の比較などで必要な課題がファイル名と記載内容を指定した場合だけ作る。** チェックリストや再実行手順が指定されている場合も，同じ説明は既存のコード・結果への参照でよい。
+- `data/cat.png` や `data/piano.wav` を使う回では，教材repoの同名ファイルを作業repoの `data/` へコピーする。入力ファイルと自分が生成した `outputs/` を区別する。
+- 各回の出力ディレクトリは，保存前に `Path(...).mkdir(parents=True, exist_ok=True)` などで作る。実行時の現在地は作業repoのルートにそろえる。
+
+### Python環境の準備・更新と演習の実行
+
+Python環境の初回準備は第1回で行う。教材更新後の依存関係の同期は，教材repoで行う。
+
+```bash
+cd ~/workspace/signal-ml-training
+uv sync --locked
+```
+
+演習は作業repoで，教材側の `.venv` を有効にして実行する。新しいターミナルを開いたら次を行う。
+
+```bash
+cd ~/workspace/signal-ml-work
+source ../signal-ml-training/.venv/bin/activate
+pwd
+which python
+```
+
+`pwd` が作業repo，`which python` が教材repoの `.venv/bin/python` を指すことを確認する。
+例えば第2回第1問は `python exercise/exc02_01.py` で実行する。各回が別のパスを指定している場合は読み替える。
+`.venv` を作業repoへコピーしたり，毎回作り直したりする必要はない。配置を変えた場合は実際のパスを使う。
+OS側の音声ライブラリ等はPython環境とは別に準備する。各回の案内に従う。
+
+### PR練習後に通常作業へ戻る
+
+PRの宛先は**自分の作業repoの `main`** とし，比較元にその回の練習ブランチを選ぶ。
+練習中の追記・修正はその練習ブランチにcommitしてpushする。未commitの変更がある場合は，保存先を確認してそのブランチでcommitしてから切り替える。
+
+次回の通常作業を始める前に，作業repoのルートで次を実行する。
+
+```bash
+git status
+# Continue only with a clean working tree
+git switch main
+git pull --ff-only origin main
+git status
+```
+
+最後の表示が `main` であることを確認してから，次回のファイルを編集する。
+PRがマージ済みなら，同期後の `main` に練習の変更も含まれる。
+レビュー待ちなら変更は練習ブランチに残り，まだ `main` には含まれない。ブランチは残し，修正が必要なときだけ戻ってcommit・pushする。
+次回の作業がその未マージの変更を必要とする場合は，先にレビューとマージの扱いを担当者に確認する。
+切り替えや同期が失敗した場合はエラーを確認し，変更を削除して進めない。
+通常作業は `main` で `edit -> commit -> push` を行う。毎回PRを作る必要はない。
 
 ## 演習の進め方
 
@@ -37,7 +82,7 @@
 2回目の参加となるB4・M1・M2の学生は，基礎・発展の区分にかかわらず，昨年度取り組まなかった，または解けなかった演習に取り組む。
 参加回数に応じたこの方針は [README](../README.md#配布資料とテンプレート) に従う。
 どの演習でも，実行前の予測，実装，結果の確認を一組として扱う。問題数は各回の目標に合わせ，7問ずつには固定しない。
-保存やレポート作成は各課題の完了条件であり，別の追加問題として数えない。
+結果の保存や必要な課題でのレポート作成は，各課題の完了条件であり，別の追加問題として数えない。
 授業時間内に終わらなかった作業の扱い・提出期限は授業の指定に従う。
 
 ## 旧資料の吸収方針

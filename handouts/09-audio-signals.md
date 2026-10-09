@@ -14,13 +14,13 @@
 - [sounddevice documentation](https://python-sounddevice.readthedocs.io/)
 - [librosa documentation](https://librosa.org/doc/latest/index.html)
 
-Linux 環境であれば，次のコマンドで必要なライブラリと Python パッケージをインストールできる．
+Pythonパッケージは教材repoの共有環境に含まれる。[共通手順](README.md#python環境の準備更新と演習の実行)に従い，環境の同期は教材repoで行い，演習は作業repoで実行する。
+
+Linuxで音声入出力に必要なOS側ライブラリをまだ準備していない場合は，次を実行する。これはPython環境の同期とは別の操作である。
 ```bash
 sudo apt update
 sudo apt install -y libportaudio2 pulseaudio-utils alsa-utils libasound2-plugins libsndfile1 ffmpeg
-pip install soundfile sounddevice librosa
 ```
-Python仮想環境を作成している場合は，仮想環境を有効にしてから `pip install` を実行する．
 
 ### 1. sounddevice を用いた音信号の再生と収録
 
@@ -344,6 +344,9 @@ plt.close()
 ```
 
 ## 演習
+
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
+
 基本的にはプログラム (Python) を使って取り組むことを想定しています．
 
 ### 基礎レベル
