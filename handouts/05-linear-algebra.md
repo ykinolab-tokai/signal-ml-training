@@ -15,15 +15,15 @@
 
 ## 演習
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
-`scripts/session05_linear_algebra.py` と `outputs/session05/session05_report.md` に計算と説明を保存する。
+`scripts/session05_linear_algebra.py` に実装し，計算結果と説明はコードコメントまたは既存の結果ファイルに保存する。
 
 ### 基礎レベル
 1. `A=np.arange(6).reshape(2,3)`，`B=np.arange(6).reshape(3,2)`，`v=np.array([1,2,3])` とする。`A@B`，`B@A`，`A@v`，`B@v`，`A+B` の可否と結果のshapeを予想する。可能なものを計算し，不可能なものはどの次元が合わないか説明する。
 2. `u=np.array([1,2])`，`v=np.array([3,-1])` の内積・ノルムを計算する。`v` の `u` 方向への射影 `p=(u@v)/(u@u)*u` を手計算してから実装し，`u@(v-p)` が0に近いことを確かめる。
 3. `C=np.array([[2,1],[1,3]])`，`b=np.array([1,-2])` として `C@x=b` を `np.linalg.solve` で解く。残差 `C@x-b` と，`np.linalg.inv(C)@b` との差を確認する。浮動小数点の比較には `np.allclose` を用いる。
-4. shapeの予測表，射影の手計算と結果，連立方程式の残差をレポートへまとめる。
+4. shapeの予測表，射影の手計算と結果，連立方程式の残差をコードコメントまたは既存の結果ファイルへまとめる。
 
 ### 発展レベル（1項目を選択）
 1. `C` と `D=np.array([[0,1],[2,1]])` で `C@D` と `D@C` を比較する。
@@ -35,7 +35,7 @@
 ## 確認ポイント
 - 演算可能性を値の計算前にshapeから判断できる。
 - 射影の残差は射影先のベクトルと直交し，連立方程式の残差は0に近い。
-- 手計算・数値比較・レポートが対応している。
+- 記録した手計算・数値比較・説明が対応している。
 
 ## 詰まったときに見る資料
 - [`../textbook/markdown/ch06a-basics-of-linear-algebra.md`](../textbook/markdown/ch06a-basics-of-linear-algebra.md)

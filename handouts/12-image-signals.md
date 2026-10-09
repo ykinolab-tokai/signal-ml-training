@@ -12,7 +12,7 @@
 
 この回では，画像の操作のために Python のライブラリ `Pillow` を使用する．
 
-第1回の教材repoで `uv sync --locked` を行い，共通の `.venv` を使う。
+Python環境の準備・更新は教材repoで行う。演習は作業repoで教材側の `.venv` を有効にして実行する。手順は [共有Python環境](README.md#python環境の準備更新と演習の実行)を参照する。
 作業場所と保存先は [共通方針](README.md#作業場所と保存先) に従う。
 
 ### 1. 画像の表現
@@ -361,9 +361,9 @@ $$
 
 ## 演習
 
-作業場所は [提出repo](README.md#作業場所と保存先) のルートとする。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従う。以下の相対パスは，自分の作業repoのルートを基準とする。
 
-`data/cat.png` を教材repoからコピーする。`scripts/session12_image.py` と `outputs/session12/session12_report.md` を作り，画像・図を `outputs/images/` と `outputs/figures/` へ保存する。
+`data/cat.png` を教材repoからコピーする。`scripts/session12_image.py` に実装し，結果と説明はコードコメントまたは既存の結果ファイルに残す。画像・図を `outputs/images/` と `outputs/figures/` へ保存する。
 
 ### 基礎レベル
 1. `Image.open(...).convert("RGB")` と `.convert("L")` をNumPy配列に変換し，shape，dtype，値域を比べる。RGBとグレースケールのチャネル数を説明する。
