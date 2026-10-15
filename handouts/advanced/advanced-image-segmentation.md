@@ -37,4 +37,4 @@
 
 ## 詰まったときに見る資料
 - [`21-image-model-basics.md`](../21-image-model-basics.md)
-- [`13-image-baseline-mini-implementation.md`](../13-image-baseline-mini-implementation.md)
+- [`18-mle-and-map-estimation.md`](../18-mle-and-map-estimation.md)

@@ -1,7 +1,8 @@
-# 第24回 representation learning：contrastive learning の最小実装
+# 発展テーマ候補：representation learning
 
 - 対象: B4・M
-- 種別: 前期発展枠 / 準固定
+- 種別: 第 25〜27 回の年度別発展テーマ候補
+- 運用: このテーマを選んだ年度は、第 25〜27 回の 3 回を使って `contrastive learning` を扱う。画像・音響・共通基盤を同じ年度にすべて扱う前提にはしない。
 
 ## この回の目標
 
@@ -14,11 +15,11 @@ contrastive learning を実装し，学習による embedding の変化を説明
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
+作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
 ### 基礎レベル
-1. `session24_representation_learning.py` を作成し、指定された positive pair データ、2 次元 encoder、`CosineEmbeddingLoss` を使って 50 step 学習してください。
-2. 学習前後の embedding をそれぞれ `outputs/figures/session24_embeddings_before.png`, `outputs/figures/session24_embeddings_after.png` に保存してください。同じ pair が対応して見えるように色や marker を工夫してください。
+1. `advanced_representation_learning.py` を作成し、指定された positive pair データ、2 次元 encoder、`CosineEmbeddingLoss` を使って 50 step 学習してください。
+2. 学習前後の embedding をそれぞれ `outputs/figures/advanced_representation_embeddings_before.png`, `outputs/figures/advanced_representation_embeddings_after.png` に保存してください。同じ pair が対応して見えるように色や marker を工夫してください。
 3. positive pair の平均 cosine similarity を学習前後で計算してください。
 4. 学習設定，学習前後の embedding の図のファイル名，cosine similarity を記録し，散布図と数値の対応をコードコメントまたは既存の結果ファイルに説明してください。
 
@@ -29,10 +30,10 @@ contrastive learning を実装し，学習による embedding の変化を説明
 
 ## 確認ポイント
 - encoder の出力次元が `2` である。
-- `session24_embeddings_before.png` と `session24_embeddings_after.png` が保存されている。
+- `advanced_representation_embeddings_before.png` と `advanced_representation_embeddings_after.png` が保存されている。
 - コードコメントまたは既存の結果ファイルに、散布図の見た目と cosine similarity の両方の説明がある。
 - 発展課題で、positive と negative の違いを loss の目的と結びつけて説明している。
 
 ## 詰まったときに見る資料
-- [`11-noise-and-signal-restoration.md`](11-noise-and-signal-restoration.md)
+- [`19-neural-network-regression-and-classification.md`](../19-neural-network-regression-and-classification.md)
 - PyTorch docs: [`torch.nn.CosineEmbeddingLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.CosineEmbeddingLoss.html)

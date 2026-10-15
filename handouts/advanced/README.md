@@ -9,6 +9,8 @@
 - [画像 segmentation](advanced-image-segmentation.md)
 - [音響 tagging](advanced-audio-tagging.md)
 - [共通基盤の効率化と export](advanced-common-efficiency-export.md)
+- [representation learning](advanced-common-representation-learning.md)
+- [SVD と PCA による次元削減](advanced-common-pca.md)
 
 ## 運用
 

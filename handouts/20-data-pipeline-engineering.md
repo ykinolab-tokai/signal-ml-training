@@ -1,7 +1,4 @@
-# 第20回 data pipeline engineering：Dataset・DataLoader・前処理・augmentation
-
-- 対象: B4・M
-- 種別: 前期発展枠 / 固定
+# 第20回 データパイプライン：Dataset・DataLoader・前処理・augmentation
 
 ## この回の目標
 
@@ -11,6 +8,7 @@ Dataset と DataLoader によるデータ処理を実装し，augmentation が�
 - `Dataset` は 1 サンプルを返し、`DataLoader` は複数サンプルをまとめてバッチにする。責務を分けると、前処理や augmentation をどこで行うか整理しやすい。
 - augmentation は「見た目が変わる操作」ではなく、「task の label を保ったまま入力分布を広げる操作」と考える。だから、何でも足せばよいわけではない。
 - collate 関数では、各サンプルをバッチへどう詰めるかを明示する。shape を追えるようにしておくと、後段の model 実装で迷いにくい。
+- 前処理に使う統計量（第6回の標準化で使う平均と標準偏差など）は train のデータだけから計算し，validation と test にも同じ値を使う。validation や test の情報が学習に混ざると，評価が実際より良く見える。
 
 ## 演習
 
@@ -34,5 +32,5 @@ Dataset と DataLoader によるデータ処理を実装し，augmentation が�
 - `Dataset`、`collate_fn`、`DataLoader` の役割が混ざっていない。
 
 ## 詰まったときに見る資料
-- [`10-lti-systems-and-convolution.md`](10-lti-systems-and-convolution.md)
-- [`11-noise-and-signal-restoration.md`](11-noise-and-signal-restoration.md)
+- [`19-neural-network-regression-and-classification.md`](19-neural-network-regression-and-classification.md)
+- [`06-probability.md`](06-probability.md)
