@@ -30,7 +30,7 @@
 
 - **教材リポジトリ**（`signal-ml-training`）は，教材・見本・共通の依存関係を参照する場所とする。教材は配布資料やGitHub上で読み，学生は基本的にこのリポジトリをcloneしない。
 - **作業リポジトリ**（提出リポジトリ）は，[第1回の作成手順](01-environment-and-workflow.md#自分用作業リポジトリの作成)で学生本人が作る非公開リポジトリで，第1回の環境構築から各回の解答と結果の保存までに使う。所有者は `ykinolab-tokai`，GitHub上の名前は `signal-ml-work-<GitHubユーザー名>`，PC上のフォルダは `~/workspace/signal-ml-work` とする。取得済みならそのフォルダを開き，重ねてcloneしない。
-- 各回と補足の課題にある相対パスは，特記がない限り**作業リポジトリのルートからの相対パス**である。標準はコードが `exercise/excXX_YY.py`（回番号・問題番号は2桁），文章で答える問題が同じ番号の `exercise/excXX_YY.md`，図・音声・数値結果が `outputs/` 以下（例：第3回第5問の図は `outputs/exc03/exc03_05.png`）。複数の問題や回で使うモジュール，test，設定ファイルは，各回が指定した名前（例：`exercise/line_cnn.py`，`exercise/test_exc24_05.py`）で置く。各回が `scripts/session11_noise_restoration.py` のように別のパスを指定した場合は，その指定を優先する。`session14_presentation_outline.md` や `advanced_image_segmentation_demo.py` のようにフォルダなしでファイル名だけを指定した場合は，作業リポジトリのルートに置く。
+- 各回と補足の課題にある相対パスは，特記がない限り**作業リポジトリのルートからの相対パス**である。標準はコードが `exercise/excXX_YY.py`（回番号・問題番号は2桁），文章で答える問題が同じ番号の `exercise/excXX_YY.md`，図・音声・数値結果が `outputs/` 以下（例：第3回第5問の図は `outputs/exc03/exc03_05.png`）。複数の問題や回で使うモジュール，test，設定ファイルは，各回が指定した名前（例：`exercise/line_cnn.py`，`exercise/test_exc24_05.py`）で置く。各回が別のパスを指定した場合は，その指定を優先する。`advanced_image_segmentation_demo.py` のようにフォルダなしでファイル名だけを指定した場合は，作業リポジトリのルートに置く。
 - 説明・予測・結果の解釈は，該当コードのコメントまたは既存の結果ファイルに残す。数値は項目名・条件とともに保存し，同じ内容を別ファイルへ転記しない。**別レポートは，複数条件の比較などで必要な課題がファイル名と記載内容を指定した場合だけ作る。** チェックリストや再実行手順が指定されている場合も，同じ説明は既存のコード・結果への参照でよい。
 - `data/cat.png` や `data/piano.wav` を使う回では，GitHub上の教材リポジトリの [data/](../data/) から該当ファイルをダウンロードし，作業リポジトリの `data/` に保存する。入力ファイルと自分が生成した `outputs/` を区別する。
 - 各回の出力ディレクトリは，保存前に `Path(...).mkdir(parents=True, exist_ok=True)` などで作る。実行時の現在地は作業リポジトリのルートにそろえる。
