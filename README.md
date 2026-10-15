@@ -18,32 +18,32 @@
 | 1 | 環境構築とワークフロー | ターミナル，ファイルパス，ディレクトリ操作，Python 仮想環境，VS Code, Git | [01 環境構築とワークフロー](handouts/01-environment-and-workflow.md) |
 | 2 | Python 基礎 | 変数、関数，条件分岐，繰り返し，list、dict、スライス | [02 Python 基礎](handouts/02-python-basics.md) |
 | 3 | 数学基礎とNumpy, Matplotlib | 初等関数とグラフ，グラフの平行移動，Numpy配列，Matplotlibによるグラフの描画 | [03 数学基礎とNumpy, Matplotlib](handouts/03-math-basics-numpy-matplotlib.md) |
-| 4 | 微分と積分 | 傾き，数値微分，偏微分，勾配，関数の極値，区分求積法，定積分と数値積分 | [04 微分と積分](handouts/04-differentiation-and-integration.md) |
+| 4 | 微分と積分 | 傾き，数値微分，関数の極値，区分求積法，定積分と数値積分 | [04 微分と積分](handouts/04-differentiation-and-integration.md) |
 | 5 | 線形代数 | ベクトル・行列の和，内積，行列積，ノルム，射影，線形変換，逆行列 | [05 線形代数](handouts/05-linear-algebra.md) |
-| 6 | 確率 | 平均，分散，共分散，一様分布，正規分布，最尤推定 | [06 確率](handouts/06-probability.md) |
+| 6 | 確率 | 平均，分散，共分散，一様分布，正規分布 | [06 確率](handouts/06-probability.md) |
 | 7 | 信号とサンプリング | 連続時間と離散時間，サンプリング周波数，サンプリング定理，信号に対する演算，量子化 | [07 信号とサンプリング](handouts/07-signals-and-sampling.md) |
 | 8 | Fourier 変換 | DFT, 振幅スペクトルと位相スペクトル，窓関数 | [08 Fourier 変換](handouts/08-fourier-transform.md) |
 | 9 | 音響信号 | 音の再生，収録，読み込み，書き込み，STFT，メルスペクトログラム | [09 音響信号](handouts/09-audio-signals.md) |
 | 10 | 線形時不変システムと畳み込み | 線形時不変システム，畳み込み，畳み込み定理，フィルタと周波数応答 | [10 線形時不変システムと畳み込み](handouts/10-lti-systems-and-convolution.md) |
 | 11 | ノイズと信号復元 | 加法性ノイズ，信号とノイズのスペクトル，フィーナーフィルタ | [11 ノイズと信号復元](handouts/11-noise-and-signal-restoration.md) |
 | 12 | 画像信号 | 2次元信号，画像の読み込み，表示，幾何変換，2次元DFT，2次元フィルタ | [12 画像信号](handouts/12-image-signals.md) |
-| 13 | ミニプロジェクト | 画像: ノイズ除去，鮮鋭化，トーンマッピング，色変換，音: ノイズ除去，簡易イコライザ作成，音声のピッチ推定 | [13 画像 baseline ミニ実装](handouts/13-image-baseline-mini-implementation.md) |
-| 14 | 統合確認 | 口頭技術確認、code walkthrough、リポジトリ整理、PR / code review 体験 | [14 口頭確認とリポジトリ整理](handouts/14-oral-check-and-repo-wrapup.md) |
+| 13 | 信号処理プロジェクト | 音声区間検出，音響信号の declipping，burst 画像の denoising，位相相関による画像位置合わせから 1 つを選び，ベースラインの実装，改良，評価を行う | [13 信号処理プロジェクト](handouts/13-sp-projects/) |
+| 14 | 信号処理プロジェクトの発表 | 第 13 回のプロジェクトの課題，手法，結果，失敗例の発表と質疑 | [14 信号処理プロジェクトの発表](handouts/14-sp-project-presentation.md) |
 
 ### 第 15〜28 回
 
 | 回 | 主題 | 内容 | 資料 |
 | -- | -- | -- | -- |
-| 15 | 年間方針と役割 | 年間方針、役割分担、共通リポジトリ、生成 AI 運用、コーディング規約 | [15 年間方針と役割](handouts/15-annual-policy-and-roles.md) |
-| 16 | research code engineering I | project 構造、config、logging、CLI | [16 research code engineering I](handouts/16-research-code-engineering-1.md) |
-| 17 | research code engineering II | Git flow、PR、code review、簡単な test | [17 research code engineering II](handouts/17-research-code-engineering-2.md) |
-| 18 | 数値線形代数の実装 | 最小二乗、SVD、PCA | [18 数値線形代数](handouts/18-numerical-linear-algebra.md) |
-| 19 | autodiff と最適化 | backprop、optimizer、scheduler、勾配確認 | [19 autodiff と最適化](handouts/19-autodiff-and-optimization.md) |
-| 20 | data pipeline engineering | Dataset、DataLoader、前処理、augmentation | [20 data pipeline engineering](handouts/20-data-pipeline-engineering.md) |
-| 21 | 画像モデル基礎 | CNN、ResNet、U-Net、receptive field、normalization | [21 画像モデル基礎](handouts/21-image-model-basics.md) |
-| 22 | 音響表現とモデル | STFT、mel、1D CNN、CRNN、Conformer の入口 | [22 音響表現とモデル](handouts/22-audio-representations-and-models.md) |
-| 23 | transfer learning と fine-tuning | freeze、linear probe、adapter 的発想 | [23 transfer learning と fine-tuning](handouts/23-transfer-learning-and-fine-tuning.md) |
-| 24 | representation learning | contrastive、masked prediction、embedding | [24 representation learning](handouts/24-representation-learning.md) |
+| 15 | 年間方針と機械学習の流れ | 年間方針，役割分担，生成 AI 運用，教師あり学習の流れ（データ，モデル，損失，最適化，評価），train・validation・test | [15 年間方針と機械学習の流れ](handouts/15-annual-policy-and-ml-overview.md) |
+| 16 | 連続最適化 | 偏微分と勾配，勾配降下法，学習率，局所解，最小二乗法，確率的勾配降下法 | [16 連続最適化](handouts/16-continuous-optimization.md) |
+| 17 | PyTorch の基礎 | tensor，自動微分，勾配の確認，optimizer，scheduler，学習ループ | [17 PyTorch の基礎](handouts/17-pytorch-basics.md) |
+| 18 | 最尤推定と MAP 推定 | 尤度，最尤推定と損失関数，sigmoid と softmax，MAP 推定と正則化 | [18 最尤推定と MAP 推定](handouts/18-mle-and-map-estimation.md) |
+| 19 | ニューラルネットワークによる回帰と分類 | 多層パーセプトロン，活性化関数，回帰と二乗誤差，分類と交差エントロピー，誤差逆伝播法，学習曲線，過学習と early stopping | [19 ニューラルネットワークによる回帰と分類](handouts/19-neural-network-regression-and-classification.md) |
+| 20 | データパイプライン | Dataset，DataLoader，前処理，augmentation | [20 データパイプライン](handouts/20-data-pipeline-engineering.md) |
+| 21 | 画像のための CNN | 畳み込み層，receptive field，画像分類の baseline，residual block | [21 画像のための CNN](handouts/21-image-model-basics.md) |
+| 22 | 音響表現とモデル | STFT，mel，1D CNN，CRNN | [22 音響表現とモデル](handouts/22-audio-representations-and-models.md) |
+| 23 | transfer learning と fine-tuning | freeze，linear probe，partial fine-tuning | [23 transfer learning と fine-tuning](handouts/23-transfer-learning-and-fine-tuning.md) |
+| 24 | 実験コードの整備 | config，CLI，logging，乱数シード，test，PR と code review | [24 実験コードの整備](handouts/24-experiment-code-engineering.md) |
 | 25 | 年度別発展テーマ 第 1 回 | 選択テーマの問題設定、最小実装、評価観点 | [25 年度別発展テーマ：問題設定](handouts/25-advanced-theme-framing.md) |
 | 26 | 年度別発展テーマ 第 2 回 | 選択テーマの比較実験、失敗分析、改善 | [26 年度別発展テーマ：比較実験](handouts/26-advanced-theme-comparison.md) |
 | 27 | 年度別発展テーマ 第 3 回 | 選択テーマの整理、再利用可能な実装資産化、共有 | [27 年度別発展テーマ：整理](handouts/27-advanced-theme-wrapup.md) |

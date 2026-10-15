@@ -1,7 +1,8 @@
-# 第18回 数値線形代数の実装：最小二乗・SVD・PCA
+# 発展テーマ候補：SVD と PCA による次元削減
 
 - 対象: B4・M
-- 種別: 前期発展枠 / 固定
+- 種別: 第 25〜27 回の年度別発展テーマ候補
+- 運用: このテーマを選んだ年度は、第 25〜27 回の 3 回を使って `SVD` と `PCA` を扱う。画像・音響・共通基盤を同じ年度にすべて扱う前提にはしない。
 
 ## この回の目標
 
@@ -14,11 +15,11 @@ SVD による PCA と再構成を実装し，平均中心化の影響を説明�
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
+作業場所・保存先・説明の残し方は [共通手順](../README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
 
 ### 基礎レベル
-1. `session18_pca_demo.py` を作成し、指定された 2 次元データ `X` に対して平均中心化、SVD、1 次元 PCA 射影、再構成を実装してください。
-2. 元データ `X` と再構成データ `X_recon` を同じ散布図に描き、`outputs/figures/session18_pca_projection.png` に保存してください。図には凡例と軸ラベルを付けてください。
+1. `advanced_pca_demo.py` を作成し、指定された 2 次元データ `X` に対して平均中心化、SVD、1 次元 PCA 射影、再構成を実装してください。
+2. 元データ `X` と再構成データ `X_recon` を同じ散布図に描き、`outputs/figures/advanced_pca_projection.png` に保存してください。図には凡例と軸ラベルを付けてください。
 3. `X`, `X_centered`, `Z`, `X_recon` の shape と特異値を記録し，再構成で残った情報・失われた情報をコードコメントまたは既存の結果ファイルに説明してください。
 4. 再構成誤差 `((X - X_recon) ** 2).mean()` を計算し、数値と散布図の見え方を対応づけて 2 行で説明してください。
 
@@ -28,10 +29,10 @@ SVD による PCA と再構成を実装し，平均中心化の影響を説明�
 
 ## 確認ポイント
 - `X.shape` が `(6, 2)`、`Z.shape` が `(6, 1)`、`X_recon.shape` が `(6, 2)` である。
-- `session18_pca_projection.png` に元データと再構成データの 2 系列がある。
+- `advanced_pca_projection.png` に元データと再構成データの 2 系列がある。
 - コードコメントまたは既存の結果ファイルに特異値だけでなく、再構成の解釈が書かれている。
 - 発展課題で、中心化の有無による違いを shape ではなく意味の違いとして説明している。
 
 ## 詰まったときに見る資料
-- [`05-linear-algebra.md`](05-linear-algebra.md)
-- [`../textbook/markdown/ch06a-basics-of-linear-algebra.md`](../textbook/markdown/ch06a-basics-of-linear-algebra.md)
+- [`05-linear-algebra.md`](../05-linear-algebra.md)
+- [`../textbook/markdown/ch06a-basics-of-linear-algebra.md`](../../textbook/markdown/ch06a-basics-of-linear-algebra.md)

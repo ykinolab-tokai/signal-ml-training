@@ -1,8 +1,5 @@
 # 第25回 年度別発展テーマ：問題設定・最小実装・評価観点
 
-- 対象: B4・M
-- 種別: 前期発展枠 / 年度別ローテーション
-
 ## この回の目標
 
 選択した発展テーマの入出力と評価観点を定め，最小実装の実行条件と結果を記録できる。
@@ -35,4 +32,4 @@
 
 ## 詰まったときに見る資料
 - [`advanced/`](advanced/)
-- [`24-representation-learning.md`](24-representation-learning.md)
+- [`24-experiment-code-engineering.md`](24-experiment-code-engineering.md)

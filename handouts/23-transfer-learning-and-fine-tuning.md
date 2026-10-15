@@ -1,8 +1,5 @@
 # 第23回 transfer learning と fine-tuning：freeze・linear probe・partial fine-tuning
 
-- 対象: B4・M
-- 種別: 前期発展枠 / 準固定
-
 ## この回の目標
 
 転移学習で更新するパラメータの範囲を比較し，データと初期モデルに応じた選び方を説明できる。
