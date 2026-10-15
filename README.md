@@ -25,7 +25,7 @@
 | 8 | Fourier 変換 | DFT, 振幅スペクトルと位相スペクトル，窓関数 | [08 Fourier 変換](handouts/08-fourier-transform.md) |
 | 9 | 音響信号 | 音の再生，収録，読み込み，書き込み，STFT，メルスペクトログラム | [09 音響信号](handouts/09-audio-signals.md) |
 | 10 | 線形時不変システムと畳み込み | 線形時不変システム，畳み込み，畳み込み定理，フィルタと周波数応答 | [10 線形時不変システムと畳み込み](handouts/10-lti-systems-and-convolution.md) |
-| 11 | ノイズと信号復元 | 加法性ノイズ，信号とノイズのスペクトル，フィーナーフィルタ | [11 ノイズと信号復元](handouts/11-noise-and-signal-restoration.md) |
+| 11 | ノイズと信号復元 | 加法性ノイズ，信号とノイズのスペクトル，Wiener フィルタ | [11 ノイズと信号復元](handouts/11-noise-and-signal-restoration.md) |
 | 12 | 画像信号 | 2次元信号，画像の読み込み，表示，幾何変換，2次元DFT，2次元フィルタ | [12 画像信号](handouts/12-image-signals.md) |
 | 13 | 信号処理プロジェクト | 音声区間検出，音響信号の declipping，burst 画像の denoising，位相相関による画像位置合わせから 1 つを選び，ベースラインの実装，改良，評価を行う | [13 信号処理プロジェクト](handouts/13-sp-projects/) |
 | 14 | 信号処理プロジェクトの発表 | 第 13 回のプロジェクトの課題，手法，結果，失敗例の発表と質疑 | [14 信号処理プロジェクトの発表](handouts/14-sp-project-presentation.md) |

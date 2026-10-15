@@ -2,109 +2,198 @@
 
 ## この回の目標
 
-画像を2次元信号として読み書き・表示し，空間領域と周波数領域の表現を対応づけられる。
+画像を 2 次元信号として読み書き・表示し，空間領域と周波数領域の表現を対応づけられる。
 
 ## 解説
 
-### 0. 準備
-
-この回では，画像の操作のために Python のライブラリ `Pillow` を使用する．
-
-`Pillow`は授業用の環境定義に含まれる。[共通手順](README.md#python環境の準備更新と演習の実行)に従い，環境の同期と演習の実行は作業リポジトリで行う。実行時には，作業リポジトリ内の `.venv` を有効にする。
-
-### 1. 画像の表現
-画像は，縦横方向の空間座標を独立変数として，
-その位置における光の強さ（明るさ）を表す
-2次元信号として表現できる．
-すなわち，画像は，座標 $(n_1, n_2)$ における
-画素の明るさを表す信号 $x[n_1, n_2]$ として表される．
-画像を扱う場合，座標 $n_1$ を行方向の空間座標，$n_2$ を列方向の空間座標とし，
-原点 $(n_1, n_2) = (0, 0)$ を画像の左上隅に置くことが一般的である．
-
-画素値 $x[n_1, n_2]$ は整数や浮動小数点数で表されるが，
-整数を用いる場合には $[0, 255]$ の範囲で扱うことが多く，
-浮動小数点数を用いる場合には $[0, 1]$ の範囲で扱うことが多い．
-一方，信号処理の理論を考えるうえでは，
-画素値を複素数とする方が便利である．
-
-カラー画像の表現には，赤 (red)，緑 (green)，青 (blue) のそれぞれに対応する3つの
-画素値 $x_r[n_1, n_2], x_g[n_1, n_2], x_b[n_1, n_2]$ を用いることが一般的である．
-このように，RGBの組み合わせで表される画像をRGB画像と
-いう．
-RGB画像は，3チャネルの2次元信号である．
-RGB画像に対して，1つの画素値 $x[n_1, n_2]$ だけを持つ
-画像は **グレースケール (grayscale) 画像** と呼ばれる．
-
-#### 画像の読み込み
-画像をファイルから読み込むときには，Pillow の `Image.open` 関数を用いる．
-
-```python
-from PIL import Image
-img = Image.open('path/to/image.png')
-```
-このとき，`img` は `PIL.Image.Image` クラスのオブジェクトである．
-
-#### 画像の保存
-画像をファイルに保存するときには，Pillow の `Image.save` 関数を用いる．
-
-```python
-from PIL import Image
-img = Image.new('L', (128, 128))  # グレースケール画像を新規作成
-img.save('path/to/output.png')
-```
-
-#### NumPy 配列との相互変換
-Pillow の `Image` オブジェクトと NumPy 配列は，次のようにして相互に変換できる．
+この回では，第7回，第8回，第10回で 1 次元の離散時間信号に対して扱った信号の演算，DFT，線形時不変システムを，画像という 2 次元の信号に広げる。
+画像の読み書きには Python のライブラリ **Pillow** を，2 次元の畳み込みには SciPy の信号処理モジュール `scipy.signal` を使う。
+どちらも授業用の環境定義に含まれる。
+[共通手順](README.md#python環境の準備更新と演習の実行) に従い，環境の同期と演習の実行は作業リポジトリで行い，実行時には作業リポジトリ内の `.venv` を有効にする。
+各関数の詳細は，[Pillow documentation](https://pillow.readthedocs.io/en/stable/) と [SciPy signal processing](https://docs.scipy.org/doc/scipy/reference/signal.html) で調べられる。
+コード例と演習では，教材リポジトリの [data/](../data/) にある `cat.png` を，作業リポジトリの `data/cat.png` に保存して使う（[共通手順](README.md#作業場所と保存先)）。
+スクリプトの先頭には，次の処理を書く。
 
 ```python
 import numpy as np
-from PIL import Image
-
-# PIL → numpy (高さ, 幅, チャンネル) の配列
-arr = np.array(img)             
-
-# numpy → PIL
-arr = np.clip(arr, 0, 255).astype(np.uint8) # 値域を [0, 255] にクリップし，uint8 型に変換
-img2 = Image.fromarray(arr)
-```
-
-画像の高さを $H$、幅を $W$、チャンネル数を $C$ とすると，
-Pillow から NumPy 配列に変換した場合，
-カラー画像の配列は (H, W, C)，グレースケールは (H, W) の形状を持つ．
-特に，RGB画像の配列は，$C=3$ であり， `arr[:, :, 0] ` が赤チャネル， `arr[:, :, 1] ` が緑チャネル，
- `arr[:, :, 2] ` が青チャネルの画素値を表す．
-また，画素値は多くの場合 uint8 型で $[0, 255]$ の範囲で表される．
-このルールは，Pillow に限ったものであり，用いるライブラリによっては異なる規則で画像が表されることもあるので注意する．
-
-`fromarray` で配列を `Image` オブジェクトに変換する際は，渡す配列を原則 `uint8` 型にしておく．
-
-#### 画像の表示
-画像を表示するときには，Matplotlib の `imshow` 関数を用いる．
-
-```python
 import matplotlib.pyplot as plt
 from PIL import Image
+from scipy import signal
+from pathlib import Path
 
-img = Image.open("input.jpg")
-
-plt.imshow(img)      # PIL画像もnumpy配列もそのまま渡せる
-plt.axis("off")      # 軸を非表示
-plt.show()
+figure_dir = Path("outputs/exc12")
+figure_dir.mkdir(parents=True, exist_ok=True)
 ```
 
-`imshow` のデフォルトでは，
-グレースケール画像をその画素値の大小に応じたカラーマップで表示する．
-グレースケール画像をグレースケールで表示したい場合は，次のように `cmap='gray'` を指定する．
+Pillow は，Python からは `PIL` という名前でインポートする。
+`from PIL import Image` は，画像を扱う `Image` モジュールを読み込む。
+`from scipy import signal` と書くと，`scipy.signal.convolve2d` のような関数を `signal.convolve2d` と書いて呼び出せる。
+以下のコード例は，このコードに続けて書いて実行する。
+
+### 1. 画像の表現
+
+画像は，縦と横の空間座標を独立変数とし，その位置の光の強さ（明るさ）を値とする 2 次元信号として表せる。
+すなわち，画像は，座標 $(n_1, n_2)$ における明るさを表す信号 $x[n_1, n_2]$ である。
+画像を構成する 1 つ 1 つの点を **画素 (pixel)** といい，$x[n_1, n_2]$ を **画素値 (pixel value)** という。
+画像を扱う場合，$n_1$ を行方向の空間座標（下向きに増える），$n_2$ を列方向の空間座標（右向きに増える）とし，原点 $(n_1, n_2) = (0, 0)$ を画像の左上隅に置くことが一般的である。
+高さ $N_1$ 画素，幅 $N_2$ 画素の画像では，$n_1 = 0, 1, \ldots, N_1 - 1$，$n_2 = 0, 1, \ldots, N_2 - 1$ である。
+
+画素値は整数や浮動小数点数で表す。
+整数を用いる場合には $[0, 255]$ の範囲で，浮動小数点数を用いる場合には $[0, 1]$ の範囲で扱うことが多く，どちらも最小値が黒，最大値が白を表す。
+一方，信号処理の理論を考えるうえでは，画素値を複素数とする方が便利である。
+第4節の 2 次元 DFT のように，複素正弦波を使った計算では，結果が複素数になるからである。
+
+カラー画像は，赤 (red)，緑 (green)，青 (blue) のそれぞれに対応する 3 つの画素値 $x_r[n_1, n_2]$，$x_g[n_1, n_2]$，$x_b[n_1, n_2]$ で表すことが多い。
+このように RGB の組み合わせで表した画像を **RGB 画像 (RGB image)** という。
+各画素が持つ値の種類を **チャネル (channel)** といい，RGB 画像は 3 チャネルの 2 次元信号である。
+これに対し，各画素が 1 つの画素値 $x[n_1, n_2]$ だけを持つ画像を **グレースケール画像 (grayscale image)** という。
+
+#### 画像の読み込み
+
+画像をファイルから読み込むには，Pillow の `Image.open` 関数を使う。
+`Image.open` は，画像を表す `PIL.Image.Image` クラスのオブジェクト（以下，`Image` オブジェクト）を返す。
+`Image` オブジェクトの `mode` 属性は画素値の表し方を，`size` 属性は画像の大きさを表す。
+次の例では，`data/cat.png` を読み込み，その一部を切り出して NumPy 配列に変換する。
 
 ```python
-plt.imshow(img, cmap='gray')
+img = Image.open("data/cat.png")
+print(img.mode)                          # RGB
+
+patch = img.crop((600, 400, 760, 520))   # (left, upper, right, lower)
+print(patch.size)                        # (160, 120)
+patch_arr = np.array(patch)
+print(patch_arr.shape, patch_arr.dtype)  # (120, 160, 3) uint8
+print(np.array_equal(patch_arr, np.array(img)[400:520, 600:760]))  # True
 ```
+
+`mode` が `"RGB"` の画像は，各チャネルの値を 8 ビットの整数で表した RGB 画像である。
+グレースケール画像の `mode` は `"L"` である。
+`crop` は，左端，上端，右端，下端の座標を並べたタプル `(left, upper, right, lower)` で指定した長方形の領域を切り出す。
+右端と下端の座標の画素は，切り出す領域に含まれない。
+`size` は `(幅, 高さ)` の順のタプルであり，`patch` は幅 160 画素，高さ 120 画素の画像である。
+`np.array(patch)` は，`Image` オブジェクトを NumPy 配列に変換する。
+RGB 画像を変換した配列の形は `(高さ, 幅, チャネル数)`，すなわち $(N_1, N_2, 3)$ である。
+`dtype` の `uint8` は，0 から 255 までの整数を表す 8 ビットの符号なし整数の型である。
+`patch_arr[:, :, 0]` が赤，`patch_arr[:, :, 1]` が緑，`patch_arr[:, :, 2]` が青のチャネルの画素値を表す。
+
+Pillow の座標は（横，縦）の順であるのに対し，NumPy の添字は `[行, 列]`，すなわち（縦，横）の順である。
+最後の行では，`crop((600, 400, 760, 520))` で切り出した領域が，配列の `[400:520, 600:760]` と同じであることを確かめている。
+`size` と `shape` で縦と横の順が逆になることは，典型的な見落としである。
+また，配列の形を `(高さ, 幅, チャネル数)` とするのは Pillow や Matplotlib の規則であり，第20回で扱うように，PyTorch では `(チャネル数, 高さ, 幅)` の順にする。
+
+#### グレースケール画像への変換
+
+`convert("L")` は，RGB 画像をグレースケール画像に変換する。
+Pillow は，各画素の赤，緑，青の値 $R$，$G$，$B$ から次の式で明るさ $L$ を計算し，整数に丸める。
+
+$$
+L = 0.299R + 0.587G + 0.114B
+$$
+
+3 つの係数は正で，和は 1 である。
+このため，$L$ は $R$，$G$，$B$ のうち最小の値以上，最大の値以下になる。
+緑の係数が最も大きいのは，人の目が緑の光を最も明るく感じるからである。
+
+```python
+gray_patch = np.array(patch.convert("L"))
+print(gray_patch.shape, gray_patch.dtype)  # (120, 160) uint8
+print(patch_arr[0, 0], gray_patch[0, 0])   # [127 109  87] 112
+```
+
+グレースケール画像を変換した配列は，チャネルの軸を持たない形 $(N_1, N_2)$ の 2 次元配列になる。
+左上の画素の値 112 は，$0.299 \times 127 + 0.587 \times 109 + 0.114 \times 87 = 111.874$ を丸めたものである。
+ただし，式の値の小数部分がちょうど 0.5 になる画素では，Pillow の内部の計算方法により，切り上げと切り捨てのどちらになるかが画素によって異なる。
+
+#### 画像の保存と NumPy 配列からの変換
+
+NumPy 配列を `Image` オブジェクトに変換するには `Image.fromarray` を，`Image` オブジェクトをファイルに保存するには `save` メソッドを使う。
+`Image.fromarray` は，形 $(N_1, N_2)$ の `uint8` 型の配列からは `mode` が `"L"` の画像を，形 $(N_1, N_2, 3)$ の `uint8` 型の配列からは `mode` が `"RGB"` の画像を作る。
+次の例では，左端の黒から右端の白へ明るさが変わる画像を作って保存し，読み込み直す。
+
+```python
+ramp = np.tile(np.linspace(0.0, 1.0, 256), (64, 1))  # values in [0, 1]
+print(ramp.shape)                                     # (64, 256)
+ramp_u8 = np.clip(np.round(255 * ramp), 0, 255).astype(np.uint8)
+ramp_img = Image.fromarray(ramp_u8)
+print(ramp_img.mode, ramp_img.size)                   # L (256, 64)
+ramp_img.save(figure_dir / "session12_example_ramp.png")
+loaded = np.array(Image.open(figure_dir / "session12_example_ramp.png"))
+print(np.array_equal(loaded, ramp_u8))                # True
+```
+
+`np.tile(a, (64, 1))` は，1 次元配列 `a` を縦に 64 回並べた 2 次元配列を返す。
+区間 $[0, 1]$ の浮動小数点数で表した画素値を保存するときは，255 倍して `np.round` で丸め，`np.clip` で区間 $[0, 255]$ に収めてから，`astype(np.uint8)` で `uint8` 型に変換する。
+`astype` は小数部分を切り捨てるので，最も近い整数に丸めたい場合は先に `np.round` を使う。
+`save` は，ファイル名の拡張子（ここでは `.png`）から保存の形式を決める。
+PNG は画素値を変えずに保存する形式なので，読み込み直した配列は保存前の配列と一致する。
+`Image.fromarray` に渡す配列は，原則として `uint8` 型にしておく。
+例えば，`float64` 型の 2 次元配列を渡すと `mode` が `"F"`（浮動小数点数）の画像になり，PNG として保存できない。
+
+#### uint8 型の計算
+
+`uint8` 型の配列どうしの計算や，`uint8` 型の配列と整数の計算の結果は，`uint8` 型のままになる。
+このため，結果が 0 から 255 までの範囲を超えると，256 で割った余りの値になる。
+この現象を **オーバーフロー (overflow)** という。
+
+```python
+pixels = np.array([20, 120, 240], dtype=np.uint8)
+print(pixels + 30)  # [ 50 150  14]
+print(pixels - 30)  # [246  90 210]
+
+y = 1.2 * pixels.astype(np.float64) - 30
+print(y)                                              # [ -6. 114. 258.]
+print(np.clip(np.round(y), 0, 255).astype(np.uint8))  # [  0 114 255]
+```
+
+$240 + 30 = 270$ は $270 - 256 = 14$ に，$20 - 30 = -10$ は $-10 + 256 = 246$ になっている。
+画素値を計算で変えるときは，`astype(np.float64)` で `float64` 型に変換してから計算し，最後に丸めて区間 $[0, 255]$ にクリップしてから `uint8` 型に戻す。
+クリップせずに `astype(np.uint8)` で変換すると，範囲外の値が意図しない値に変わる。
+
+#### 画像の表示
+
+画像を表示するには，Matplotlib の `imshow` を使う。
+`imshow` には，`Image` オブジェクトも NumPy 配列も渡せる。
+形 $(N_1, N_2, 3)$ の `uint8` 型の配列は，各画素の値がそのまま RGB の色として表示される。
+一方，2 次元配列は，値の大小を **カラーマップ (colormap)** によって色に対応づけて表示される。
+既定のカラーマップは紫から黄色に変わる `viridis` なので，グレースケール画像を白黒で表示するには `cmap="gray"` を指定する。
+また，既定では配列の最小値と最大値がカラーマップの両端（`cmap="gray"` では黒と白）に対応づけられるため，画素値の範囲が狭い画像はコントラストを強めて表示される。
+画素値そのものの明るさで表示するには，`vmin=0, vmax=255` を指定して，0 を黒，255 を白に固定する。
+
+```python
+darker = gray_patch // 2
+fig, axes = plt.subplots(1, 4, figsize=(16, 3.5))
+axes[0].imshow(patch_arr)
+axes[0].set_title("RGB")
+axes[1].imshow(gray_patch, cmap="gray", vmin=0, vmax=255)
+axes[1].set_title("gray, vmin=0, vmax=255")
+axes[2].imshow(darker, cmap="gray")
+axes[2].set_title("gray // 2, default range")
+axes[3].imshow(darker, cmap="gray", vmin=0, vmax=255)
+axes[3].set_title("gray // 2, vmin=0, vmax=255")
+for ax in axes:
+    ax.set_xlabel("n2")
+    ax.set_ylabel("n1")
+fig.tight_layout()
+fig.savefig(figure_dir / "session12_example_display.png")
+plt.show()
+plt.close(fig)
+```
+
+`imshow` は，行の番号 $n_1$ を下向きの縦軸に，列の番号 $n_2$ を横軸にとって表示するので，軸の目盛りから画素の座標を読み取れる。
+目盛りが不要な場合は，`ax.axis("off")` で軸を非表示にする。
+`gray_patch // 2` は，すべての画素値を半分にした暗い画像である。
+3 枚目は `vmin` と `vmax` を指定していないため，最小値と最大値が黒と白に対応づけられ，2 枚目とほとんど同じ明るさに見える。
+4 枚目のように `vmin=0, vmax=255` を指定すると，画素値が半分になって暗くなったことが表示に反映される。
+画像の明るさを比べる図では，`vmin` と `vmax` を固定する。
+表示の詳細は [Matplotlib image tutorial](https://matplotlib.org/stable/tutorials/images.html) にある。
 
 ### 2. 2次元信号
 
-理論を考える上で重要な2次元信号をいくつか紹介する．
+信号処理の理論を考えるうえで重要な 2 次元信号として，単位インパルス信号と複素正弦波を紹介する。
 
 #### 単位インパルス信号
+
+次の信号 $\delta[n_1, n_2]$ を，2 次元の **単位インパルス信号 (unit impulse signal)** という。
 
 $$
 \delta[n_1, n_2] = \begin{cases}
@@ -113,188 +202,394 @@ $$
 \end{cases}
 $$
 
+1 次元の場合（第10回）と同様に，任意の 2 次元信号は，シフトした単位インパルス信号の重み付き和として表せる。
+
+$$
+x[n_1, n_2] = \sum_{k_1=-\infty}^{\infty} \sum_{k_2=-\infty}^{\infty} x[k_1, k_2]\, \delta[n_1 - k_1, n_2 - k_2]
+$$
+
+この式は，第5節で線形シフト不変システムの入出力関係を導くときに使う。
+
 #### 複素正弦波
 
-$$
-e^{j (\omega_{1} n_1 + \omega_{2} n_2)}
-$$
-- $\omega_1, \omega_2$：それぞれ，$n_1, n_2$ 方向の空間角周波数
-
-指数法則より，2次元複素正弦波は，
-$n_1$ 方向の1次元複素正弦波と $n_2$ 方向の1次元複素正弦波の積で表せる．
+次の信号を，2 次元の **複素正弦波 (complex sinusoid)** という。
 
 $$
-e^{j (\omega_{1} n_1 + \omega_{2} n_2)}
-= e^{j \omega_{1} n_1} e^{j \omega_{2} n_2}
+e^{j (\omega_1 n_1 + \omega_2 n_2)}
 $$
 
-また，オイラーの公式より，複素正弦波は次のように表せる．
+ここで，$\omega_1$，$\omega_2$ は，それぞれ $n_1$ 方向，$n_2$ 方向の **空間角周波数 (spatial angular frequency)** であり，単位は rad/画素である。
+指数法則より，2 次元複素正弦波は，$n_1$ 方向の 1 次元複素正弦波と $n_2$ 方向の 1 次元複素正弦波の積で表せる。
+
 $$
-e^{j (\omega_{1} n_1 + \omega_{2} n_2)}
-= \cos(\omega_{1} n_1 + \omega_{2} n_2)
-+ j \sin(\omega_{1} n_1 + \omega_{2} n_2)
+e^{j (\omega_1 n_1 + \omega_2 n_2)} = e^{j \omega_1 n_1} e^{j \omega_2 n_2}
 $$
 
-$\cos(\omega_{1} n_1 + \omega_{2} n_2)$ や
-$\sin(\omega_{1} n_1 + \omega_{2} n_2)$ を，
-2次元正弦波という．
+また，オイラーの公式より，2 次元複素正弦波は次のように表せる。
+
+$$
+e^{j (\omega_1 n_1 + \omega_2 n_2)} = \cos(\omega_1 n_1 + \omega_2 n_2) + j \sin(\omega_1 n_1 + \omega_2 n_2)
+$$
+
+$\cos(\omega_1 n_1 + \omega_2 n_2)$ や $\sin(\omega_1 n_1 + \omega_2 n_2)$ を，**2 次元正弦波 (2-D sinusoid)** という。
+
+#### 2次元正弦波の縞模様
+
+2 次元正弦波の値は，位相 $\omega_1 n_1 + \omega_2 n_2$ だけで決まる。
+このため，位相が等しい点を結んだ直線 $\omega_1 n_1 + \omega_2 n_2 = c$（$c$ は定数）の上では値が等しく，画像として表示すると，この直線に沿った縞模様が現れる。
+縞の伸びる向きは，ベクトル $(\omega_1, \omega_2)$ と直交する。
+$n_1$ が 1 増えると位相は $\omega_1$ だけ変化するので，$|\omega_1|$ が大きいほど，$n_1$ 方向に沿って明暗が速く入れ替わる。
+特に，正の整数 $P$ を使って $\omega_1 = 2\pi/P$ と表せるときは，$n_1$ 方向に $P$ 画素ごとに同じ値を繰り返す（$n_2$ 方向も同様である）。
+また，$n_1$，$n_2$ は整数なので，第7回の離散時間信号と同様に，$\omega_1$ を $\omega_1 + 2\pi$ に置き換えても同じ信号になる。
+このため，空間角周波数は $-\pi \le \omega_1 < \pi$，$-\pi \le \omega_2 < \pi$ の範囲で考えれば十分である。
+
+```python
+N1, N2 = 48, 64
+n1 = np.arange(N1)
+n2 = np.arange(N2)
+n1_grid, n2_grid = np.meshgrid(n1, n2, indexing="ij")
+print(n1_grid.shape, n2_grid.shape)  # (48, 64) (48, 64)
+print(n1_grid[:2, :3].tolist(), n2_grid[:2, :3].tolist())  # [[0, 0, 0], [1, 1, 1]] [[0, 1, 2], [0, 1, 2]]
+
+w1, w2 = 2 * np.pi / 12, 2 * np.pi / 32
+wave = np.cos(w1 * n1_grid + w2 * n2_grid)
+print(np.allclose(wave[12:, :], wave[:-12, :]))  # True
+print(np.allclose(wave[:, 32:], wave[:, :-32]))  # True
+
+fig, ax = plt.subplots()
+ax.imshow(wave, cmap="gray", vmin=-1, vmax=1)
+ax.set_title("cos(2 pi n1 / 12 + 2 pi n2 / 32)")
+ax.set_xlabel("n2")
+ax.set_ylabel("n1")
+fig.savefig(figure_dir / "session12_example_sinusoid.png")
+plt.show()
+plt.close(fig)
+```
+
+`np.meshgrid(n1, n2, indexing="ij")` は，形 $(N_1, N_2)$ の 2 つの配列を返す。
+`n1_grid[i, j]` は `n1[i]` に，`n2_grid[i, j]` は `n2[j]` に等しいので，`w1 * n1_grid + w2 * n2_grid` で，すべての画素の位相 $\omega_1 n_1 + \omega_2 n_2$ を `for` 文を使わずに計算できる。
+`indexing` を指定しない `np.meshgrid(n1, n2)` は形 $(N_2, N_1)$ の配列を返し，1 つ目の配列では `n1` の値が横に並ぶので，$n_1$ と $n_2$ の役割が入れ替わる。
+画像が正方形のときは配列の形が変わらないためエラーにならず，縦と横が入れ替わった図になる点に注意する。
+`wave[12:, :]` と `wave[:-12, :]` は，$n_1$ 方向に 12 画素ずれた位置どうしを並べた配列である。
+したがって，1 つ目の `np.allclose` の結果は，$n_1$ 方向に 12 画素ごとに同じ値を繰り返すことを表す。
+同様に，2 つ目の結果は，$n_2$ 方向に 32 画素ごとに同じ値を繰り返すことを表す。
+図では，縞がベクトル $(\omega_1, \omega_2) = (2\pi/12, 2\pi/32)$ と直交する向き，すなわち右上がりの向きに伸びている。
 
 ### 3. 2次元信号の演算
 
-2次元信号に対しても，1次元信号と同様に基本演算が定義される．
+2 次元信号に対しても，第7回で 1 次元信号に対して扱った演算と同様の基本演算が定義される。
+以下では，信号はすべての整数の組 $(n_1, n_2)$ で定義されているものとして式を書き，画像の配列として計算するときの注意をあわせて説明する。
 
 #### シフト
 
-信号を平行移動させる
+信号を平行移動させる演算を **シフト (shift)** という。
 
 $$
 y[n_1, n_2] = x[n_1 - k_1, n_2 - k_2]
 $$
 
-- $k_1, k_2 \in \mathbb{Z}$：シフト量
+ここで，$k_1, k_2 \in \mathbb{Z}$ はシフト量である。
+$x$ の位置 $(m_1, m_2)$ の値は $y$ の位置 $(m_1 + k_1, m_2 + k_2)$ に移るので，$k_1 > 0$ なら下へ，$k_2 > 0$ なら右へ移動する。
 
 #### 反転
 
-信号を $n_1$ もしくは $n_2$ 軸に関して反転させる．
+信号の座標の向きを逆にする演算を **反転 (reflection)** という。
 
 $$
-y[n_1, n_2] = x[-n_1, n_2], \quad y[n_1, n_2] = x[n_1, -n_2]
+y[n_1, n_2] = x[-n_1, n_2], \qquad y[n_1, n_2] = x[n_1, -n_2]
 $$
+
+左の式は $n_1$ の向きを逆にする上下の反転，右の式は $n_2$ の向きを逆にする左右の反転である。
 
 #### 拡大・縮小
 
-信号を $n_1$ もしくは $n_2$ 軸に関して伸び縮みさせる．
+信号を伸び縮みさせる演算は，次式で表される。
 
 $$
-y[n_1, n_2] = x[an_1, an_2]
+y[n_1, n_2] = x[a n_1, a n_2]
 $$
 
-- $a > 0$：拡大率
-- ただし，$an_1, an_2$ が整数でない場合は $x[an_1, an_2] = 0$ とする
+ここで，$a > 0$ は定数であり，$a n_1$ または $a n_2$ が整数でない場合は $x[a n_1, a n_2] = 0$ とする。
+$x$ の位置 $(a n_1, a n_2)$ の値が $y$ の位置 $(n_1, n_2)$ に移るので，$y$ は $x$ を $1/a$ 倍に拡大・縮小した信号である。
+つまり，$a > 1$ なら縮小，$0 < a < 1$ なら拡大になる。
+例えば，$a = 2$ のときは，$x$ の偶数番目の行と列の値だけを取り出して並べた信号になる。
+$a = 1/2$ のときは，$n_1$ と $n_2$ がともに偶数の位置に $x$ の値を並べ，それ以外の位置を 0 とした信号になる。
+縦と横で異なる倍率を使う場合は，$y[n_1, n_2] = x[a_1 n_1, a_2 n_2]$ とする。
+
+#### 配列による計算
+
+NumPy では，シフト，反転，$a = 2$ の縮小を，次のように計算できる。
+
+```python
+small = np.arange(12).reshape(3, 4)
+print(np.roll(small, shift=(1, 2), axis=(0, 1)))
+print(small[::-1, :])
+print(small[::2, ::2])
+```
+
+```text
+[[10 11  8  9]
+ [ 2  3  0  1]
+ [ 6  7  4  5]]
+[[ 8  9 10 11]
+ [ 4  5  6  7]
+ [ 0  1  2  3]]
+[[ 0  2]
+ [ 8 10]]
+```
+
+`np.roll(x, shift=(k1, k2), axis=(0, 1))` は，配列を下へ $k_1$，右へ $k_2$ だけずらし，配列の端からはみ出した要素を反対側の端から戻す。
+これは第7回で扱った巡回シフトを 2 次元にしたものであり，式で書くと $y[n_1, n_2] = x[(n_1 - k_1) \bmod N_1, (n_2 - k_2) \bmod N_2]$ である。
+ここで，$m \bmod N$ は $m$ を $N$ で割った余り（0 以上 $N$ 未満）を表す。
+画像の範囲外の値を 0 とみなしてシフトの式を適用すると，はみ出した画素は失われ，空いた部分は 0 になるので，画像の端の付近で `np.roll` の結果とは異なる。
+`small[::-1, :]` は行の順番を逆にした上下の反転，`small[:, ::-1]` は列の順番を逆にした左右の反転である。
+`small[::2, ::2]` は偶数番目の行と列だけを取り出すので，$a = 2$ の縮小 $y[n_1, n_2] = x[2n_1, 2n_2]$ にあたる。
 
 #### 回転
-信号を原点を中心に $\theta$ だけ回転させる．
+
+信号を原点のまわりに角度 $\theta$ だけ回転させる演算は，次式で表される。
 
 $$
-y[n_1, n_2] = x[m_1, m_2]
+y[n_1, n_2] = x[m_1, m_2], \qquad
+\begin{pmatrix} m_1 \\ m_2 \end{pmatrix}
+= \boldsymbol{R}(\theta) \begin{pmatrix} n_1 \\ n_2 \end{pmatrix}, \qquad
+\boldsymbol{R}(\theta) = \begin{pmatrix} \cos\theta & \sin\theta \\ -\sin\theta & \cos\theta \end{pmatrix}
 $$
 
-ただし，
-$$
-\begin{pmatrix}m_1 \\
-m_2\end{pmatrix}
-=
-\begin{pmatrix}\cos \theta & \sin \theta \\
--\sin \theta & \cos \theta\end{pmatrix}
-\begin{pmatrix}n_1 \\ n_2\end{pmatrix}
-$$
+この式は，出力 $y$ の各位置 $(n_1, n_2)$ について，入力 $x$ のどの位置 $(m_1, m_2)$ の値を持ってくるかを表している。
+$\boldsymbol{R}(\theta)$ の逆行列は $\boldsymbol{R}(-\theta)$ なので，入力の位置 $(m_1, m_2)$ にあった値は，出力の位置 $\boldsymbol{R}(-\theta)(m_1, m_2)^\top$ に移る。
+$n_1$ 軸を下向き，$n_2$ 軸を右向きにとって表示すると，$\theta > 0$ のとき，この変換は反時計回りの回転になる。
+一般に $(m_1, m_2)$ は整数にならないので，画像の回転では，次の「幾何変換」で説明する補間が必要になる。
 
 #### 幾何変換
 
-ある写像 $f: \mathbb{Z}^2 \to \mathbb{Z}^2$ について，
+整数の座標 $(n_1, n_2)$ を実数の座標 $(m_1, m_2)$ に対応させる写像 $f$ を使って
 
 $$
-\begin{pmatrix}m_1 \\ m_2\end{pmatrix}
-= f \begin{pmatrix}n_1 \\ n_2\end{pmatrix}
+y[n_1, n_2] = x[m_1, m_2], \qquad
+\begin{pmatrix} m_1 \\ m_2 \end{pmatrix} = f\left( \begin{pmatrix} n_1 \\ n_2 \end{pmatrix} \right)
 $$
 
-としたとき，
+で与えられる変換を，**幾何変換 (geometric transformation)** という。
+$f$ が次の形で与えられるとき，**射影変換 (projective transformation)** という。
 
 $$
-y[n_1, n_2] = x[m_1, m_2]
+\begin{pmatrix} u_1 \\ u_2 \\ w \end{pmatrix}
+= \begin{pmatrix} a_{11} & a_{12} & a_{13} \\ a_{21} & a_{22} & a_{23} \\ a_{31} & a_{32} & a_{33} \end{pmatrix}
+\begin{pmatrix} n_1 \\ n_2 \\ 1 \end{pmatrix}, \qquad
+m_1 = \frac{u_1}{w}, \quad m_2 = \frac{u_2}{w}
 $$
 
-で与えられる変換を一般に **幾何変換** と呼ぶ．
-
-$f$ が以下の形で与えられるときを特に， **射影変換** と呼ぶ．
-
-$$
-\begin{pmatrix}m_1 \\ m_2 \\ 1\end{pmatrix}
-=
-\begin{pmatrix}a_{11} & a_{12} & a_{13} \\
-a_{21} & a_{22} & a_{23} \\
-a_{31} & a_{32} & a_{33}\end{pmatrix}
-\begin{pmatrix}n_1 \\ n_2 \\ 1\end{pmatrix}
-$$
-
-また，定式において $a_{31} = a_{32} = 0, \; a_{33} = 1$ の場合を，**アフィン変換** と呼ぶ．
-アフィン変換における
-$$
-\boldsymbol{A} = \begin{pmatrix}
-a_{11} & a_{12} \\
-a_{21} & a_{22}
-\end{pmatrix}
-$$
-が実数 $s$と回転行列 $\boldsymbol{R}(\theta)$ を用いて $\boldsymbol{A} = s \boldsymbol{R}(\theta)$ の形で表される場合を，
-**相似変換** と呼ぶ．
-
-上記の包含関係をまとめると，以下のようになる．
+$a_{31} = a_{32} = 0$，$a_{33} = 1$ の場合は $w = 1$ となり，$(m_1, m_2)$ は $(n_1, n_2)$ の 1 次式で表される。
+この場合を **アフィン変換 (affine transformation)** という。
+アフィン変換のうち，左上の 2 行 2 列の部分
 
 $$
-\text{相似変換} \subset \text{アフィン変換} \subset \text{射影変換} \subset \text{幾何変換}
+\boldsymbol{A} = \begin{pmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{pmatrix}
 $$
 
-シフト，反転，拡大・縮小，回転はすべてアフィン変換の特別な場合である．
+が 0 でない実数 $s$ と回転行列 $\boldsymbol{R}(\theta)$ を用いて $\boldsymbol{A} = s\boldsymbol{R}(\theta)$ と表される場合を，**相似変換 (similarity transformation)** という。
+相似変換はアフィン変換の，アフィン変換は射影変換の，射影変換は幾何変換の特別な場合である。
+シフト，反転，拡大・縮小，回転は，いずれもアフィン変換の特別な場合である。
 
+幾何変換の $(m_1, m_2)$ は一般に整数にならないので，整数の座標の画素値から，実数の座標での値を求める必要がある。
+この処理を **補間 (interpolation)** という。
+**最近傍補間 (nearest-neighbor interpolation)** は，$(m_1, m_2)$ に最も近い整数の座標の画素値をそのまま使う。
+**双線形補間 (bilinear interpolation)** は，$(m_1, m_2)$ を囲む 4 つの画素の値を，$(m_1, m_2)$ との距離に応じた重みで平均する。
+$(m_1, m_2)$ が入力の画像の範囲外になる出力の画素には，0 などの決まった値を入れる。
+出力の各画素から入力の位置を求める向きに計算すると，出力のすべての画素に値が 1 つずつ定まる。
+逆に，入力の各画素を出力の位置に移す向きに計算すると，値が入らない出力の画素や，複数の値が重なる出力の画素が生じる。
+
+Pillow の `rotate(angle)` は，画像の中心のまわりに `angle` 度だけ反時計回りに回転した画像を返す。
+引数 `resample` で補間の方法を選べ，既定は最近傍補間（`Image.Resampling.NEAREST`）である。
+既定では出力の大きさは入力と同じであり，`expand=True` を指定すると，回転した画像全体が収まるように出力が大きくなる。
+入力の範囲外を参照する部分は，既定では 0（黒）で埋められる。
+
+```python
+bar = np.zeros((60, 90), dtype=np.uint8)
+bar[10:50, 20:30] = 255  # vertical bar
+bar[40:50, 20:70] = 255  # horizontal bar
+bar_img = Image.fromarray(bar)
+rot_nearest = bar_img.rotate(20)
+rot_bilinear = bar_img.rotate(20, resample=Image.Resampling.BILINEAR, expand=True)
+print(rot_nearest.size, rot_bilinear.size)        # (90, 60) (106, 88)
+print(np.unique(np.array(rot_nearest)).tolist())  # [0, 255]
+print(np.unique(np.array(rot_bilinear)).size)     # 135
+
+fig, axes = plt.subplots(1, 3, figsize=(12, 3.5))
+axes[0].imshow(bar, cmap="gray", vmin=0, vmax=255)
+axes[0].set_title("original")
+axes[1].imshow(rot_nearest, cmap="gray", vmin=0, vmax=255)
+axes[1].set_title("rotate(20), nearest")
+axes[2].imshow(rot_bilinear, cmap="gray", vmin=0, vmax=255)
+axes[2].set_title("rotate(20), bilinear, expand")
+fig.tight_layout()
+fig.savefig(figure_dir / "session12_example_rotate.png")
+plt.show()
+plt.close(fig)
+```
+
+`rot_nearest` では，L 字形が画像の中心のまわりに反時計回りに 20° 回転している。
+最近傍補間は入力の画素値をそのまま使うので，画素値は 0 と 255 の 2 種類だけであり，斜めになった輪郭は階段状になる。
+双線形補間を使った `rot_bilinear` では，輪郭の付近に 0 と 255 の間の値が現れ（画素値は 135 種類），輪郭がなめらかに見える。
+`expand=True` を指定した `rot_bilinear` の大きさは `(106, 88)` に広がり，回転した図形の全体が収まっている。
+`rotate` が返す画像の `size` も，`(幅, 高さ)` の順である。
 
 #### 振幅スケーリング・オフセット
 
+画素値を定数倍して定数を加える演算は，次式で表される。
+
 $$
-y[n_1, n_2] = a \cdot x[n_1, n_2] + b
+y[n_1, n_2] = a\, x[n_1, n_2] + b
 $$
 
-- $a$：振幅の倍率（負の数なら符号反転）
-- $b$：オフセット（振幅方向の平行移動量）
+ここで，$a$ は振幅の倍率（負の数なら明暗が反転する），$b$ はオフセット（振幅方向の平行移動量）である。
+画像では，$b > 0$ で全体が明るくなり，$|a| > 1$ で画素値の差が広がってコントラストが強くなる。
+`uint8` 型の画像に適用するときは，第1節で説明したように，`float64` 型に変換して計算し，丸めて区間 $[0, 255]$ にクリップしてから `uint8` 型に戻す。
 
 #### 2つの信号の演算
 
-2つの2次元信号 $x_1, x_2$ に対して：
+2 つの 2 次元信号 $x_1$，$x_2$ の和と積は，同じ位置の値どうしの和と積として定義される。
 
-- **加算**：$y[n_1, n_2] = x_1[n_1, n_2] + x_2[n_1, n_2]$
+$$
+y[n_1, n_2] = x_1[n_1, n_2] + x_2[n_1, n_2], \qquad y[n_1, n_2] = x_1[n_1, n_2]\, x_2[n_1, n_2]
+$$
 
-- **乗算**：$y[n_1, n_2] = x_1[n_1, n_2] \; x_2[n_1, n_2]$
+$x_1$ と $x_2$ の **内積 (inner product)** は，次式で定義される。
 
-- **内積**：$\displaystyle \langle x_1, x_2 \rangle = \sum_{n_1=-\infty}^{\infty} \sum_{n_2=-\infty}^{\infty} \overline{x_1[n_1, n_2]} x_2[n_1, n_2]$
+$$
+\langle x_1, x_2 \rangle = \sum_{n_1=-\infty}^{\infty} \sum_{n_2=-\infty}^{\infty} \overline{x_1[n_1, n_2]}\, x_2[n_1, n_2]
+$$
 
-    - ここで，$\overline{z}$ は複素数 $z$ の複素共役を表す．
+ここで，$\overline{z}$ は複素数 $z$ の複素共役を表す。
+画像のように有限の範囲だけで値を持つ信号では，範囲外の値を 0 とみなし，和は画像の範囲だけでとる。
 
-- **畳み込み**：$\displaystyle y[n_1, n_2] = (x_1 * x_2)[n_1, n_2] = \sum_{k_1=-\infty}^{\infty} \sum_{k_2=-\infty}^{\infty} x_1[k_1, k_2] x_2[n_1 - k_1, n_2 - k_2]$
+$x_1$ と $x_2$ の **畳み込み (convolution)** と **相関 (correlation)** は，それぞれ次式で定義される。
 
-- **相関**：$\displaystyle y[n_1, n_2] = (x_1 \star x_2)[n_1, n_2] = \sum_{k_1=-\infty}^{\infty} \sum_{k_2=-\infty}^{\infty} \overline{x_1[k_1, k_2]} x_2[n_1 + k_1, n_2 + k_2]$
+$$
+(x_1 * x_2)[n_1, n_2] = \sum_{k_1=-\infty}^{\infty} \sum_{k_2=-\infty}^{\infty} x_1[k_1, k_2]\, x_2[n_1 - k_1, n_2 - k_2]
+$$
 
+$$
+(x_1 \star x_2)[n_1, n_2] = \sum_{k_1=-\infty}^{\infty} \sum_{k_2=-\infty}^{\infty} \overline{x_1[k_1, k_2]}\, x_2[n_1 + k_1, n_2 + k_2]
+$$
+
+畳み込みでは，一方の信号の座標の向きを上下左右とも逆にしてからずらして積和をとるのに対し，相関では向きを変えずにずらして積和をとる。
+相関 $(x_1 \star x_2)[n_1, n_2]$ は，$x_1$ と，$x_2$ を $(-n_1, -n_2)$ だけシフトした信号との内積である。
+畳み込みは，第5節で線形シフト不変システムの出力を表すために使う。
 
 ### 4. 2次元DFT
 
-1次元の場合と同様に，2次元複素正弦波の直交性を利用して，
-2次元離散時間信号を複素正弦波 $\phi_{k_1, k_2}[n_1, n_2] = e^{j 2 \pi (k_1 n_1 / N_1 + k_2 n_2 / N_2)}$
-の線形結合として表すことができる（2次元離散フーリエ変換）．
+#### 2次元DFTと逆DFT
+
+1 次元の場合（第8回）と同様に，大きさ $N_1 \times N_2$ の 2 次元信号は，次の複素正弦波の線形結合として表せる。
 
 $$
-x[n_1, n_2] =
-\frac{1}{N_1 N_2} \sum_{k_1=0}^{N_1-1} \sum_{k_2=0}^{N_2-1} X[k_1, k_2] e^{j 2 \pi (k_1 n_1 / N_1 + k_2 n_2 / N_2)}
-\qquad \text{逆DFT}
+\phi_{k_1, k_2}[n_1, n_2] = e^{j 2\pi (k_1 n_1 / N_1 + k_2 n_2 / N_2)}, \qquad k_1 = 0, \ldots, N_1 - 1, \quad k_2 = 0, \ldots, N_2 - 1
+$$
+
+$n_1 = 0, \ldots, N_1 - 1$，$n_2 = 0, \ldots, N_2 - 1$ の範囲で内積をとると，これらの複素正弦波は互いに直交し，$\langle \phi_{k_1, k_2}, \phi_{k_1, k_2} \rangle = N_1 N_2$ である。
+各複素正弦波の係数 $X[k_1, k_2]$ を求める変換を **2 次元離散フーリエ変換 (2-D discrete Fourier transform, 2-D DFT)**，係数から信号を求める変換を **2 次元逆離散フーリエ変換 (2-D inverse DFT)** という。
+
+$$
+X[k_1, k_2] = \langle \phi_{k_1, k_2}, x \rangle = \sum_{n_1=0}^{N_1-1} \sum_{n_2=0}^{N_2-1} x[n_1, n_2]\, e^{-j 2\pi (k_1 n_1 / N_1 + k_2 n_2 / N_2)}
 $$
 
 $$
-X[k_1, k_2] = \langle \phi_{k_1, k_2}, x \rangle = \boldsymbol{\phi}_{k_1, k_2}^* \boldsymbol{x} = \sum_{n_1=0}^{N_1-1} \sum_{n_2=0}^{N_2-1} \overline{\phi_{k_1, k_2}[n_1, n_2]} x[n_1, n_2] = \sum_{n_1=0}^{N_1-1} \sum_{n_2=0}^{N_2-1} x[n_1, n_2] e^{-j 2 \pi (k_1 n_1 / N_1 + k_2 n_2 / N_2)}
-\qquad \text{DFT}
+x[n_1, n_2] = \frac{1}{N_1 N_2} \sum_{k_1=0}^{N_1-1} \sum_{k_2=0}^{N_2-1} X[k_1, k_2]\, e^{j 2\pi (k_1 n_1 / N_1 + k_2 n_2 / N_2)}
 $$
 
-2次元DFT（逆DFT）は，1次元DFT（逆DFT）を行方向と列方向に順番に適用することで計算できる．
+$X[k_1, k_2]$ は，空間角周波数 $(\omega_1, \omega_2) = (2\pi k_1/N_1, 2\pi k_2/N_2)$ の複素正弦波の成分を表す。
+1 次元の場合と同様に，$|X[k_1, k_2]|$ を振幅スペクトル，$\angle X[k_1, k_2]$ を位相スペクトルという。
+$X[k_1, k_2]$ は $k_1$ について周期 $N_1$，$k_2$ について周期 $N_2$ を持つ。
+このため，$k_1 \ge N_1/2$ の成分は，負の空間角周波数 $2\pi(k_1 - N_1)/N_1$ の成分とみなせる（$k_2$ も同様である）。
+
+#### 行と列に分けた計算
+
+2 次元 DFT の式の指数関数は $e^{-j 2\pi k_1 n_1 / N_1}$ と $e^{-j 2\pi k_2 n_2 / N_2}$ の積に分けられるので，次のように書き直せる。
 
 $$
-X[k_1, k_2] = \sum_{n_1=0}^{N_1-1} \left( \sum_{n_2=0}^{N_2-1} x[n_1, n_2] e^{-j 2 \pi k_2 n_2 / N_2} \right) e^{-j 2 \pi k_1 n_1 / N_1}
-\qquad \text{DFTの場合}
+X[k_1, k_2] = \sum_{n_1=0}^{N_1-1} \left( \sum_{n_2=0}^{N_2-1} x[n_1, n_2]\, e^{-j 2\pi k_2 n_2 / N_2} \right) e^{-j 2\pi k_1 n_1 / N_1}
 $$
+
+かっこの中は，$x$ の $n_1$ 番目の行に沿った 1 次元 DFT である。
+したがって，2 次元 DFT は，各行に 1 次元 DFT を適用した後，その結果の各列に 1 次元 DFT を適用して計算できる。
+逆 DFT も同様である。
+NumPy の `np.fft.fft(x, axis=1)` は 2 次元配列 `x` の各行に，`np.fft.fft(x, axis=0)` は各列に 1 次元 DFT を適用する。
+
+#### NumPy による計算
+
+`np.fft.fft2` は 2 次元 DFT を，`np.fft.ifft2` は 2 次元逆 DFT を，FFT（第8回）を使って計算する。
+`np.fft.fft2(x)` が返す配列 `X` の要素 `X[k1, k2]` は，$X[k_1, k_2]$（$0 \le k_1 < N_1$，$0 \le k_2 < N_2$）である。
+`np.fft.fftshift` は，各軸で配列の前半と後半を入れ替え，直流成分 $(k_1, k_2) = (0, 0)$ を配列の中央の添字 `(N1 // 2, N2 // 2)` に移す。
+`np.fft.fftfreq(N)` は，各添字 $k$ に対応する周波数 $k/N$ を，$k \ge N/2$ では $(k - N)/N$ として並べた配列を返す。
+これを $2\pi$ 倍すると空間角周波数になる。
+各関数の詳細は [NumPy discrete Fourier transform](https://numpy.org/doc/stable/reference/routines.fft.html) にある。
+
+```python
+N = 8
+n1_8, n2_8 = np.meshgrid(np.arange(N), np.arange(N), indexing="ij")
+x8 = np.cos(2 * np.pi * (2 * n1_8 + 1 * n2_8) / N)
+X8 = np.fft.fft2(x8)
+print(X8.shape, X8.dtype)                       # (8, 8) complex128
+print(np.argwhere(np.abs(X8) > 1e-9).tolist())  # [[2, 1], [6, 7]]
+print(np.round(np.abs(X8[2, 1]), 6), np.round(np.abs(X8[6, 7]), 6))  # 32.0 32.0
+X8_shifted = np.fft.fftshift(X8)
+print(np.argwhere(np.abs(X8_shifted) > 1e-9).tolist())  # [[2, 3], [6, 5]]
+print(np.fft.fftshift(np.fft.fftfreq(N)))  # [-0.5   -0.375 -0.25  -0.125  0.     0.125  0.25   0.375]
+print(np.allclose(np.fft.ifft2(X8), x8))   # True
+```
+
+`x8` は，$(\omega_1, \omega_2) = (2\pi \cdot 2/8, 2\pi \cdot 1/8)$ の 2 次元正弦波である。
+`np.argwhere` は，条件を満たす要素の添字を 1 行に 1 つずつ並べた配列を返す。
+$\cos\theta = (e^{j\theta} + e^{-j\theta})/2$ より，`x8` は $(k_1, k_2) = (2, 1)$ と $(-2, -1)$ の 2 つの複素正弦波の和の半分である。
+$X[k_1, k_2]$ は $k_1$，$k_2$ について周期 8 を持つので，$(-2, -1)$ の成分は添字 $(6, 7)$ に現れる。
+複素正弦波の自分自身との内積は $N_1 N_2 = 64$ なので，2 つのピークの値はどちらも $64/2 = 32$ になる。
+fftshift の後は，直流成分が添字 $(4, 4)$ に移り，2 つのピークは $(4, 4)$ について点対称な添字 $(6, 5)$ と $(2, 3)$ に現れる。
+`np.fft.fftshift(np.fft.fftfreq(8))` は，fftshift の後の各添字に対応する $k/N$ を表す。
+例えば，fftshift の後の添字 6 は $0.25$，すなわち空間角周波数 $2\pi \times 0.25 = \pi/2$ に対応する。
+`np.fft.ifft2` で逆 DFT を計算すると元の信号に戻るが，結果は複素数型の配列になる（この例では虚部はほぼ 0 である）。
+
+#### 振幅スペクトルの表示
+
+画像の振幅スペクトルは，直流成分付近の値が他よりはるかに大きく，そのまま表示するとほとんどが黒に見える。
+そこで，振幅スペクトルを $20\log_{10}(|X[k_1, k_2]| + \varepsilon)$ で **デシベル (decibel, dB)** の値に変換して表示することが多い。
+$\varepsilon$ は $\log_{10} 0$ を避けるための小さな正の数であり，ここでは $10^{-9}$ を使う。
+
+```python
+box = np.zeros((64, 64))
+box[24:40, 28:36] = 1.0  # 16 rows x 8 columns
+B = np.fft.fftshift(np.fft.fft2(box))
+B_db = 20 * np.log10(np.abs(B) + 1e-9)
+print(round(B_db.max(), 2), round(B_db.min(), 1))  # 42.14 -180.0
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+axes[0].imshow(box, cmap="gray")
+axes[0].set_title("box (16 x 8)")
+im = axes[1].imshow(B_db, cmap="gray", vmin=-20, vmax=45)
+axes[1].set_title("magnitude [dB] after fftshift")
+fig.colorbar(im, ax=axes[1])
+fig.tight_layout()
+fig.savefig(figure_dir / "session12_example_box_spectrum.png")
+plt.show()
+plt.close(fig)
+```
+
+16 行 8 列の長方形の画素値の和は 128 なので，直流成分の値は 128，すなわち $20\log_{10}128 \approx 42.14$ dB である。
+最小値の $-180$ dB は，振幅が 0 の成分で $20\log_{10}10^{-9} = -180$ となったものである。
+このような極端な値で表示の範囲が決まらないように，`vmin` と `vmax` で表示する範囲を指定している。
+`fig.colorbar(im, ax=axes[1])` は，色と値の対応を表すカラーバーを描く。
+長方形は縦に長いが，スペクトルは横に長く広がっている。
+これは，信号が狭い範囲に集中している向きほど，スペクトルが広い範囲に広がることを表している。
 
 ### 5. 線形シフト不変システム
-2次元の場合においても，信号 $x$ を $y$ に変換する信号処理システム $\mathcal{S}$ を考えることができる．
+
+2 次元の場合にも，信号 $x$ を信号 $y$ に変換する信号処理システム $\mathcal{S}$ を考えることができる。
+第10回と同様に，システム $\mathcal{S}$ によって入力 $x$ が出力 $y$ に変換されることを $y = \mathcal{S}\{x\}$ と書く。
 
 #### 線形性
-任意の $a, b \in \mathbb{C}$ および
-任意の信号 $x_1, x_2$ に対して，
-以下の性質を満たすシステム $\mathcal{S}$ を，
-**線形システム** と呼ぶ．
+
+任意の $a, b \in \mathbb{C}$ および任意の信号 $x_1, x_2$ に対して，次の性質を満たすシステム $\mathcal{S}$ を，**線形システム (linear system)** という。
 
 $$
 \mathcal{S}\{a x_1 + b x_2\} = a \mathcal{S}\{x_1\} + b \mathcal{S}\{x_2\}
@@ -302,125 +597,314 @@ $$
 
 #### シフト不変性
 
-信号を $m_1, m_2$ サンプル遅延させる以下のシステム $\mathcal{D}_{m_1, m_2}$ を考える．
+信号を $(m_1, m_2)$ だけシフトさせる次のシステム $\mathcal{D}_{m_1, m_2}$ を考える。
 
 $$
 y[n_1, n_2] = \mathcal{D}_{m_1, m_2}\{x\}[n_1, n_2] = x[n_1 - m_1, n_2 - m_2]
 $$
 
-このとき，任意の信号 $x$ および任意の $m_1, m_2$ に対して，
-以下の性質を満たすシステム $\mathcal{S}$ を，
-**シフト不変システム** と呼ぶ．
+任意の信号 $x$ および任意の整数 $m_1, m_2$ に対して，次の性質を満たすシステム $\mathcal{S}$ を，**シフト不変システム (shift-invariant system)** という。
 
 $$
 \mathcal{S}\{\mathcal{D}_{m_1, m_2}\{x\}\} = \mathcal{D}_{m_1, m_2}\{\mathcal{S}\{x\}\}
 $$
 
-線形性とシフト不変性の両方を満たすシステムを，
-**線形シフト不変システム**（Linear Shift-Invariant System, LSI システム）と呼ぶ．
-線形シフト不変システムの入出力関係は，そのインパルス応答 $h[n_1, n_2]$ との畳み込みを用いて以下の通り表される．
+つまり，入力をシフトしてから処理しても，処理してから出力をシフトしても，結果が同じになるシステムである。
+これは 1 次元の時不変性（第10回）にあたる性質であり，画像では，画像のどの位置にも同じ処理を行うことを表す。
+
+#### 線形シフト不変システムと畳み込み
+
+線形性とシフト不変性の両方を満たすシステムを，**線形シフト不変システム (linear shift-invariant system, LSI システム)** という。
+単位インパルス信号 $\delta$ を入力したときの出力 $h = \mathcal{S}\{\delta\}$ を，システムの **インパルス応答 (impulse response)** という。
+第2節の式で入力を単位インパルス信号の重み付き和に分解し，線形性とシフト不変性を使うと，第10回と同様にして，LSI システムの出力はインパルス応答との畳み込みで表される。
 
 $$
-y[n_1, n_2] = (x * h)[n_1, n_2] = \sum_{k_1=-\infty}^{\infty} \sum_{k_2=-\infty}^{\infty} x[k_1, k_2] h[n_1 - k_1, n_2 - k_2]
+y[n_1, n_2] = (x * h)[n_1, n_2] = \sum_{k_1=-\infty}^{\infty} \sum_{k_2=-\infty}^{\infty} x[k_1, k_2]\, h[n_1 - k_1, n_2 - k_2]
 $$
 
+画像処理では，インパルス応答の 0 でない値を並べた 2 次元配列（例えば $3 \times 3$ の配列）を，フィルタと呼ぶことが多い。
+
+#### 2次元畳み込みの計算
+
+SciPy の `signal.convolve2d(x, h)` は，2 次元配列 `x` と `h` の畳み込みを計算する。
+`signal.correlate2d(x, h)` は，`h` の向きを変えずにずらしながら `x` との積和をとる相関 $(h \star x)[n_1, n_2]$ を計算する（実数値の場合）。
+どちらも，既定では配列の範囲外の値を 0 とみなして計算する。
+
+```python
+impulse = np.zeros((5, 5))
+impulse[2, 2] = 1.0
+h = np.array([[1.0, 2.0, 3.0],
+              [4.0, 5.0, 6.0]])
+y_conv = signal.convolve2d(impulse, h)
+y_corr = signal.correlate2d(impulse, h)
+print(y_conv.shape, y_corr.shape)
+print(y_conv[2:4, 2:5])
+print(y_corr[2:4, 2:5])
+print(signal.convolve2d(impulse, h, mode="same").shape)
+print(signal.convolve2d(impulse, h, mode="valid").shape)
+```
+
+```text
+(6, 7) (6, 7)
+[[1. 2. 3.]
+ [4. 5. 6.]]
+[[6. 5. 4.]
+ [3. 2. 1.]]
+(5, 5)
+(4, 3)
+```
+
+単位インパルス信号との畳み込みの結果には，インパルスの位置 $(2, 2)$ から `h` がそのまま現れる。
+これは，`h` がこのシステムのインパルス応答であることを表している。
+相関の結果には，`h` を上下左右とも逆に並べた配列が現れる。
+引数 `mode` は，出力する範囲を決める。
+既定の `mode="full"` は，値が 0 でない可能性があるすべての位置を出力するので，形 $(N_1, N_2)$ の `x` と形 $(M_1, M_2)$ の `h` に対して，出力の形は $(N_1 + M_1 - 1, N_2 + M_2 - 1)$ になる。
+`mode="same"` は `"full"` の出力の中央から `x` と同じ形の部分を取り出し，`mode="valid"` は `h` が `x` からはみ出さない位置だけを出力するので，出力の形はそれぞれ $(N_1, N_2)$，$(N_1 - M_1 + 1, N_2 - M_2 + 1)$ になる。
+引数 `boundary` は，範囲外の値の扱いを決める。
+既定の `boundary="fill"` は範囲外を 0 とし，`boundary="symm"` は画像の端で折り返した値を，`boundary="wrap"` は反対側の端の値を使う。
+範囲外を 0 とすると，画像の端の付近で平均化などの出力が暗くなるので，画像には `boundary="symm"` を使うことが多い。
+
+#### 周波数応答
+
+第10回と同様に，LSI システムに 2 次元複素正弦波 $e^{j(\omega_1 n_1 + \omega_2 n_2)}$ を入力すると，出力は同じ複素正弦波を次の $H(\omega_1, \omega_2)$ 倍したものになる。
+
+$$
+H(\omega_1, \omega_2) = \sum_{k_1=-\infty}^{\infty} \sum_{k_2=-\infty}^{\infty} h[k_1, k_2]\, e^{-j(\omega_1 k_1 + \omega_2 k_2)}
+$$
+
+$H(\omega_1, \omega_2)$ を 2 次元の LSI システムの周波数応答といい，第10回で扱った周波数応答を 2 次元に広げたものである。
+振幅応答 $|H(\omega_1, \omega_2)|$ は，空間角周波数 $(\omega_1, \omega_2)$ の成分の振幅が何倍になるかを表す。
+第10回と同様に，空間角周波数の低い成分を通して高い成分を弱めるフィルタを低域通過フィルタ，低い成分を弱めて高い成分を通すフィルタを高域通過フィルタという。
+`np.fft.fft2(h, s=(N1, N2))` は，`h` の右と下に 0 を補って形 $(N_1, N_2)$ にしてから 2 次元 DFT を計算するので，$(\omega_1, \omega_2) = (2\pi k_1/N_1, 2\pi k_2/N_2)$ における $H$ の値が得られる。
+このとき `h[0, 0]` が原点 $(0, 0)$ の値として扱われる。
+`h` の中央の要素を原点とみなした場合と比べると，周波数応答は位相だけが異なり，振幅応答 $|H|$ は同じになる。
+
+```python
+h_diff = np.array([[1.0, -1.0]])  # y[n1, n2] = x[n1, n2] - x[n1, n2 - 1]
+gray_f = gray_patch.astype(np.float64)
+edges = signal.convolve2d(gray_f, h_diff, mode="same", boundary="symm")
+print(edges.shape)  # (120, 160)
+
+H = np.fft.fft2(h_diff, s=(64, 64))
+print(np.round(np.abs(H[0, [0, 16, 32]]), 4))          # [0.     1.4142 2.    ]
+print(np.allclose(np.abs(H[10, :]), np.abs(H[0, :])))  # True
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+axes[0].imshow(edges, cmap="gray", vmin=-50, vmax=50)
+axes[0].set_title("convolution with [[1, -1]]")
+im = axes[1].imshow(np.abs(np.fft.fftshift(H)), cmap="gray")
+axes[1].set_title("|H| after fftshift (64 x 64)")
+fig.colorbar(im, ax=axes[1])
+fig.tight_layout()
+fig.savefig(figure_dir / "session12_example_difference.png")
+plt.show()
+plt.close(fig)
+```
+
+`h_diff` との畳み込みは $y[n_1, n_2] = x[n_1, n_2] - x[n_1, n_2 - 1]$ であり，左右に隣り合う画素の差を計算する。
+このため，出力は縦に伸びる輪郭や毛並みの縞の位置で絶対値が大きくなり，明るさが一様な部分では 0 に近くなる。
+出力は負の値もとるので，`vmin` と `vmax` を正負対称に指定し，0 を中間の灰色に対応させて表示している。
+周波数応答は $H(\omega_1, \omega_2) = 1 - e^{-j\omega_2}$ であり，$|H(\omega_1, \omega_2)| = 2|\sin(\omega_2/2)|$ となる。
+$k_2 = 0, 16, 32$（$\omega_2 = 0, \pi/2, \pi$）での値 $0, \sqrt{2}, 2$ が，プログラムの結果と一致している。
+$|H|$ は $\omega_1$ によらないので，`H[10, :]` と `H[0, :]` の振幅は等しい。
+つまり，このフィルタは，$n_2$ 方向の変化に対しては高域通過フィルタとして働き，$n_1$ 方向の変化には反応しない。
+
+#### 2次元の畳み込み定理
+
+第10回の畳み込み定理は，2 次元でも成り立つ。
+大きさ $N_1 \times N_2$ の 2 つの信号 $x$，$h$ の **2 次元巡回畳み込み (2-D circular convolution)** を次式で定義すると，その 2 次元 DFT は，それぞれの 2 次元 DFT の積に等しい。
+
+$$
+(x \circledast h)[n_1, n_2] = \sum_{k_1=0}^{N_1-1} \sum_{k_2=0}^{N_2-1} x[k_1, k_2]\, h[(n_1 - k_1) \bmod N_1, (n_2 - k_2) \bmod N_2]
+\quad \overset{\mathrm{DFT}}{\longleftrightarrow} \quad X[k_1, k_2]\, H[k_1, k_2]
+$$
+
+線形畳み込みの結果を DFT で求めたい場合は，第10回と同様に，両方の信号に 0 を補って線形畳み込みの結果と同じ大きさにしてから DFT を計算する。
+
+```python
+full = signal.convolve2d(gray_f, h_diff)  # linear convolution
+lhs = np.fft.fft2(full)
+rhs = np.fft.fft2(gray_f, s=full.shape) * np.fft.fft2(h_diff, s=full.shape)
+print(full.shape, np.allclose(lhs, rhs))  # (120, 161) True
+```
+
+`full` は線形畳み込みの結果であり，形は $(120 + 1 - 1, 160 + 2 - 1) = (120, 161)$ である。
+`s=full.shape` で両方の信号に 0 を補ってこの形にそろえると，巡回畳み込みと線形畳み込みが一致するので，`full` の DFT は 2 つの DFT の積に等しくなる。
+DFT の積は，周波数ごとに成分を何倍にするかを指定することにあたる。
+逆に，DFT に周波数ごとの倍率を並べた配列を掛けてから逆 DFT を計算すると，その配列を周波数応答とする LSI システムの出力（巡回畳み込みの結果）が得られる。
 
 ## 演習
 
-作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。以下の相対パスは，自分の作業リポジトリのルートを基準とします。
+作業場所・保存先・説明の残し方は [共通手順](README.md#作業場所と保存先) に従ってください。
+演習ファイルは，自分の作業リポジトリ（ `~/workspace/signal-ml-work` ）直下の `exercise/` 以下に置いてください。
+以下の相対パスは，自分の作業リポジトリを基準とします。
+ファイル名は `exc授業回2桁_問題番号2桁.py` の形式に統一してください。第12回の第1問であれば，`exercise/exc12_01.py` とします。
+各ファイルの先頭には，解説の冒頭にある `import` 文と，保存先ディレクトリ `figure_dir`（`outputs/exc12`）を作成する処理を書いてください。
+図は `figure_dir` に，問題番号を含むファイル名で保存してください。第1問の図であれば，`outputs/exc12/exc12_01.png` とします。
+入力画像には，教材リポジトリの [data/](../data/) からダウンロードして作業リポジトリの `data/` に保存した `data/cat.png` を使ってください。
+問題文の「グレースケール画像」は，`np.array(Image.open("data/cat.png").convert("L"))` で得られる配列を指します。
+グレースケール画像やその計算結果を `imshow` で表示するときは `cmap="gray"` を指定してください。画素値として 0 から 255 の値をとる画像を表示するときは，特に指定がない限り `vmin=0, vmax=255` も指定してください。
+乱数を使う場合は，`rng = np.random.default_rng(0)` で作った乱数生成器を使ってください。
 
-基本的にはプログラム (Python) を使って取り組むことを想定しています．
-ただし，手計算するよう指定されている問題は，コンピュータを使わずに計算してください．
+基本的にはプログラム (Python) を使って取り組むことを想定しています。
+ただし，次の 2 種類の指示がある問題は，プログラムを実行する前に自分で考えてください。
 
-### 基礎レベル
- 
-1. 画像 `cat.png` を `Image.open` で読み込み，NumPy 配列に変換して，
-配列の形状 (shape)，データ型 (dtype)，画素値の最小値・最大値を表示してください．
-また，`img.convert('L')` でグレースケール画像に変換し，同様に形状・データ型・最小値・最大値を確認してください．
-カラー画像とグレースケール画像で形状がどのように異なるか答えてください．
+- **予想してください**：実行前に結果を予想してコメントに書き，実行後に予想と一致したか，一致しなかった場合はその理由を追記してください。
+- **手計算してください**：コンピュータを使わずに計算し，途中の式と答えをコメントに書いてください。そのうえで NumPy で計算した結果と比較してください。
 
-1. 1で読み込んだRGB画像の配列から，赤・緑・青の各チャネル `arr[:, :, 0]`, `arr[:, :, 1]`, `arr[:, :, 2]` を取り出し，
-元のカラー画像と合わせて4枚を `cmap='gray'` で並べて表示してください（`plt.subplot` を使うとよいです）．
-全チャネルで共通して明るい部分や，あるチャネルだけが明るい部分などがあるか観察してください．
+### 基礎レベル（11問）
+1. 画像を NumPy 配列に変換したときの形，型，値の範囲を確かめます。入力は `data/cat.png` とします。
 
-1. グレースケール画像 $x[n_1, n_2]$ に対し，
-振幅スケーリング・オフセット $y[n_1, n_2] = a \cdot x[n_1, n_2] + b$ を利用して，
-以下の画像を生成し，元の画像と並べて表示してください．
-    - ネガ画像（$a = -1, b = 255$）
-    - 明るさを上げた画像（$a = 1, b = 50$）
-    - コントラストを上げた画像（$y = 1.5 (x - 128) + 128$）
-ただし，uint8 型のまま計算するとオーバーフロー等が起きるため，
-一度 `float64` 型に変換してから計算し，最後に区間 $[0, 255]$ にクリップして uint8 型に戻してください．
+    1. `exercise/exc12_01.py` で `img = Image.open("data/cat.png")` を実行し，`img.mode` と `img.size` を表示してください。その結果から，`np.array(img)` と `np.array(img.convert("L"))` の `shape` と `dtype` を予想してください。
+    2. 2 つの配列の `shape`，`dtype`，画素値の最小値と最大値を表示し，1 の予想と比較してください。
+    3. RGB 画像の配列で位置 $(n_1, n_2) = (300, 1050)$ にある画素の R，G，B の値を表示してください。解説の式でこの画素の明るさ $L$ を手計算し，グレースケール画像の同じ位置の値と比較してください。
+    4. この画像は縦と横の画素数が等しいため，`size` と `shape` を比べても縦と横の順は確かめられません。`img.crop((100, 200, 400, 300))` で切り出した画像について，`size` と，配列に変換したときの `shape` を予想してから表示してください。
+    5. 4 で切り出した画像を `save` で `outputs/exc12/exc12_01.png` に保存してください。保存したファイルを `Image.open` で読み込み直した配列が，保存前の配列と一致することを `np.array_equal` で確かめてください。
+    6. カラー画像とグレースケール画像で配列の形が異なる理由を，各画素が持つ値の個数から説明してください。
 
-1. 第07回で実装した `quantize` 関数を使って，グレースケール画像（$[0, 255]$ の範囲）の画素値を
-ビット深度 $B = 1, 2, 4, 8$ で量子化した画像をそれぞれ表示してください．
-ビット深度を下げると画像の見え方がどのように変化するか考察してください．
+2. RGB 画像の各チャネルが，画像のどの部分で大きな値をとるかを調べます。基礎第1問の RGB 画像の配列を `arr` とします。
 
-1. グレースケール画像に対して以下の演算を施した画像を生成し，表示してください．
-    - `np.roll` を使って，$n_1$ 方向（縦）に 50 画素，$n_2$ 方向（横）に 100 画素シフトした画像
-    - スライス `[::-1, :]` を使って上下反転した画像
-    - スライス `[:, ::-1]` を使って左右反転した画像
-    - スライス `[::2, ::2]` を使って縦横それぞれ 1/2 に間引いた（縮小した）画像
+    1. 観葉植物の葉，左端の椅子，猫の額のそれぞれについて，R，G，B のうちどのチャネルの値が最も大きいか，または 3 つがほぼ等しいかを，カラー画像の色から予想してください。
+    2. `exercise/exc12_02.py` で，元のカラー画像と `arr[:, :, 0]`，`arr[:, :, 1]`，`arr[:, :, 2]` の 4 枚を `plt.subplots(1, 4, figsize=(16, 4))` で並べて表示してください。各図のタイトルに `"RGB"`，`"R"`，`"G"`，`"B"` を付け，`outputs/exc12/exc12_02.png` に保存してください。
+    3. 葉の領域 `arr[300:400, 1050:1130]`，椅子の領域 `arr[300:500, 0:100]`，額の領域 `arr[300:340, 430:480]` について，チャネルごとの平均値を表示し，1 の予想と比較してください。領域の配列を `reshape(-1, 3)` で形 `(画素数, 3)` に並べ替えると，`mean(axis=0)` でチャネルごとの平均値を計算できます。
+    4. 窓の領域 `arr[0:100, 250:450]` についても，チャネルごとの平均値を表示してください。3 つのチャネルの値がいずれも大きい窓と，3 つのチャネルの値がほぼ等しい猫の額が，それぞれ何色に見えるかを図で確かめてください。そのうえで，3 つのチャネルの値の大小関係と色の見え方の関係を説明してください。
 
-1. 回転角 $\theta = 90^\circ$ のときの回転行列 $\boldsymbol{R}(\theta)$ を手計算してください．
-また，座標 $(n_1, n_2) = (2, 1)$ を $\theta = 90^\circ$ 回転した後の座標を手計算してください．
-さらに，Pillow の `img.rotate(90)` を使って画像を $90^\circ$ 回転した結果を表示してください．
+3. 振幅スケーリング・オフセットで，画像の明るさとコントラストを変えます。基礎第1問のグレースケール画像を `gray`，その画素値を $x$ とし，次の 3 つの変換を考えます。
 
-1. 大きさ $128 \times 128$ の2次元正弦波 $x[n_1, n_2] = \cos(\omega_1 n_1 + \omega_2 n_2)$ を，
-以下の $(\omega_1, \omega_2)$ の組み合わせについて生成し，並べて表示してください
-（`np.meshgrid` を使うとよいです）．
-ただし， `cmap='gray'` としてください．
-その後，縞模様の向きおよび細かさと $(\omega_1, \omega_2)$ の関係を考察してください．
-    - $(\omega_1, \omega_2) = (\pi/8, 0)$
-    - $(\omega_1, \omega_2) = (0, \pi/8)$
-    - $(\omega_1, \omega_2) = (\pi/8, \pi/8)$
-    - $(\omega_1, \omega_2) = (\pi/2, \pi/2)$
+    - ネガ画像：$y = -x + 255$（$a = -1$，$b = 255$）
+    - 明るさを上げた画像：$y = x + 50$（$a = 1$，$b = 50$）
+    - コントラストを上げた画像：$y = 1.5(x - 128) + 128$
 
-1. 7で生成した各2次元正弦波の2次元DFTを `np.fft.fft2` で計算し，
-`np.fft.fftshift` を適用してから振幅スペクトル $|X[k_1, k_2]|$ を `imshow` で表示してください．
-スペクトルのピークの位置と $(\omega_1, \omega_2)$ の対応関係を考察してください．
-また，2次元実信号のスペクトルの対称性を，DFTの対称性（第08回）を踏まえて考察してください．
+    1. コントラストを上げる変換を $y = ax + b$ の形に書き直し，$a$ と $b$ を答えてください。さらに，$x = 0, 100, 200, 255$ のそれぞれについて，3 つの変換の出力を手計算してください。出力が区間 $[0, 255]$ の外になる場合は，区間の端の値にクリップした値も書いてください。
+    2. `exercise/exc12_03.py` で，`gray` を `float64` 型に変換してから 3 つの変換を計算してください。結果は `np.round` で丸め，`np.clip` で区間 $[0, 255]$ に収めてから `uint8` 型に戻してください。画素値が 0，100，200，255 である画素の位置を `pos = np.argwhere(gray == 100)[0]` などで 1 つずつ求め，その位置の 3 つの出力を `y[pos[0], pos[1]]` のように取り出して表示し，1 の結果と比較してください。
+    3. 元の画像と 3 つの出力を `plt.subplots(2, 2, figsize=(10, 10))` で並べて表示し，`outputs/exc12/exc12_03.png` に保存してください。
+    4. `float64` 型に変換せず，`uint8` 型のまま `gray + 50` を計算してください。その結果が元の画素値より小さくなった画素の数と，元の画素値が 206 以上の画素の数を `np.count_nonzero` で数えて表示してください。2 つの数が一致する理由を，`uint8` 型で表せる値の範囲から説明してください。
 
-1. グレースケール画像の2次元DFTを計算し，`np.fft.fftshift` を適用した振幅スペクトルを表示してください．
-ただし，振幅スペクトルはダイナミックレンジが非常に広いため，
-$20 \log_{10}(|X[k_1, k_2]| + \varepsilon)$（$\varepsilon$ は小さな正の数，例えば $10^{-9}$）のように対数スケールに変換して表示してください．
-画像の滑らかな変化（低周波成分）と細かい模様やエッジ（高周波成分）が，
-スペクトル上のどこに対応するか考察してください．
+4. ビット深度を下げたときの画像の見え方の変化を調べます。第7回の解説で定義した `quantize(x, n_bits, x_min, x_max)` を `exercise/exc12_04.py` にコピーし，基礎第1問のグレースケール画像を `float64` 型に変換した配列に，`x_min=0.0`，`x_max=255.0` として適用します。ビット深度は $B = 1, 2, 4, 8$ とします。
 
-1. 2次元DFTが1次元DFTを行方向・列方向に順に適用したものと一致することを確認してください．
-適当な $8 \times 8$ の2次元信号に対して，`np.fft.fft` を `axis=1`（行方向），続いて `axis=0`（列方向）に適用した結果と，
-`np.fft.fft2` の結果が一致することを `np.allclose` で確認してください．
+    1. $B = 2$ のときの量子化間隔と代表値をすべて手計算してください。また，画素値 100 と 200 がそれぞれどの代表値に量子化されるかを手計算してください。
+    2. 各 $B$ について，量子化した画像に含まれる画素値の種類の数を予想してください。`exercise/exc12_04.py` で量子化を行い，`np.unique(...).size` で実際の数を表示して予想と比較してください。1 の手計算の結果も，`quantize` の出力と比較してください。
+    3. 元の画像と 4 つの量子化した画像を `plt.subplots(1, 5, figsize=(20, 4))` で並べて表示し，`outputs/exc12/exc12_04.png` に保存してください。また，各 $B$ について，量子化した画像 $\hat{x}$ と元の画像 $x$ の平均二乗誤差 $\frac{1}{N_1 N_2}\sum_{n_1, n_2} (\hat{x}[n_1, n_2] - x[n_1, n_2])^2$ を表示してください。
+    4. $B = 8$ で平均二乗誤差が 0 になる理由を，量子化間隔の値と，元の画素値が整数であることから説明してください。
+    5. $B = 2$ と $B = 4$ の画像で，窓や壁のように明るさがなだらかに変化する部分と，猫の毛のように細かく変化する部分のどちらで元の画像との違いが目立つかを答え，その理由を説明してください。
 
-1. グレースケール画像に対して，以下のインパルス応答 $h[n_1, n_2]$ を持つLSIシステムの出力を
-`scipy.signal.convolve2d` を使って計算し，元の画像と並べて表示してください．
-また，各 $h$ に対して $256 \times 256$ 点2次元DFTを施し，
-各システムが低域通過フィルタと高域通過フィルタのどちらに相当するか，
-それぞれの振幅スペクトルを基に考察してください．
-    1. 平均化フィルタ：$h = \dfrac{1}{9}\begin{pmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{pmatrix}$
-    2. ラプラシアンフィルタ：$h = \begin{pmatrix} 0 & 1 & 0 \\ 1 & -4 & 1 \\ 0 & 1 & 0 \end{pmatrix}$
+5. シフト，反転，縮小を配列の操作で計算し，添字の対応を確かめます。基礎第1問のグレースケール画像を `x`（高さ $N_1$，幅 $N_2$）とし，次の 4 つの配列を考えます。
 
-### 発展レベル
- 
-1. 同じ大きさの2枚のグレースケール画像 $x_1, x_2$ を用意し，それぞれの2次元DFT $X_1, X_2$ を計算してください．
-$X_1$ の振幅スペクトルと $X_2$ の位相スペクトルを組み合わせた
-$Z[k_1, k_2] = |X_1[k_1, k_2]| \, e^{j \angle X_2[k_1, k_2]}$ の逆DFTを計算し，実部を画像として表示してください．
-振幅と位相を逆に組み合わせた場合も同様に表示し，
-画像の見た目の情報が振幅スペクトルと位相スペクトルのどちらに強く現れるか考察してください．
+    - `y1 = np.roll(x, shift=(50, 100), axis=(0, 1))`
+    - `y2 = x[::-1, :]`
+    - `y3 = x[:, ::-1]`
+    - `y4 = x[::2, ::2]`
 
-1. グレースケール画像の2次元DFT（`fftshift` 適用後）に対して，
-中心（直流成分）からの距離が $r$ 以内の成分のみを残し，それ以外を 0 にするマスクを掛けてから逆DFTを計算してください．
-$r$ を変化させたときの出力画像の見え方を比較してください．
-また，逆に中心から $r$ 以内を 0 にした場合（高域通過フィルタリング）の出力画像も表示し，考察してください．
+    1. 各配列の `[0, 0]` の要素が `x` のどの位置の値かを，$N_1$，$N_2$ の値を使って手計算してください。また，`y4` の形を予想してください。
+    2. `exercise/exc12_05.py` で 4 つの配列を作り，各配列の `[0, 0]` の要素と，1 で求めた位置の `x` の値が一致することを確かめてください。`y4.shape` も表示してください。
+    3. 元の画像と 4 つの配列を `plt.subplots(2, 3, figsize=(12, 8))` で並べて表示し（使わない 1 つの領域は `axis("off")` にしてください），`outputs/exc12/exc12_05.png` に保存してください。`y2` と `y3` が上下と左右のどちらの反転かを図で確かめてください。
+    4. 範囲外の値を 0 とみなしたシフト $y[n_1, n_2] = x[n_1 - 50, n_2 - 100]$ を，`y5 = np.zeros_like(x)` の一部に `x` の一部をスライスで代入して計算してください。`y5` のうち範囲外を参照して 0 になった画素の数を $N_1$，$N_2$ の式で手計算し，`np.count_nonzero(y1 != y5)` と比較してください。2 つの数が一致しない場合は，その理由を説明してください。
+    5. `y1` の図で，元の画像の下端と右端からはみ出した部分がどこに現れているかを確かめ，`np.roll` がそのように動作する理由を，解説の巡回シフトの式を使って説明してください。
 
-1. 画像の回転 $y[n_1, n_2] = x[m_1, m_2]$，
-$(m_1, m_2)^\top = \boldsymbol{R}(\theta) (n_1, n_2)^\top$ では一般に，
-$(m_1, m_2)$ がそれぞれ整数となりません．
-そのため，整数座標における画素値に基づいて非整数座標における画素値を補間する処理が行われます．
-出力画像の各画素 $(n_1, n_2)$ に対して参照元の座標 $(m_1, m_2)$ を計算し，
-$(m_1, m_2)$ に最も近い整数座標の画素値を割り当てる方法（最近傍補間）で実装してください
-（画像中心を回転中心とし，参照元が画像の範囲外となる画素は 0 とします）．
-$\theta = 30^\circ$ で回転した結果を Pillow の `rotate` の結果と比較してください．
+6. 回転の式で座標の対応を手計算し，Pillow の回転と比べます。回転角を $\theta = 90^\circ$ とします。
+
+    1. 回転行列 $\boldsymbol{R}(90^\circ)$ を手計算してください。
+    2. 解説の回転の式で，出力の位置 $(n_1, n_2) = (2, 1)$ が参照する入力の位置 $(m_1, m_2)$ を手計算してください。また，入力の位置 $(2, 1)$ にあった値が移る出力の位置を手計算し，$n_1$ 軸を下向き，$n_2$ 軸を右向きにとったときに，原点のまわりで時計回りと反時計回りのどちらに回転したかを答えてください。
+    3. `exercise/exc12_06.py` で，グレースケール画像の `Image` オブジェクト `Image.open("data/cat.png").convert("L")` を `rotate(90)` で回転し，元の画像と並べて表示して `outputs/exc12/exc12_06.png` に保存してください。図の回転の向きが 2 の答えと一致することを確かめてください。
+    4. `rotate(90)` の結果を配列に変換し，基礎第1問のグレースケール画像 `x` に対する `np.rot90(x)` と一致することを `np.array_equal` で確かめてください。`np.rot90` は，配列を反時計回りに 90° 回転させる関数です。
+    5. 解説の式は原点（画像の左上隅）のまわりの回転を表すのに対し，`rotate` は画像の中心のまわりに回転させます。解説の式のまま $\theta = 90^\circ$ の回転を画像に適用すると，出力の範囲 $0 \le n_1 < N_1$，$0 \le n_2 < N_2$ のうち，入力の画像の範囲内を参照する画素は 1 行だけになります。その理由を，$(m_1, m_2)$ を $n_1$，$n_2$ の式で表して説明してください。
+
+7. 2 次元正弦波の縞の向きと細かさが，空間角周波数によってどう決まるかを調べます。大きさを $128 \times 128$（$n_1, n_2 = 0, 1, \ldots, 127$）とし，$x[n_1, n_2] = \cos(\omega_1 n_1 + \omega_2 n_2)$ を次の 4 通りの $(\omega_1, \omega_2)$ について考えます。
+
+    - (a) $(\omega_1, \omega_2) = (\pi/8, 0)$
+    - (b) $(\omega_1, \omega_2) = (0, \pi/8)$
+    - (c) $(\omega_1, \omega_2) = (\pi/8, \pi/8)$
+    - (d) $(\omega_1, \omega_2) = (\pi/2, \pi/2)$
+
+    1. (a)〜(d) のそれぞれについて，縞が横に伸びるか，縦に伸びるか，斜めに伸びるかを予想してください。また，$n_1$ 方向と $n_2$ 方向のそれぞれについて，何画素ごとに同じ値を繰り返すかを答えてください。値が変化しない方向は 1 画素ごととします。
+    2. ベクトル $(\omega_1, \omega_2)$ の向きに $d$ 画素進むと，位相 $\omega_1 n_1 + \omega_2 n_2$ は $d\sqrt{\omega_1^2 + \omega_2^2}$ だけ変化します。このことを使って，(c) と (d) の縞の間隔（縞と直交する向きに測った周期）を手計算してください。
+    3. `exercise/exc12_07.py` で，`np.meshgrid(n1, n2, indexing="ij")` を使って 4 つの正弦波を作り，`plt.subplots(2, 2, figsize=(8, 8))` で並べて表示してください。`cmap="gray", vmin=-1, vmax=1` を指定し，各図のタイトルに $(\omega_1, \omega_2)$ の値を書いて，`outputs/exc12/exc12_07.png` に保存してください。
+    4. 1 で答えた画素数 $P$ について，$n_1$ 方向は `np.allclose(x[P:, :], x[:-P, :])`，$n_2$ 方向は `np.allclose(x[:, P:], x[:, :-P])` で，同じ値を繰り返すことを確かめてください。
+    5. 図と 1，2 の結果から，縞の向きと間隔が $(\omega_1, \omega_2)$ の向きと大きさによってどう決まるかを説明してください。
+    6. `indexing="ij"` を付けずに `np.meshgrid(n1, n2)` を使うと，(a) と (b) の図がどうなるかを予想してから確かめ，理由を説明してください。
+
+8. 2 次元正弦波の 2 次元 DFT で，振幅スペクトルのピークの位置と空間角周波数の対応を確かめます。基礎第7問の 4 つの正弦波を使います。
+
+    1. $\cos\theta = (e^{j\theta} + e^{-j\theta})/2$ と解説の 2 次元 DFT の式を使い，(a)〜(d) のそれぞれについて，$|X[k_1, k_2]|$ が 0 でない添字 $(k_1, k_2)$（$0 \le k_1, k_2 \le 127$）と，そこでの $|X[k_1, k_2]|$ の値を手計算してください。さらに，`np.fft.fftshift` を適用した後の配列で，それらのピークが現れる添字を手計算してください。
+    2. `exercise/exc12_08.py` で各正弦波の 2 次元 DFT を `np.fft.fft2` で計算してください。`np.argwhere(np.abs(X) > 1e-6)` でピークの添字を求め，その添字と $|X[k_1, k_2]|$ の値を表示して 1 の結果と比較してください。fftshift を適用した後の配列についても，同様にピークの添字を表示してください。
+    3. fftshift を適用した振幅スペクトル $|X[k_1, k_2]|$ を `plt.subplots(2, 2, figsize=(8, 8))` で並べて表示し，`outputs/exc12/exc12_08.png` に保存してください。振幅スペクトルの表示では `vmin` と `vmax` を指定しないでください。
+    4. 第8回の 1 次元 DFT の対称性を参考に，実数値の 2 次元信号の DFT で $X[k_1, k_2]$ と $X[-k_1, -k_2]$ の間に成り立つ関係を，DFT の定義から導いてください。添字は，$N_1$，$N_2$ で割った余りで考えます。
+    5. (c) の正弦波と，基礎第1問のグレースケール画像を `float64` 型に変換した配列のそれぞれについて，4 の関係が成り立つことを `np.allclose` で確かめてください。$X[-k_1, -k_2]$ を並べた配列は，`np.roll(X[::-1, ::-1], shift=(1, 1), axis=(0, 1))` で作れます。
+    6. 1 つの正弦波に対してピークが 2 つ現れる理由と，fftshift を適用した振幅スペクトルが中心について点対称になる理由を説明してください。
+
+9. 自然画像の振幅スペクトルで，画像の変化の細かさとスペクトル上の位置の対応を調べます。基礎第1問のグレースケール画像を `float64` 型に変換した配列を $x$ とします。
+
+    1. 直流成分 $X[0, 0]$ を，2 次元 DFT の定義から $x$ の画素値を使った式で表してください。また，fftshift を適用した後の配列で，直流成分が現れる添字を手計算してください。
+    2. `exercise/exc12_09.py` で $x$ の 2 次元 DFT を計算し，`X[0, 0]` と `x.sum()` を表示して 1 の結果と比較してください。fftshift を適用した後の配列で，1 で求めた添字の値が `X[0, 0]` と等しいことも確かめてください。
+    3. fftshift を適用した振幅スペクトルを $20\log_{10}(|X[k_1, k_2]| + 10^{-9})$ で dB の値に変換し，元の画像と `plt.subplots(1, 2, figsize=(12, 5))` で並べて表示してください。スペクトルは `cmap="gray", vmin=60, vmax=140` で表示し，`fig.colorbar` でカラーバーを付けて，`outputs/exc12/exc12_09.png` に保存してください。
+    4. fftshift 後の添字で中心からの距離が 50 以下の成分について，その個数が全体の成分の個数に占める割合と，そのエネルギー $\sum |X[k_1, k_2]|^2$ が全体のエネルギーに占める割合を計算して表示してください。距離は，`np.meshgrid` で作った添字の配列と中心の添字から計算できます。
+    5. 図と 4 の結果から，画像のなだらかな明るさの変化（低い空間周波数の成分）と，毛並みや輪郭のような細かい変化（高い空間周波数の成分）が，それぞれスペクトル上のどこに現れ，どの程度の大きさを持つかを説明してください。
+    6. スペクトルの中心を通る縦と横の明るい線が現れる理由を考察してください。第8回のスペクトル漏れと同様に，2 次元 DFT は画像を縦と横に周期的に並べた信号を扱うことに着目し，その信号で画像の上端と下端，左端と右端がつながる部分で何が起きるかから説明してください。また，$x$ に 2 次元のハン窓 `np.outer(np.hanning(N1), np.hanning(N2))` を掛けてから 3 と同じ方法で dB の振幅スペクトルを描き，`outputs/exc12/exc12_09_hann.png` に保存して，縦と横の線が見えにくくなることを確かめてください。
+
+10. 2 次元 DFT が，行方向と列方向の 1 次元 DFT の組み合わせで計算できることを確かめます。
+
+    1. $x = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$（$N_1 = N_2 = 2$，1 行目が $x[0, 0] = 1$，$x[0, 1] = 2$）の 2 次元 DFT を，各行の 1 次元 DFT を計算した後に各列の 1 次元 DFT を計算する順に手計算してください。
+    2. `exercise/exc12_10.py` で，1 の $x$ に `np.fft.fft2` を適用し，1 の結果と比較してください。
+    3. `rng = np.random.default_rng(0)` で作った乱数生成器から `x = rng.standard_normal((8, 8))` を作ってください。`np.fft.fft` を `axis=1`，続いて `axis=0` の順に適用した結果と，`axis=0`，続いて `axis=1` の順に適用した結果が，それぞれ `np.fft.fft2(x)` と一致するかを予想してから，`np.allclose` で確かめてください。
+    4. 適用する順番を入れ替えても結果が変わらない理由を，解説の行と列に分けた DFT の式で，和をとる順番に着目して説明してください。
+    5. $N_1 \times N_2$ の信号の 2 次元 DFT を定義どおりに計算するときに必要な複素数の掛け算の回数と，行と列に分けて各 1 次元 DFT を定義どおりに計算するときの回数を，$N_1$，$N_2$ の式で表してください。$N_1 = N_2 = 1024$ のときの両者の比を手計算してください。
+
+11. 2 次元の LSI システムとして，平均化フィルタとラプラシアンフィルタの働きを，出力の画像と周波数応答の両方から比べます。基礎第1問のグレースケール画像を `float64` 型に変換した配列を $x$ とし，インパルス応答を次の 2 つとします。
+
+    $$
+    h_{\mathrm{avg}} = \frac{1}{9}\begin{pmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{pmatrix}, \qquad
+    h_{\mathrm{lap}} = \begin{pmatrix} 0 & 1 & 0 \\ 1 & -4 & 1 \\ 0 & 1 & 0 \end{pmatrix}
+    $$
+
+    $h_{\mathrm{avg}}$ をインパルス応答とするシステムを **平均化フィルタ (averaging filter)**，$h_{\mathrm{lap}}$ をインパルス応答とするシステムを **ラプラシアンフィルタ (Laplacian filter)** といいます。
+
+    1. 各インパルス応答の中央の要素を原点 $(0, 0)$ とみなし，解説の式で周波数応答 $H(\omega_1, \omega_2)$ を求めてください。$(\omega_1, \omega_2) = (0, 0)$，$(0, \pi)$，$(\pi, \pi)$ における $|H(\omega_1, \omega_2)|$ を手計算してください。
+    2. `exercise/exc12_11.py` で，`signal.convolve2d(x, h, mode="same", boundary="symm")` により 2 つのフィルタの出力を計算し，出力の形が $x$ の形と一致することを確かめてください。
+    3. `plt.subplots(2, 3, figsize=(15, 10))` の上段に，元の画像，平均化フィルタの出力，ラプラシアンフィルタの出力を並べてください。下段には，それぞれの猫の目の付近 `[430:580, 300:450]` を拡大して並べ，`outputs/exc12/exc12_11.png` に保存してください。ラプラシアンフィルタの出力は `vmin=-40, vmax=40` で表示してください。
+    4. `np.fft.fft2(h, s=(256, 256))` で各インパルス応答の $256 \times 256$ 点 2 次元 DFT を計算してください。fftshift を適用する前の添字 $(k_1, k_2) = (0, 0)$，$(0, 128)$，$(128, 128)$ における振幅応答 $|H[k_1, k_2]|$ を表示し，1 の結果と比較してください。fftshift を適用した振幅応答を，`vmin` と `vmax` を指定せずにカラーバーを付けて並べて表示し，`outputs/exc12/exc12_11_freq.png` に保存してください。
+    5. 各フィルタが低域通過フィルタと高域通過フィルタのどちらに相当するかを，4 の振幅応答と 3 の出力の画像の両方を根拠に説明してください。
+    6. ラプラシアンフィルタの出力が，毛並みの縞や目の輪郭では大きな絶対値をとり，窓のように明るさがほぼ一様な部分では 0 に近くなる理由を，$H(0, 0)$ の値を使って説明してください。
+
+### 発展レベル（3問）
+1. 2 次元 DFT の振幅スペクトルと位相スペクトルのどちらが，画像の見た目を強く決めるかを調べます。基礎第1問のグレースケール画像を `float64` 型に変換した配列 `x` から，猫の顔の領域 `x1 = x[200:712, 150:662]` と観葉植物の領域 `x2 = x[0:512, 742:1254]`（どちらも $512 \times 512$）を切り出し，それぞれの 2 次元 DFT を $X_1$，$X_2$ とします。振幅スペクトルと位相スペクトルを入れ替えた $Z_{12}$，$Z_{21}$ を次式で定めます。
+
+    $$
+    Z_{12}[k_1, k_2] = |X_1[k_1, k_2]|\, e^{j\angle X_2[k_1, k_2]}, \qquad
+    Z_{21}[k_1, k_2] = |X_2[k_1, k_2]|\, e^{j\angle X_1[k_1, k_2]}
+    $$
+
+    1. $Z_{12}$ の逆 DFT が $x_1$ と $x_2$ のどちらに似た画像になるかを予想してください。
+    2. `exercise/exc12_12.py` で $Z_{12}$ と $Z_{21}$ を作り，`np.fft.ifft2` で逆 DFT を計算してください。位相スペクトルは `np.angle` で，$e^{j\theta}$ は `np.exp(1j * theta)` で計算できます。それぞれの逆 DFT の虚部の絶対値の最大値を表示してください。
+    3. 逆 DFT の実部 $z_{12}$，$z_{21}$ を，$x_1$，$x_2$ と合わせて `plt.subplots(2, 2, figsize=(8, 8))` で並べて表示し，`outputs/exc12/exc12_12.png` に保存してください。$z_{12}$ と $z_{21}$ の値は区間 $[0, 255]$ に収まらないため，この 2 つは `vmin` と `vmax` を指定せずに表示してください。
+    4. $z_{12}$ と $x_1$，$z_{12}$ と $x_2$，$z_{21}$ と $x_1$，$z_{21}$ と $x_2$ の相関係数を，`np.corrcoef(a.ravel(), b.ravel())[0, 1]` で計算して表示してください。
+    5. 1 の予想と 3，4 の結果を比較し，画像の見た目を決める情報が振幅スペクトルと位相スペクトルのどちらに多く含まれるかを，相関係数の値を根拠に判断してください。
+    6. 2 で虚部がほぼ 0 になる理由を，基礎第8問で導いた対称性が $Z_{12}$ でも成り立つかどうかから説明してください。
+
+2. 周波数領域で成分を取り除くフィルタについて，残す成分の範囲と画質の関係を比べ，条件に合う範囲を選びます。基礎第1問のグレースケール画像を `float64` 型に変換した配列を $x$，その 2 次元 DFT に fftshift を適用した配列を $X_s$ とします。fftshift 後の添字で中心 $(N_1/2, N_2/2)$ からの距離が $r$ 以下の成分を 1，それ以外を 0 とする配列をマスク $M_r$ とし，$r = 10, 30, 100$ を比べます。
+
+    1. $X_s M_r$ の逆 DFT（理想低域通過フィルタの出力）と，$X_s (1 - M_r)$ の逆 DFT（理想高域通過フィルタの出力）が，$r$ を大きくするとそれぞれどう変わるかを予想してください。
+    2. `exercise/exc12_13.py` で，`np.meshgrid` で作った添字の配列から中心との距離を計算してマスクを作ってください。マスクを掛けた配列に `np.fft.ifftshift` を適用して fftshift の前の並びに戻してから，`np.fft.ifft2` で逆 DFT を計算し，その実部を出力としてください。
+    3. 3 つの $r$ について，低域通過フィルタの出力を上段，高域通過フィルタの出力を下段に並べた図を `plt.subplots(2, 3, figsize=(15, 10))` で描き，`outputs/exc12/exc12_13.png` に保存してください。低域通過フィルタの出力は `vmin=0, vmax=255` で，高域通過フィルタの出力は `vmin=-60, vmax=60` で表示してください。
+    4. 各 $r$ について，残した成分の個数が全体に占める割合 $\sum_{k_1, k_2} M_r[k_1, k_2] / (N_1 N_2)$ と，低域通過フィルタの出力と $x$ の平均二乗誤差を表示してください。
+    5. $r = 30$ のマスクの逆 DFT は，理想低域通過フィルタのインパルス応答です。`np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(M)))` の実部を計算し，中心を通る行のうち中心から左右 100 画素の範囲を，横軸を中心からのずれ（$-100$〜$100$ 画素）とした折れ線で描いて，`outputs/exc12/exc12_13_impulse.png` に保存してください。インパルス応答が負の値をとる部分があることを確かめ，低域通過フィルタの出力で輪郭のまわりに縞模様（リンギング）が現れる理由を，第5節の畳み込みの式を使って説明してください。
+    6. 猫の顔の目，鼻，耳の形を判別できることを条件として，残す成分の割合をできるだけ小さくしたい場合に，3 つの $r$ のどれを選ぶかを，3 の図と 4 の数値を根拠に答えてください。
+
+3. 画像の回転を最近傍補間で実装して Pillow の結果と比べ，用途に応じて補間の方法を選びます。基礎第1問のグレースケール画像（`uint8` 型）を `x`（$N_1 \times N_2$），回転角を $\theta = 30^\circ$ とします。回転の中心を画像の中心 $(c_1, c_2) = ((N_1 - 1)/2, (N_2 - 1)/2)$ とし，出力の各画素 $(n_1, n_2)$ が参照する入力の位置 $(m_1, m_2)$ を次式で計算します。
+
+    $$
+    \begin{pmatrix} m_1 \\ m_2 \end{pmatrix} = \boldsymbol{R}(\theta) \begin{pmatrix} n_1 - c_1 \\ n_2 - c_2 \end{pmatrix} + \begin{pmatrix} c_1 \\ c_2 \end{pmatrix}
+    $$
+
+    1. 出力の位置 $(n_1, n_2) = (c_1, c_2)$（画像の中心）と，左上隅の画素 $(0, 0)$ が参照する入力の位置を，小数第 1 位まで手計算してください。$N_1$ と $N_2$ が偶数のとき，$(c_1, c_2)$ は画素の位置ではなく，中央の 4 つの画素の間の点です。左上隅の画素の参照先が入力の画像の範囲に入るかを答えてください。
+    2. `exercise/exc12_14.py` に，配列 `x` と角度 `theta_deg`（度）を受け取り，最近傍補間で回転した `uint8` 型の配列を返す関数 `rotate_nearest(x, theta_deg)` を書いてください。`np.meshgrid` で作った添字の配列から $(m_1, m_2)$ を計算し，`np.round` で最も近い整数に丸めてください。参照先が $0 \le m_1 < N_1$，$0 \le m_2 < N_2$ の範囲外になる画素は 0 とします。`for` 文は使わず，範囲内かどうかを表す真偽値の配列を使って代入してください。
+    3. `rotate_nearest(x, 30)` の結果と，`np.array(Image.fromarray(x).rotate(30))` の結果を比べ，値が異なる画素の数と割合を表示してください。2 つの結果と差の絶対値を `plt.subplots(1, 3, figsize=(15, 5))` で並べて表示し，`outputs/exc12/exc12_14.png` に保存してください。
+    4. 3 で値が異なった画素について，丸める前の $m_1$，$m_2$ の小数部分と 0.5 との差を求め，各画素で 2 つのうち小さい方の値の最大値を表示してください。この結果から，値が異なる画素が生じる原因を考察してください。
+    5. 30° 回転してから −30° 回転して戻す処理を，`rotate_nearest` を 2 回使う方法と，`rotate(..., resample=Image.Resampling.BILINEAR)`（双線形補間）を 2 回使う方法で行ってください。画像の中心からの距離が 500 画素以下の画素について，元の画像との平均二乗誤差をそれぞれ表示してください。
+    6. 画素値が 0 と 255 だけの二値画像 `mask = np.where(x > 128, 255, 0).astype(np.uint8)` を，最近傍補間と双線形補間でそれぞれ 30° 回転し，`np.unique` で画素値の種類の数を表示してください。
+    7. 5 と 6 の結果と，回転した画像の輪郭の見え方を根拠に，猫の写真を回転して表示する場合と，猫の領域を 255 で表した二値画像（マスク）を回転する場合のそれぞれで，最近傍補間と双線形補間のどちらを選ぶかを答え，理由を説明してください。
 
 ## 詰まったときに見る資料
+- [`../textbook/markdown/ch12-introduction-to-pillow.md`](../textbook/markdown/ch12-introduction-to-pillow.md)
+- [`../textbook/markdown/ch14-basics-of-spectrum-analysis.md`](../textbook/markdown/ch14-basics-of-spectrum-analysis.md)
+- [`10-lti-systems-and-convolution.md`](10-lti-systems-and-convolution.md)
 - [Pillow handbook](https://pillow.readthedocs.io/en/stable/handbook/index.html)
-- [Matplotlib image tutorial](https://matplotlib.org/stable/tutorials/images.html)
