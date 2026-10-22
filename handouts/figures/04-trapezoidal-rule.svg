@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="470" viewBox="0 0 760 470" role="img" aria-labelledby="title description">
+  <title id="title">台形公式による面積の近似</title>
+  <desc id="description">区分求積法の図と同じ非負の関数と3つの小区間を使い，両端の点をオレンジ色の線分で結んで台形を作る。中央の台形を濃く塗り，平行な2辺の長さ f(x_k)，f(x_{k+1}) と，その間隔 Δx を示す。</desc>
+  <rect width="760" height="470" fill="white"/>
+
+  <!-- The parallel sides are vertical; their separation is Delta x. -->
+  <g stroke="#52738f" stroke-width="1.8">
+    <path d="M 200 350 V 250 L 340 230.4 V 350 Z" fill="#e4eff8"/>
+    <path d="M 340 350 V 230.4 L 480 171.6 V 350 Z" fill="#a9cfea"/>
+    <path d="M 480 350 V 171.6 L 620 73.6 V 350 Z" fill="#e4eff8"/>
+  </g>
+  <g stroke="#52738f" stroke-width="1.5" stroke-dasharray="6 5">
+    <line x1="125" y1="230.4" x2="340" y2="230.4"/>
+    <line x1="125" y1="171.6" x2="480" y2="171.6"/>
+  </g>
+
+  <!-- Identical curve and sample positions to the Riemann-sum diagram. -->
+  <path d="M 160 248.4 Q 400 267.6 640 56.4" fill="none" stroke="#23649b" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M 200 250 L 340 230.4 L 480 171.6 L 620 73.6" fill="none" stroke="#c56a1a" stroke-width="2.5"/>
+  <g fill="#23649b">
+    <circle cx="200" cy="250" r="4.5"/>
+    <circle cx="340" cy="230.4" r="4.5"/>
+    <circle cx="480" cy="171.6" r="4.5"/>
+    <circle cx="620" cy="73.6" r="4.5"/>
+  </g>
+
+  <g fill="none" stroke="#263238" stroke-width="2">
+    <line x1="125" y1="370" x2="125" y2="45"/>
+    <line x1="105" y1="350" x2="710" y2="350"/>
+    <line x1="200" y1="350" x2="200" y2="358"/>
+    <line x1="340" y1="350" x2="340" y2="358"/>
+    <line x1="480" y1="350" x2="480" y2="358"/>
+    <line x1="620" y1="350" x2="620" y2="358"/>
+  </g>
+  <path d="M 125 37 L 120 49 L 130 49 Z" fill="#263238"/>
+  <path d="M 718 350 L 706 345 L 706 355 Z" fill="#263238"/>
+
+  <g stroke="#52738f" stroke-width="1.4">
+    <line x1="340" y1="391" x2="340" y2="426"/>
+    <line x1="480" y1="391" x2="480" y2="426"/>
+    <line x1="347" y1="414" x2="473" y2="414"/>
+  </g>
+  <path d="M 340 414 L 350 409 L 350 419 Z" fill="#52738f"/>
+  <path d="M 480 414 L 470 409 L 470 419 Z" fill="#52738f"/>
+
+  <g font-family="DejaVu Serif, serif" font-size="24" font-style="italic" fill="#263238">
+    <text x="727" y="359">x</text>
+    <text x="104" y="35">y</text>
+    <text x="200" y="380" text-anchor="middle">a</text>
+    <text x="329" y="380">x</text>
+    <text x="344" y="386" font-size="16">k</text>
+    <text x="459" y="380">x</text>
+    <text x="474" y="386" font-size="16">k+1</text>
+    <text x="620" y="380" text-anchor="middle">b</text>
+    <text x="58" y="237" font-size="22">f(x</text>
+    <text x="89" y="243" font-size="15">k</text>
+    <text x="101" y="237" font-size="22">)</text>
+    <text x="36" y="178" font-size="22">f(x</text>
+    <text x="67" y="184" font-size="15">k+1</text>
+    <text x="101" y="178" font-size="22">)</text>
+    <text x="510" y="60" fill="#23649b">y = f(x)</text>
+    <text x="410" y="449" text-anchor="middle">Δx</text>
+  </g>
+  <text x="107" y="379" font-family="DejaVu Serif, serif" font-size="21" fill="#263238">0</text>
+</svg>
