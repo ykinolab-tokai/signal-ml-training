@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="470" viewBox="0 0 760 470" role="img" aria-labelledby="title description">
+  <title id="title">分割数 N = 12 の区分求積法</title>
+  <desc id="description">N = 3 の図と同じ関数と積分区間 a から b を12等分し，各小区間の左端の関数値を高さとする長方形を描く。幅 Δx は N = 3 の場合の4分の1になり，長方形と曲線の間の隙間が小さくなっている。1つの長方形を濃く塗り，その幅を示す。</desc>
+  <rect width="760" height="470" fill="white"/>
+
+  <!-- Twelve equal intervals: x_k = 200 + 35 k, top y_k = 250 - (x_k - 200)^2 / 1000. -->
+  <g fill="#e4eff8" stroke="#52738f" stroke-width="1.4">
+    <rect x="200" y="250" width="35" height="100"/>
+    <rect x="235" y="248.775" width="35" height="101.225"/>
+    <rect x="270" y="245.1" width="35" height="104.9"/>
+    <rect x="305" y="238.975" width="35" height="111.025"/>
+    <rect x="340" y="230.4" width="35" height="119.6" fill="#a9cfea"/>
+    <rect x="375" y="219.375" width="35" height="130.625"/>
+    <rect x="410" y="205.9" width="35" height="144.1"/>
+    <rect x="445" y="189.975" width="35" height="160.025"/>
+    <rect x="480" y="171.6" width="35" height="178.4"/>
+    <rect x="515" y="150.775" width="35" height="199.225"/>
+    <rect x="550" y="127.5" width="35" height="222.5"/>
+    <rect x="585" y="101.775" width="35" height="248.225"/>
+    <line x1="620" y1="350" x2="620" y2="73.6"/>
+  </g>
+
+  <!-- Identical curve, axes, and integration limits to the N = 3 diagram. -->
+  <path d="M 160 248.4 Q 400 267.6 640 56.4" fill="none" stroke="#23649b" stroke-width="3.5" stroke-linecap="round"/>
+  <g fill="#23649b">
+    <circle cx="200" cy="250" r="3"/>
+    <circle cx="235" cy="248.775" r="3"/>
+    <circle cx="270" cy="245.1" r="3"/>
+    <circle cx="305" cy="238.975" r="3"/>
+    <circle cx="340" cy="230.4" r="3"/>
+    <circle cx="375" cy="219.375" r="3"/>
+    <circle cx="410" cy="205.9" r="3"/>
+    <circle cx="445" cy="189.975" r="3"/>
+    <circle cx="480" cy="171.6" r="3"/>
+    <circle cx="515" cy="150.775" r="3"/>
+    <circle cx="550" cy="127.5" r="3"/>
+    <circle cx="585" cy="101.775" r="3"/>
+  </g>
+
+  <g fill="none" stroke="#263238" stroke-width="2">
+    <line x1="125" y1="370" x2="125" y2="45"/>
+    <line x1="105" y1="350" x2="710" y2="350"/>
+    <line x1="200" y1="350" x2="200" y2="358"/>
+    <line x1="620" y1="350" x2="620" y2="358"/>
+  </g>
+  <path d="M 125 37 L 120 49 L 130 49 Z" fill="#263238"/>
+  <path d="M 718 350 L 706 345 L 706 355 Z" fill="#263238"/>
+
+  <g stroke="#52738f" stroke-width="1.4">
+    <line x1="340" y1="358" x2="340" y2="426"/>
+    <line x1="375" y1="358" x2="375" y2="426"/>
+    <line x1="346" y1="414" x2="369" y2="414"/>
+  </g>
+  <path d="M 340 414 L 347 410 L 347 418 Z" fill="#52738f"/>
+  <path d="M 375 414 L 368 410 L 368 418 Z" fill="#52738f"/>
+
+  <g font-family="DejaVu Serif, serif" font-size="24" font-style="italic" fill="#263238">
+    <text x="727" y="359">x</text>
+    <text x="104" y="35">y</text>
+    <text x="200" y="380" text-anchor="middle">a</text>
+    <text x="620" y="380" text-anchor="middle">b</text>
+    <text x="510" y="60" fill="#23649b">y = f(x)</text>
+    <text x="200" y="90">N = 12</text>
+    <text x="357.5" y="449" text-anchor="middle">Δx</text>
+  </g>
+  <text x="107" y="379" font-family="DejaVu Serif, serif" font-size="21" fill="#263238">0</text>
+</svg>
