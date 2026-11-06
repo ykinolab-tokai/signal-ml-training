@@ -19,7 +19,7 @@
 | 2 | Python 基礎 | 変数、関数，条件分岐，繰り返し，list、dict、スライス | [02 Python 基礎](handouts/02-python-basics.md) |
 | 3 | 数学基礎とNumpy, Matplotlib | 初等関数とグラフ，グラフの平行移動，Numpy配列，Matplotlibによるグラフの描画 | [03 数学基礎とNumpy, Matplotlib](handouts/03-math-basics-numpy-matplotlib.md) |
 | 4 | 微分と積分 | 傾き，数値微分，関数の極値，区分求積法，定積分と数値積分 | [04 微分と積分](handouts/04-differentiation-and-integration.md) |
-| 5 | 線形代数 | ベクトル・行列の和，内積，行列積，ノルム，射影，線形変換，逆行列 | [05 線形代数](handouts/05-linear-algebra.md) |
+| 5 | 線形代数 | ベクトル・行列の和，内積，行列積，ノルム，射影，線形変換，逆行列，固有値・固有ベクトル，対角化 | [05 線形代数](handouts/05-linear-algebra.md) |
 | 6 | 確率 | 平均，分散，共分散，一様分布，正規分布 | [06 確率](handouts/06-probability.md) |
 | 7 | 信号とサンプリング | 連続時間と離散時間，サンプリング周波数，サンプリング定理，信号に対する演算，量子化 | [07 信号とサンプリング](handouts/07-signals-and-sampling.md) |
 | 8 | Fourier 変換 | DFT, 振幅スペクトルと位相スペクトル，窓関数 | [08 Fourier 変換](handouts/08-fourier-transform.md) |
