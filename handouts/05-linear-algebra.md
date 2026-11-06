@@ -130,6 +130,8 @@ print(A - 2 * B)
 
 いくつかのベクトルをそれぞれスカラー倍して足し合わせた $c_1\boldsymbol{v}_1 + c_2\boldsymbol{v}_2 + \cdots + c_k\boldsymbol{v}_k$ を，$\boldsymbol{v}_1, \ldots, \boldsymbol{v}_k$ の **線形結合 (linear combination)** という。
 例えば，$\boldsymbol{e}_1 = (1, 0)^\top$，$\boldsymbol{e}_2 = (0, 1)^\top$ とすると，任意の 2 次元ベクトルは $(v_1, v_2)^\top = v_1\boldsymbol{e}_1 + v_2\boldsymbol{e}_2$ という線形結合で表せる。
+いくつかのベクトルのどれもが，残りのベクトルの線形結合で表せないとき，
+それらのベクトルは **線形独立 (linearly independent)** であるという。
 
 次のコードでは，係数がともに 1 の線形結合 `a + b` を図示する。
 
@@ -158,6 +160,55 @@ plt.close(fig)
 `quiver` は矢印の終点に合わせて表示範囲を広げないため，`set_xlim` と `set_ylim` で範囲を指定している。
 `ax.set_aspect("equal")` は，縦軸と横軸の目盛りの間隔をそろえる。
 目盛りの間隔が縦と横で異なると，図の上で矢印の長さや角度が正しく表示されないことに注意する。
+
+#### 行列の階数（ランク）
+
+ベクトル $\boldsymbol{a}_1, \cdots, \boldsymbol{a}_n$ を並べた行列 $\boldsymbol{A} = (\boldsymbol{a}_1, \cdots, \boldsymbol{a}_n)$ について，
+$\boldsymbol{a}_1, \cdots, \boldsymbol{a}_n$ から選べる線形独立なベクトルの最大個数を
+行列 $\boldsymbol{A}$ の **階数 (ランク，rank)** といい， $\mathrm{rank}(\boldsymbol{A})$ と書く。
+$m\times n$ 行列の階数は常に $\min(m,n)$ 以下であり， $\mathrm{rank}(\boldsymbol{A}) = \min(m, n)$ のとき，その行列は **フルランク (full rank)** であるという。
+
+**例1：フルランクの場合**
+
+$$
+\boldsymbol{A}=\begin{pmatrix}
+1&0&0&1\\
+0&1&0&1\\
+0&0&1&1
+\end{pmatrix}
+$$
+
+第 1〜3 列の $(1,0,0)^\top$，$(0,1,0)^\top$，$(0,0,1)^\top$ は，どれも残り 2 つの線形結合では表せず，線形独立である。
+第 4 列は，これら 3 つの列ベクトルの和である。
+したがって，線形独立な列ベクトルを選べる最大個数は 3 であり，$\mathrm{rank}(\boldsymbol{A})=3$ である。
+これは 3×4 行列の階数の最大値 $\min(3,4)=3$ に等しいので，$\boldsymbol{A}$ はフルランクである。
+
+**例2：フルランクでない場合**
+
+$$
+\boldsymbol{B}=\begin{pmatrix}
+1&0&1&2\\
+0&1&1&1\\
+1&1&2&3
+\end{pmatrix}
+$$
+
+第 1 列 $\boldsymbol{b}_1=(1,0,1)^\top$ と第 2 列 $\boldsymbol{b}_2=(0,1,1)^\top$ は，一方を他方のスカラー倍で表せないため，線形独立である。
+一方，第 3 列は $\boldsymbol{b}_1+\boldsymbol{b}_2$，第 4 列は $2\boldsymbol{b}_1+\boldsymbol{b}_2$ であり，すべての列がこの 2 つのベクトルの線形結合で表せる。
+したがって，線形独立な列ベクトルを選べる最大個数は 2 であり，$\mathrm{rank}(\boldsymbol{B})=2<\min(3,4)=3$ なので，$\boldsymbol{B}$ はフルランクではない。
+
+NumPy では，階数を `np.linalg.matrix_rank(A)` で計算できる。
+
+```python
+A = np.array([[1, 0, 0, 1],
+              [0, 1, 0, 1],
+              [0, 0, 1, 1]])
+B = np.array([[1, 0, 1, 2],
+              [0, 1, 1, 1],
+              [1, 1, 2, 3]])
+print(np.linalg.matrix_rank(A))  # 3：フルランク
+print(np.linalg.matrix_rank(B))  # 2：フルランクではない
+```
 
 ### 2. 内積とノルム
 
@@ -323,23 +374,70 @@ $$
 
 ### 4. 線形変換
 
+#### 写像と変換
+
+2つの集合 $A, B$ について， $A$ の各元に対して $B$ のある1つの要素を結びつける対応を，
+$A$ から $B$ への **写像 (map)** といい $f: A \to B$ などと書く。
+このとき， $a \in A$ に対応する $b \in B$ を $b = f(a)$ と書く。
+写像のことを **関数 (function)** ということもある。
+関数という語を，写像のうち $A$ が数（スカラー）の集合であるもの（例えば $\mathbb{R}$ や $\mathbb{C}$）に限って用いる場合もある。
+$A$ から $A$ 自身への写像を **変換 (transform)** という。
+
+実ベクトルを実ベクトルに対応させる写像 $f:\mathbb{R}^n\to\mathbb{R}^m$ を考える。
+任意の $\boldsymbol{x},\boldsymbol{y}\in\mathbb{R}^n$ と任意の実数 $c$ に対して，次の 2 つの条件を満たす写像を **線形写像 (linear map)** という。
+
+$$
+f(\boldsymbol{x}+\boldsymbol{y})=f(\boldsymbol{x})+f(\boldsymbol{y}),\qquad
+f(c\boldsymbol{x})=c\,f(\boldsymbol{x})
+$$
+
+この性質を **線形性 (linearity)** という（第4回で扱った微分を，関数を別の関数に結びつける写像だと考えれば，微分は線形写像である）。
+上の 2 条件は，任意の $\boldsymbol{x}_1,\boldsymbol{x}_2\in\mathbb{R}^n$ と実数 $c_1,c_2$ に対して，次の式が成り立つことと同値である。
+
+$$
+f(c_1\boldsymbol{x}_1+c_2\boldsymbol{x}_2)
+=c_1f(\boldsymbol{x}_1)+c_2f(\boldsymbol{x}_2)
+$$
+
+スカラー倍の条件で $c=0$ とすれば $f(\boldsymbol{0})=\boldsymbol{0}$ なので，線形写像は必ず原点を原点に移す。
+
+$\mathbb{R}^n$ から $\mathbb{R}^m$ への線形写像は，ある $m\times n$ 行列 $\boldsymbol{A}$ を使って，$f(\boldsymbol{x})=\boldsymbol{A}\boldsymbol{x}$ と表せる。
+逆に，任意の $m\times n$ 行列 $\boldsymbol{A}$ に対して，写像 $f(\boldsymbol{x})=\boldsymbol{A}\boldsymbol{x}$ は線形写像となる。
+
+線形写像 $f$ が行列 $\boldsymbol{A}$ の積として表現できることを確かめよう。
+第 $j$ 成分だけが 1 で，他の成分はすべて 0 の $n$ 次元ベクトルを $\boldsymbol{e}_j$ とする。
+任意のベクトル $\boldsymbol{x}=(x_1,\ldots,x_n)^\top$ は，次の線形結合で表せる。
+
+$$
+\boldsymbol{x}=x_1\boldsymbol{e}_1+\cdots+x_n\boldsymbol{e}_n
+$$
+
+$f$ は線形性を持つため次が成り立つ。
+
+$$
+\begin{aligned}
+f(\boldsymbol{x})
+&=x_1f(\boldsymbol{e}_1)+\cdots+x_nf(\boldsymbol{e}_n)\\
+&=\begin{pmatrix}f(\boldsymbol{e}_1)&\cdots&f(\boldsymbol{e}_n)\end{pmatrix}\boldsymbol{x}
+\end{aligned}
+$$
+
+$f(\boldsymbol{e}_j)$ は $m$ 次元ベクトルだから，
+$\begin{pmatrix}f(\boldsymbol{e}_1)&\cdots&f(\boldsymbol{e}_n)\end{pmatrix}$
+は $m\times n$ 行列となる。
+この行列を $\boldsymbol{A}$ とすると，
+$f(\boldsymbol{x}) = \boldsymbol{A} \boldsymbol{x}$
+が導かれ，線形写像を行列積で表せることが確かめられた。
+
+
 #### 行列による平面の変換
 
-2×2 行列 $\boldsymbol{A}$ を使って，平面上の点 $\boldsymbol{x}$ を点 $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$ に移す対応を考える。
-行列積の定義から，任意のベクトル $\boldsymbol{x}_1$，$\boldsymbol{x}_2$ と数 $c_1$，$c_2$ について次の式が成り立つ。
+2×2 行列 $\boldsymbol{A}$ を使って，平面上の点 $\boldsymbol{x} = (x_1, x_2)^\top$ を点 $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$ に移す線形変換を考える。
 
-$$
-\boldsymbol{A}(c_1\boldsymbol{x}_1 + c_2\boldsymbol{x}_2) = c_1\boldsymbol{A}\boldsymbol{x}_1 + c_2\boldsymbol{A}\boldsymbol{x}_2
-$$
-
-この性質を **線形性 (linearity)** といい，線形性を持つ対応を **線形変換 (linear transformation)** という。
-第4回で扱った微分の線形性と同じ性質である。
-線形変換では，原点は原点に移る。
-また，逆行列を持つ（第6節）行列による変換では，直線は直線に，平行な直線は平行な直線に移る。
-
-$\boldsymbol{x} = x_1\boldsymbol{e}_1 + x_2\boldsymbol{e}_2$ と書くと，線形性から $\boldsymbol{A}\boldsymbol{x} = x_1\boldsymbol{A}\boldsymbol{e}_1 + x_2\boldsymbol{A}\boldsymbol{e}_2$ となる。
-$\boldsymbol{A}\boldsymbol{e}_1$ と $\boldsymbol{A}\boldsymbol{e}_2$ は，それぞれ $\boldsymbol{A}$ の第 1 列と第 2 列である。
-つまり，行列の各列は $\boldsymbol{e}_1$ と $\boldsymbol{e}_2$ の移り先を表し，その 2 つが分かれば平面全体の移り方が決まる。
+$\boldsymbol{e}_1=(1,0)^\top$，$\boldsymbol{e}_2=(0,1)^\top$ とすると，$\boldsymbol{x} = x_1\boldsymbol{e}_1 + x_2\boldsymbol{e}_2$ と書ける。
+線形性から $\boldsymbol{A}\boldsymbol{x} = x_1\boldsymbol{A}\boldsymbol{e}_1 + x_2\boldsymbol{A}\boldsymbol{e}_2$ となる。
+ここで， $\boldsymbol{A}\boldsymbol{e}_1$ と $\boldsymbol{A}\boldsymbol{e}_2$ は，それぞれ $\boldsymbol{A}$ の第 1 列と第 2 列に一致する。
+つまり，$\boldsymbol{e}_1$ と $\boldsymbol{e}_2$ の移り先が分かれば，行列 $\boldsymbol{A}$ が定まり，平面全体の移り方が決まる。
 
 #### 回転・拡大縮小・せん断
 
@@ -351,12 +449,19 @@ $$
 \boldsymbol{H} = \begin{pmatrix} 1 & k \\ 0 & 1 \end{pmatrix}
 $$
 
-$\boldsymbol{R}(\theta)$ の第 1 列 $(\cos\theta, \sin\theta)^\top$ は，第3回の単位円の上で，$\boldsymbol{e}_1$ を角度 $\theta$ だけ回転した点である。
-第 2 列 $(-\sin\theta, \cos\theta)^\top$ は，$\boldsymbol{e}_2$ を同じ角度だけ回転した点である。
-$\boldsymbol{H}$ は $\boldsymbol{e}_1$ を動かさず，$\boldsymbol{e}_2$ を $(k, 1)^\top$ に移すため，点 $(x_1, x_2)$ を横に $kx_2$ だけずらす。
-回転は長さと角度を変えないが，拡大縮小とせん断は一般に長さや角度を変える。
+$\boldsymbol{R}(\theta)$ の第 1 列 $(\cos\theta, \sin\theta)^\top$ は $\boldsymbol{e}_1$ を角度 $\theta$ だけ回転した点に対応し，
+第 2 列 $(-\sin\theta, \cos\theta)^\top$ は $\boldsymbol{e}_2$ を同じ角度だけ回転した点に対応する。
+行列 $\boldsymbol{S}, \boldsymbol{H}$ についても同様に，それらの各列は $\boldsymbol{e}_1, \boldsymbol{e}_2$ をそれぞれ変換した点に対応する。
 
-多数の点をまとめて変換するには，点を行として並べた形 `(N, 2)` の配列を使う。
+多数の点 $\boldsymbol{x}_1, \cdots, \boldsymbol{x}_n$ を行列 $\boldsymbol{A}$ でまとめて変換するには，
+$\boldsymbol{A}$と，
+それらの点を並べた行列 $(\boldsymbol{x}_1, \cdots, \boldsymbol{x}_n)$ との積を計算すれば良い。
+
+$$
+\boldsymbol{A} (\boldsymbol{x}_1, \cdots, \boldsymbol{x}_n) = (\boldsymbol{A} \boldsymbol{x}_1, \cdots, \boldsymbol{A} \boldsymbol{x}_n)
+$$
+
+この計算は，NumPy で以下のように実装できる。
 
 ```python
 square = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]])  # 単位正方形の頂点（最後に始点を繰り返す）
@@ -385,17 +490,15 @@ plt.close(fig)
  [0 0]]
 ```
 
-各点 $\boldsymbol{p}$ を行ベクトル $\boldsymbol{p}^\top$ として並べた配列 `P` に対して，すべての点に $\boldsymbol{A}$ を掛けた結果は `P @ A.T` で計算できる。
-これは，各行について $(\boldsymbol{A}\boldsymbol{p})^\top = \boldsymbol{p}^\top\boldsymbol{A}^\top$ が成り立つためである。
-`A @ square` と書くと，形 `(2, 2)` と `(5, 2)` の内側の長さがそろわないため，`ValueError` になる。
-この例では，単位正方形が，$\boldsymbol{A}$ の 2 つの列 $(2, 1)^\top$，$(1, 1)^\top$ を 2 辺とする平行四辺形に移る。
+ここで，行列積と転置の関係
+$(\boldsymbol{A}\boldsymbol{p})^\top = \boldsymbol{p}^\top\boldsymbol{A}^\top$
+を利用した。
 
 #### 合成変換
 
 変換 $\boldsymbol{A}$ を施した後に変換 $\boldsymbol{B}$ を施すと，$\boldsymbol{B}(\boldsymbol{A}\boldsymbol{x}) = (\boldsymbol{B}\boldsymbol{A})\boldsymbol{x}$ となる。
 つまり，2 つの線形変換を続けて施す **合成変換** は，行列積 $\boldsymbol{B}\boldsymbol{A}$ で表される。
 先に施す変換の行列が右に来ることに注意する。
-行列積では順序を入れ替えられないため，変換の順序を入れ替えると，一般に結果も変わる。
 
 #### 行列式と面積
 
@@ -411,34 +514,40 @@ $$
 一般に，$\boldsymbol{A}$ による変換で，図形の面積は $\lvert\det\boldsymbol{A}\rvert$ 倍になる。
 $\det\boldsymbol{A}<0$ のときは，図形が裏返る（頂点を反時計回りにたどる順序が，変換後は時計回りになる）。
 $\det\boldsymbol{A}=0$ のときは，平面全体が直線または 1 点につぶれる。
-NumPy では，行列式を `np.linalg.det(A)` で計算する。
+
+一般の正方行列について， **その行列式が0でない値を持つのは，その行列はフルランクであるとき，かつそのときに限る。**
+
+NumPy では，行列式を `np.linalg.det(A)` で計算できる。
 例えば，上の例の `np.linalg.det(A)` は `1.0` であり，平行四辺形の面積は単位正方形と同じ 1 である。
-`np.linalg.det` の結果は浮動小数点数であり，`np.linalg.det(np.array([[1, 2], [3, 4]]))` が `-2.0000000000000004` になるように，丸め誤差を含むことがある。
 
 ### 5. 射影
 
 #### ベクトルへの射影
 
 零ベクトルでないベクトル $\boldsymbol{u}$ の向きに伸びる，原点を通る直線を考える。
-ベクトル $\boldsymbol{v}$ の終点からこの直線に垂線を下ろしたとき，原点から垂線の足へ向かうベクトルを，$\boldsymbol{v}$ の $\boldsymbol{u}$ への **射影 (projection)** という。
-射影は直線上にあるので，数 $c$ を使って $c\,\boldsymbol{u}$ と書ける。
-$\boldsymbol{v}$ と射影の差 $\boldsymbol{r} = \boldsymbol{v} - c\,\boldsymbol{u}$ を **残差 (residual)** という。
-垂線を下ろしたので，残差は $\boldsymbol{u}$ と直交する。
-この条件から $c$ が求まる。
+ベクトル $\boldsymbol{v}$ の終点からこの直線に垂線を下ろしたとき，原点から垂線の足へ向かうベクトルを，$\boldsymbol{v}$ の $\boldsymbol{u}$ への **射影 (projection)** といい，次式で表される。
+
+$$
+\mathrm{proj}_{\boldsymbol{u}}\boldsymbol{v} = \frac{\boldsymbol{u}^\top\boldsymbol{v}}{\boldsymbol{u}^\top\boldsymbol{u}}\,\boldsymbol{u}
+$$
+
+このことは，以下のように確かめられる。
+射影は $\boldsymbol{u}$ に平行な直線上にあるので，数 $c$ を使って $c\,\boldsymbol{u}$ と書ける。
+ここで，**残差 (residual)** を
+$\boldsymbol{v}$ と射影の差 $\boldsymbol{r} = \boldsymbol{v} - c\,\boldsymbol{u}$ とすると，
+残差は $\boldsymbol{u}$ と直交する。
+この性質を用いることによって， $c$ が定まる。
 
 $$
 \boldsymbol{u}^\top(\boldsymbol{v} - c\,\boldsymbol{u}) = 0
 \quad\Longrightarrow\quad
-c = \frac{\boldsymbol{u}^\top\boldsymbol{v}}{\boldsymbol{u}^\top\boldsymbol{u}},
-\qquad
-\mathrm{proj}_{\boldsymbol{u}}\boldsymbol{v} = \frac{\boldsymbol{u}^\top\boldsymbol{v}}{\boldsymbol{u}^\top\boldsymbol{u}}\,\boldsymbol{u}
+c = \frac{\boldsymbol{u}^\top\boldsymbol{v}}{\boldsymbol{u}^\top\boldsymbol{u}}
 $$
 
-このとき，$\boldsymbol{v} = \mathrm{proj}_{\boldsymbol{u}}\boldsymbol{v} + \boldsymbol{r}$ であり，$\boldsymbol{v}$ は「$\boldsymbol{u}$ の向きの成分」と「$\boldsymbol{u}$ に直交する成分」に分解される。
-射影は，直線上の点のうち $\boldsymbol{v}$ に最も近い点でもある。
-実際，直線上の点 $t\,\boldsymbol{u}$ と $\boldsymbol{v}$ の距離の 2 乗 $\lVert\boldsymbol{v} - t\,\boldsymbol{u}\rVert^2 = \boldsymbol{v}^\top\boldsymbol{v} - 2t\,\boldsymbol{u}^\top\boldsymbol{v} + t^2\,\boldsymbol{u}^\top\boldsymbol{u}$ は $t$ の 2 次関数であり，第4回のように $t$ で微分して 0 とおくと，上と同じ条件が得られる。
-したがって，残差のノルム $\lVert\boldsymbol{r}\rVert$ は，$\boldsymbol{v}$ の終点と直線との距離である。
-「最も近い点を，残差が直交するという条件から求める」という考え方は，第16回の最小二乗法で使う。
+任意のベクトル $\boldsymbol{v}$ は $\boldsymbol{v} = \mathrm{proj}_{\boldsymbol{u}}\boldsymbol{v} + \boldsymbol{r}$ と書けることから，$\boldsymbol{v}$ は「$\boldsymbol{u}$ の向きの成分」と「$\boldsymbol{u}$ に直交する成分」に分解できる。
+また，射影は，直線上の点のうち $\boldsymbol{v}$ に最も近い（残差のノルムを最小にする）点でもある。
+
+NumPy を用いて残差を計算する例を以下に示す。
 
 ```python
 u = np.array([3, 1])
@@ -453,7 +562,6 @@ print(np.linalg.norm(r))  # 約 1.581
 ```
 
 `u @ r` が 0 になることから，残差が $\boldsymbol{u}$ と直交していることを確かめられる。
-一般には，丸め誤差のため `u @ r` は厳密な 0 ではなく 0 に近い値になるので，`np.isclose(u @ r, 0)` のように判定する。
 
 #### 射影行列
 
@@ -469,9 +577,11 @@ $$
 $$
 
 $\boldsymbol{P}$ を，$\boldsymbol{u}$ の向きの直線への **射影行列 (projection matrix)** という。
-$\boldsymbol{u}\boldsymbol{u}^\top$ は，$n\times1$ 行列（列ベクトル）と $1\times n$ 行列（行ベクトル）の行列積なので，$n\times n$ 行列である。
-1 次元配列 `u` から $\boldsymbol{u}\boldsymbol{u}^\top$ を作るには，`np.outer(u, u)` を使う。
-`u @ u.T` と書くと，`u.T` が `u` と同じ 1 次元配列なので，内積 $\boldsymbol{u}^\top\boldsymbol{u}$ が計算される。
+$\boldsymbol{u}\boldsymbol{u}^\top$ は，$n\times1$ 行列（列ベクトル）と $1\times n$ 行列（行ベクトル）の行列積だから，
+$\boldsymbol{P}$は $n\times n$ 行列である。
+
+NumPy を用いて
+1 次元配列 `u` から $\boldsymbol{u}\boldsymbol{u}^\top$ を計算する際には，`np.outer(u, u)` を用いることができる。
 
 ```python
 P = np.outer(u, u) / (u @ u)
@@ -490,9 +600,10 @@ print(P)
 
 #### 単位行列と逆行列
 
-対角成分（$i$ 行 $i$ 列の成分）がすべて 1 で，それ以外の成分がすべて 0 の正方行列を **単位行列 (identity matrix)** といい，$\boldsymbol{I}$ と書く。
-任意のベクトル $\boldsymbol{x}$ に対して $\boldsymbol{I}\boldsymbol{x} = \boldsymbol{x}$ であり，単位行列は点を動かさない変換を表す。
-NumPy では，第3回で扱った `np.eye(n)` で $n\times n$ の単位行列を作る。
+対角成分（$i$ 行 $i$ 列の成分）がすべて 1 で，それ以外の成分がすべて 0 の正方行列を **単位行列 (identity matrix)** といい，$\boldsymbol{I}$ や $\boldsymbol{E}$ などの記号で表される。
+ここでは，単位行列を $\boldsymbol{I}$ と表記する。
+任意のベクトル $\boldsymbol{x}$ に対して $\boldsymbol{I}\boldsymbol{x} = \boldsymbol{x}$ である。
+NumPy では，第3回で扱った `np.eye(n)` で $n\times n$ の単位行列を作成できる。
 
 正方行列 $\boldsymbol{A}$ に対して
 
@@ -501,31 +612,21 @@ $$
 $$
 
 を満たす行列 $\boldsymbol{A}^{-1}$ を，$\boldsymbol{A}$ の **逆行列 (inverse matrix)** という。
-$\boldsymbol{A}$ で点 $\boldsymbol{x}$ を $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$ に移したとき，$\boldsymbol{A}^{-1}\boldsymbol{y} = \boldsymbol{A}^{-1}\boldsymbol{A}\boldsymbol{x} = \boldsymbol{x}$ となる。
-つまり，逆行列は，変換を元に戻す変換を表す。
+逆行列の定義より， $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$ であるとき，$\boldsymbol{A}^{-1}\boldsymbol{y} = \boldsymbol{A}^{-1}\boldsymbol{A}\boldsymbol{x} = \boldsymbol{x}$ となる。
+
 2×2 行列の逆行列は，行列式を使って次のように書ける。
 
 $$
 \boldsymbol{A} = \begin{pmatrix} a & b \\ c & d \end{pmatrix},\qquad
-\boldsymbol{A}^{-1} = \frac{1}{ad - bc}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}\qquad(ad - bc\neq0)
+\boldsymbol{A}^{-1} = \frac{1}{\det \boldsymbol{A}}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}\qquad(ad - bc\neq0)
 $$
 
-右辺に $\boldsymbol{A}$ を掛けると $\boldsymbol{I}$ になることは，行列積の定義から確かめられる。
-NumPy では，逆行列を `np.linalg.inv(A)` で計算する。
+ある正方行列について，**その逆行列が存在するのは，その行列式が 0 でないとき，かつそのときに限る。**
+逆行列を持つ行列のことを **正則行列 (regular matrix)** という。
+一方，行列式が0であるような正方行列には逆行列が存在しない。
+逆行列を持たない行列を **特異行列 (singular matrix)** という。
 
-#### 逆行列を持たない行列
-
-行列式が 0 の正方行列は逆行列を持たない。
-このような行列を **特異行列 (singular matrix)** という。
-2×2 の特異行列による変換は平面全体を直線または 1 点につぶすため，異なる点が同じ点に移る。
-このため，移った先の点から元の点を 1 つに決めることができない。
-
-いくつかのベクトルのどれも残りのベクトルの線形結合で表せないとき，それらのベクトルは **線形独立 (linearly independent)** であるという。
-行列の列ベクトルから選べる線形独立なベクトルの最大個数を，行列の **階数 (rank)** という。
-階数は，変換後の点全体が広がる範囲の次元に等しい。
-2×2 行列では，階数が 2 なら平面全体に，1 なら原点を通る直線上に，0 なら原点だけに点が移る。
-NumPy では，階数を `np.linalg.matrix_rank(A)` で計算する。
-$n\times n$ 行列が逆行列を持つのは，階数が $n$ のとき，すなわち行列式が 0 でないときである。
+NumPy では，逆行列を `np.linalg.inv(A)` で計算できる。
 `np.linalg.inv` に特異行列を渡すと，`numpy.linalg.LinAlgError` が発生する。
 
 #### 連立一次方程式
@@ -538,7 +639,8 @@ $$
 
 は，係数を並べた行列 $\boldsymbol{A} = \begin{pmatrix} 3 & 1 \\ 1 & 2 \end{pmatrix}$ と，$\boldsymbol{x} = (x_1, x_2)^\top$，$\boldsymbol{b} = (9, 8)^\top$ を使って，$\boldsymbol{A}\boldsymbol{x} = \boldsymbol{b}$ と書ける。
 $\boldsymbol{A}$ が逆行列を持つなら，両辺に左から $\boldsymbol{A}^{-1}$ を掛けて，解 $\boldsymbol{x} = \boldsymbol{A}^{-1}\boldsymbol{b}$ が得られる。
-NumPy では，連立一次方程式を `np.linalg.solve(A, b)` で解く。
+
+NumPy では，連立一次方程式を `np.linalg.solve(A, b)` で解くことができる。
 
 ```python
 A = np.array([[3, 1], [1, 2]])
@@ -558,15 +660,13 @@ print(np.linalg.inv(A))
 ```
 
 `np.allclose(p, q)` は，2 つの配列の対応する要素がすべてほぼ等しいときに `True` を返す。
-第3回の `np.isclose` の判定を，すべての要素についてまとめて行うものである。
-求めた解は，このように元の方程式に代入して確かめる。
-`np.linalg.inv(A) @ b` でも同じ解が得られるが，連立一次方程式を解く目的では `np.linalg.solve` を使う。
-`solve` は逆行列全体を求めずに方程式を解くため，計算量が少なく，丸め誤差の影響も受けにくい。
-`solve` に特異行列を渡した場合も，`LinAlgError` が発生する。
+明示的に逆行列を計算する `np.linalg.inv(A) @ b` でも解が得られるが，
+逆行列の計算は，計算コストが高く丸め誤差の影響を受けやすいという弱点がある。
+そのため，連立一次方程式を解く目的では `np.linalg.solve` を使う。
 
 ### 7. 固有値と固有ベクトル
 
-#### 変換で自分自身のスカラー倍になるベクトル
+#### 定義
 
 正方行列 $\boldsymbol{A}$ による変換で，零ベクトルでない $\boldsymbol{v}$ が自分自身のスカラー倍になる場合を考える。
 
@@ -575,12 +675,11 @@ $$
 $$
 
 このとき，$\lambda$ を $\boldsymbol{A}$ の **固有値 (eigenvalue)**，$\boldsymbol{v}$ をその固有値に対応する **固有ベクトル (eigenvector)** という。
-零ベクトルはどの $\lambda$ でも上の式を満たしてしまうため，固有ベクトルから除く。
-固有値と固有ベクトルが実数の場合，$\lambda>0$ なら向きは同じで長さが $\lambda$ 倍になり，$\lambda<0$ なら向きが反転して長さが $|\lambda|$ 倍になる。
-$\lambda=0$ なら，その固有ベクトルは零ベクトルに移る。
-したがって，実数の固有ベクトルがつくる直線上の点は，変換後も同じ直線上にある。
+$\boldsymbol{A}(c\boldsymbol{v}) = c\boldsymbol{A}\boldsymbol{v} = \lambda(c\boldsymbol{v})$ より，
+ある固有ベクトル $\boldsymbol{v}$ について，それを $c \neq 0$ でスカラー倍したベクトルも，同じ固有値 $\lambda$ に対応する固有ベクトルとなる。
+よって，固有ベクトルの長さや符号は一意には決まらない。
 
-例えば，次の行列とベクトルを考える。
+例として，次の行列とベクトルを考える。
 
 $$
 \boldsymbol{A} = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix},\qquad
@@ -588,27 +687,26 @@ $$
 \boldsymbol{v}_2 = \begin{pmatrix} 1 \\ -1 \end{pmatrix}
 $$
 
-行列とベクトルの積を計算すると，$\boldsymbol{A}\boldsymbol{v}_1 = 3\boldsymbol{v}_1$，$\boldsymbol{A}\boldsymbol{v}_2 = \boldsymbol{v}_2$ である。
-つまり，$\boldsymbol{v}_1$ の方向には 3 倍に伸ばし，$\boldsymbol{v}_2$ の方向には長さを変えない変換であり，対応する固有値はそれぞれ 3 と 1 である。
-固有ベクトルの 0 でないスカラー倍も，同じ固有値に対応する固有ベクトルである。
-実際，$\boldsymbol{A}(c\boldsymbol{v}) = c\boldsymbol{A}\boldsymbol{v} = \lambda(c\boldsymbol{v})$ なので，固有ベクトルの長さや符号は一意には決まらない。
+このとき，$\boldsymbol{A}\boldsymbol{v}_1 = 3\boldsymbol{v}_1$ であり， $\boldsymbol{A}\boldsymbol{v}_2 = \boldsymbol{v}_2$ である。
+よって， $\boldsymbol{v}_1, \boldsymbol{v}_2$ は共に $\boldsymbol{A}$ の固有ベクトルであり，対応する固有値はそれぞれ 3 と 1 である。
 
 #### 固有値と固有ベクトルの求め方
 
-固有値の定義を移項すると，$(\boldsymbol{A}-\lambda\boldsymbol{I})\boldsymbol{v}=\boldsymbol{0}$ となる。
-$\boldsymbol{A}-\lambda\boldsymbol{I}$ が逆行列を持つなら，両辺にその逆行列を掛けると $\boldsymbol{v}=\boldsymbol{0}$ となり，固有ベクトルの条件を満たさない。
-零ベクトルでない解を持つ条件は，次の式で表せる。
+固有値の定義より，$(\boldsymbol{A}-\lambda\boldsymbol{I})\boldsymbol{v}=\boldsymbol{0}$ が常に成り立つ。
+固有ベクトルは，この方程式の零ベクトルでない解だと言える。
+ここで， $\boldsymbol{A}-\lambda\boldsymbol{I}$ が逆行列を持つとすると $\boldsymbol{v}=\boldsymbol{0}$ となってしまい，固有ベクトルの条件を満たさない。
+よって，もとの方程式が零ベクトルでない解を持つ条件は，次の式で表せる。
 
 $$
 \det(\boldsymbol{A}-\lambda\boldsymbol{I})=0
 $$
 
-これを $\lambda$ について解き，各固有値を $(\boldsymbol{A}-\lambda\boldsymbol{I})\boldsymbol{v}=\boldsymbol{0}$ に代入して，零ベクトルでない解を求める。
-上の例では，$\det(\boldsymbol{A}-\lambda\boldsymbol{I})=(2-\lambda)^2-1=(\lambda-3)(\lambda-1)$ なので，固有値は 3 と 1 である。
-$\lambda=3$ を代入すると $v_2=v_1$，$\lambda=1$ を代入すると $v_2=-v_1$ となり，それぞれ $(1,1)^\top$，$(1,-1)^\top$ を固有ベクトルとして選べる。
-この連立方程式の係数行列は特異なので，第6節の `np.linalg.solve(A - lam * np.eye(2), np.zeros(2))` で固有ベクトルを求めることはできない。
+これを $\lambda$ について解くことで， $\boldsymbol{A}$ の固有値が複数求められる。
+その後，各固有値を $(\boldsymbol{A}-\lambda\boldsymbol{I})\boldsymbol{v}=\boldsymbol{0}$ に代入し，
+$\boldsymbol{v}$ について解けば，代入した固有値に対応する固有ベクトルが求められる。
+実行列でも，固有値や固有ベクトルの要素が複素数になることがある。
 
-NumPy では，`np.linalg.eig(A)` で固有値と固有ベクトルをまとめて計算する。
+NumPy では，`np.linalg.eig(A)` で固有値と固有ベクトルをまとめて計算できる。
 
 ```python
 A = np.array([[2.0, 1.0], [1.0, 2.0]])
@@ -621,88 +719,69 @@ for i in range(2):
 ```
 
 $n\times n$ 行列に対して，`eigenvalues` の形は `(n,)`，`eigenvectors` の形は `(n, n)` である。
-`eigenvalues[i]` に対応する固有ベクトルは，`eigenvectors` の **第 `i` 列** `eigenvectors[:, i]` に入る。
-返される固有ベクトルのノルムは 1 なので，この例の手計算のベクトルとは長さが異なる。
+`eigenvalues[i]` に対応する固有ベクトルは，`eigenvectors` の **第 `i` 列** `eigenvectors[:, i]` に格納される。
+返される固有ベクトルのノルムは 1 に正規化される。
 固有値の返される順序は決まっておらず，上の `np.sort` は表示するときだけ値を昇順に並べている。
-計算に使う固有値の順序を変える場合は，対応する固有ベクトルの列も同じ順序で並べ替える必要がある。
-固有ベクトルの成分が手計算と完全に一致するかではなく，$\boldsymbol{A}\boldsymbol{v}=\lambda\boldsymbol{v}$ を満たすかで確かめる。
 
 ### 8. 対角化
 
 #### 基底と座標
 
-$n$ 個の $n$ 次元ベクトル $\boldsymbol{v}_1,\ldots,\boldsymbol{v}_n$ が線形独立なら，任意の $n$ 次元ベクトルを，それらの線形結合でただ 1 通りに表せる。
-このようなベクトルの組を **基底 (basis)** といい，線形結合の係数を，その基底に関する **座標 (coordinates)** という。
-各ベクトルを列に並べた行列を $\boldsymbol{P}$ とすると，次のように書ける。
+$n$ 個の $n$ 次元ベクトル $\boldsymbol{v}_1,\ldots,\boldsymbol{v}_n$ が線形独立なら，
+任意の $n$ 次元ベクトル $\boldsymbol{x}$ を，それらの線形結合でただ 1 通りに表せる。
 
 $$
-\boldsymbol{P} = \begin{pmatrix} \boldsymbol{v}_1 & \cdots & \boldsymbol{v}_n \end{pmatrix},\qquad
+\boldsymbol{x} = c_1\boldsymbol{v}_1+\cdots+c_n\boldsymbol{v}_n
+$$
+
+このようなベクトルの組を **基底 (basis)** といい，線形結合の係数 $c_1, \cdots, c_n$ をその基底に関する **座標 (coordinates)** という。
+
+$\boldsymbol{P} = \begin{pmatrix} \boldsymbol{v}_1 & \cdots & \boldsymbol{v}_n \end{pmatrix}$ とすると，
+列が線形独立なので $\boldsymbol{P}$ はフルランクであり，逆行列が存在する。
+よって， $\boldsymbol{c} = (c_1, \cdots, c_n)^\top$ とすると，次のように書ける。
+
+$$
 \boldsymbol{x} = c_1\boldsymbol{v}_1+\cdots+c_n\boldsymbol{v}_n = \boldsymbol{P}\boldsymbol{c},\qquad
 \boldsymbol{c}=\boldsymbol{P}^{-1}\boldsymbol{x}
 $$
 
-列が線形独立なので $\boldsymbol{P}$ の階数は $n$ であり，第6節より逆行列が存在する。
-$\boldsymbol{P}^{-1}$ は，元の成分表示 $\boldsymbol{x}$ を新しい基底での座標 $\boldsymbol{c}$ に直し，$\boldsymbol{P}$ はその座標を元の成分表示に戻す。
+このことから， $\boldsymbol{P}^{-1}$ は，元の基底に関する座標（成分表示） $\boldsymbol{x}$ を新しい基底での座標 $\boldsymbol{c}$ に変換する行列であり， $\boldsymbol{P}$ はその座標を元の座標に戻す行列であるといえる。
 
-#### 固有ベクトルを基底にする
+#### 対角行列
 
-$n\times n$ 行列 $\boldsymbol{A}$ に，線形独立な固有ベクトルが $n$ 個あるとする。
-それらを列に並べた行列を $\boldsymbol{P}$，対応する固有値を同じ順序で対角成分に並べた行列を $\boldsymbol{D}$ とする。
-対角成分以外がすべて 0 の行列を **対角行列 (diagonal matrix)** といい，ここでは $\boldsymbol{D}=\mathrm{diag}(\lambda_1,\ldots,\lambda_n)$ と書く。
-各列について $\boldsymbol{A}\boldsymbol{v}_i=\lambda_i\boldsymbol{v}_i$ なので，次の関係が成り立つ。
+対角成分 $d_1, \cdots, d_n$ 以外がすべて 0 の $n \times n$ の正方行列を， $n$ 次の **対角行列 (diagonal matrix)** という。
 
 $$
-\boldsymbol{A}\boldsymbol{P}=\boldsymbol{P}\boldsymbol{D},\qquad
-\boldsymbol{P}^{-1}\boldsymbol{A}\boldsymbol{P}=\boldsymbol{D},\qquad
-\boldsymbol{A}=\boldsymbol{P}\boldsymbol{D}\boldsymbol{P}^{-1}
+\boldsymbol{D}=
+\begin{pmatrix}
+d_1 &     &        & 0   \\
+    & d_2 &        &     \\
+    &     & \ddots &     \\
+0   &     &        & d_n
+\end{pmatrix}
 $$
 
-このように，基底を取り替えて行列を対角行列で表すことを **対角化 (diagonalization)** という。
-$\boldsymbol{A}\boldsymbol{x}=\boldsymbol{P}\boldsymbol{D}\boldsymbol{P}^{-1}\boldsymbol{x}$ は，右から順に次の 3 つの操作を表す。
+この行列 $\boldsymbol{D}$ を $\boldsymbol{D}=\mathrm{diag}(d_1,\cdots,d_n)$ と書く。
+対角成分 $d_1, \cdots, d_n$ には0が含まれていてもよい。
 
-1. $\boldsymbol{P}^{-1}$ で，固有ベクトルを基底とする座標に直す。
-2. $\boldsymbol{D}$ で，第 $i$ 成分を固有値 $\lambda_i$ 倍する。
-3. $\boldsymbol{P}$ で，元の成分表示に戻す。
+NumPy では， `np.diag` に数のリストを渡すことで，そのリストの要素を対角に並べた対角行列を作成できる。
 
-第7節の行列では，次の $\boldsymbol{P}$ と $\boldsymbol{D}$ を使える。
+#### 対角化
+
+$n\times n$ の正方行列 $\boldsymbol{A}$ に， $n$ 次対角行列 $\boldsymbol{D}$ と $n$ 次正則行列 $\boldsymbol{P}$ が存在して，
 
 $$
-\boldsymbol{P}=\begin{pmatrix}1&1\\1&-1\end{pmatrix},\qquad
-\boldsymbol{D}=\begin{pmatrix}3&0\\0&1\end{pmatrix},\qquad
-\boldsymbol{P}^{-1}=\frac{1}{2}\begin{pmatrix}1&1\\1&-1\end{pmatrix}
+\boldsymbol{P}^{-1}\boldsymbol{A}\boldsymbol{P}=\boldsymbol{D}
 $$
 
-```python
-P = np.array([[1.0, 1.0], [1.0, -1.0]])
-D = np.diag([3.0, 1.0])
-print(np.allclose(A @ P, P @ D))                    # True
-print(np.allclose(np.linalg.inv(P) @ A @ P, D))     # True
-print(np.allclose(P @ D @ np.linalg.inv(P), A))     # True
-x = np.array([2.0, 0.0])
-c = np.linalg.solve(P, x)
-print(c, D @ c)                                    # [1. 1.] [3. 1.]
-print(P @ (D @ c), A @ x)                          # [4. 2.] [4. 2.]
-```
+とできるとき， $\boldsymbol{D}$ を計算する操作を **対角化 (diagonalization)** といい，
+行列 $\boldsymbol{A}$ は対角化可能であるという。
 
-`np.diag` に数のリストを渡すと，それらを対角成分に並べた対角行列を作る。
-この例では $\boldsymbol{x}=\boldsymbol{v}_1+\boldsymbol{v}_2$ が，変換によって $3\boldsymbol{v}_1+\boldsymbol{v}_2$ に変わる。
-式の確認には逆行列を使ったが，特定の $\boldsymbol{x}$ の座標 $\boldsymbol{c}$ を求める計算には，第6節と同様に `np.linalg.solve(P, x)` を使える。
+行列 $\boldsymbol{A}$ が対角化可能であるための必要十分条件は，
+$\boldsymbol{A}$ が $n$ 個の線形独立な固有ベクトルを持つことである。
+このとき， $\boldsymbol{P}$ はそれらの固有ベクトルを列として並べた行列となり，
+$\boldsymbol{D}$ は固有値を固有ベクトルに対応する順に並べた対角行列となる。
 
-#### 対角化できる条件
-
-対角化できるのは，線形独立な固有ベクトルを $n$ 個選べる場合である。
-$n$ 個の固有値がすべて異なるなら，対応する固有ベクトルは線形独立になり，対角化できる。
-同じ固有値が重複する場合は，独立な固有ベクトルを必要な個数だけ選べるかを確認する。
-例えば，単位行列はすべての固有値が 1 だが，すでに対角行列である。
-一方，せん断行列 $\boldsymbol{H}=\begin{pmatrix}1&1\\0&1\end{pmatrix}$ は，$\det(\boldsymbol{H}-\lambda\boldsymbol{I})=(1-\lambda)^2$ より固有値が 1 だけである。
-$(\boldsymbol{H}-\boldsymbol{I})\boldsymbol{v}=\boldsymbol{0}$ を解くと $v_2=0$ なので，固有ベクトルはすべて $(1,0)^\top$ のスカラー倍であり，独立な固有ベクトルを 2 個選べず，対角化できない。
-$\boldsymbol{H}$ 自体は行列式が 1 で逆行列を持つため，「逆行列を持つこと」と「対角化できること」は異なる条件である。
-
-実数の行列でも，固有値や固有ベクトルが複素数になることがある。
-その場合も $\boldsymbol{A}\boldsymbol{v}=\lambda\boldsymbol{v}$ という定義は同じであり，複素数の固有ベクトルを使って基底を作れれば，複素数の範囲で対角化できる。
-例えば，平面の $90^\circ$ 回転には実数の固有ベクトルがないが，複素数まで許すと固有値は $j$ と $-j$（$j^2=-1$）となり，対角化できる。
-第8回では複素正弦波を基底とする DFT を扱い，第10回では，巡回畳み込みを表す行列がその基底で対角化できることを確かめる。
-そこでの「DFT で座標を直す → 周波数ごとに掛け算する → 逆 DFT で戻す」という計算は，上の 3 つの操作に対応する。
 
 ## 演習
 
@@ -814,7 +893,7 @@ $\boldsymbol{H}$ 自体は行列式が 1 で逆行列を持つため，「逆行
     1. $\boldsymbol{v}_1$，$\boldsymbol{v}_2$ を列に並べた $\boldsymbol{P}$ と，対応する固有値を同じ順序で並べた対角行列 $\boldsymbol{D}$ を書いてください。$\boldsymbol{P}^{-1}$ を手計算し，$\boldsymbol{P}^{-1}\boldsymbol{B}\boldsymbol{P}=\boldsymbol{D}$ を確かめてください。
     2. $\boldsymbol{x}=(3,1)^\top$ について，$\boldsymbol{c}=\boldsymbol{P}^{-1}\boldsymbol{x}$，$\boldsymbol{D}\boldsymbol{c}$，$\boldsymbol{P}\boldsymbol{D}\boldsymbol{c}$ を順に手計算してください。最後の結果が $\boldsymbol{B}\boldsymbol{x}$ と一致することを確かめ，各段階の意味を説明してください。
     3. `exercise/exc05_10.py` で，`np.diag` を使って $\boldsymbol{D}$ を作り，1 と 2 の結果を確かめてください。$\boldsymbol{c}$ は `np.linalg.solve` で求め，`B @ P` と `P @ D`，`B` と `P @ D @ np.linalg.inv(P)` がそれぞれほぼ等しいことも確かめてください。
-    4. $\boldsymbol{P}$ の 2 つの列を交換した場合に，$\boldsymbol{D}$ をどう変えれば同じ $\boldsymbol{B}$ を表せるかを予想し，NumPy で確かめてください。また，$\boldsymbol{P}$ を転置するだけでは逆行列にならないことを計算で確認し，第8節の $\boldsymbol{P}^{-1}$ の式を使って理由を説明してください。
+    4. $\boldsymbol{P}$ の 2 つの列を交換した場合に，$\boldsymbol{D}$ をどう変えれば同じ $\boldsymbol{B}$ を表せるかを予想し，NumPy で確かめてください。また，$\boldsymbol{P}$ を転置するだけでは逆行列にならないことを計算で確認し，1 で求めた $\boldsymbol{P}^{-1}$ を使って理由を説明してください。
 
 ### 発展レベル（5問）
 1. 係数のわずかな違いで解が大きく変わる連立一次方程式を調べます。$\boldsymbol{A} = \begin{pmatrix} 1 & 1 \\ 1 & 1.001 \end{pmatrix}$ とします。
