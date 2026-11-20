@@ -363,8 +363,7 @@ $$
 \begin{pmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{pmatrix}
 \begin{pmatrix} x_1 \\ x_2 \end{pmatrix}
 = \begin{pmatrix} a_{11}x_1+a_{12}x_2 \\ a_{21}x_1+a_{22}x_2 \end{pmatrix}
-= x_1\begin{pmatrix}a_{11}\\a_{21}\end{pmatrix}
-+ x_2\begin{pmatrix}a_{12}\\a_{22}\end{pmatrix}
+= x_1\begin{pmatrix}a_{11}\\a_{21}\end{pmatrix} + x_2\begin{pmatrix}a_{12}\\a_{22}\end{pmatrix}
 $$
 
 つまり，$\boldsymbol{A}\boldsymbol{x}$ は，$\boldsymbol{A}$ の各列を，$\boldsymbol{x}$ の対応する成分でスカラー倍して足し合わせたものだと見なすことができる。
